@@ -113,13 +113,44 @@ def clean_text(input_text):
     cleaned_text = re.sub(r'[\x00-\x1F\x7F]+', '', input_text)
     return cleaned_text
 
+# Function to scan code for links (domains, IPs, URLs)
+def scan_code_for_links(code):
+    """
+    Scan a given string of code for domains, IP addresses, URLs, and Discord webhook URLs.
+    """
+    try:
+        # Regular expressions for different patterns
+        ip_pattern = r'\b(?:\d{1,3}\.){3}\d{1,3}\b'
+        domain_pattern = r'\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b'
+        url_pattern = r'https?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+        discord_webhook_pattern = r'https://discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
+
+        # Perform scans
+        ip_matches = re.findall(ip_pattern, code)
+        domain_matches = re.findall(domain_pattern, code)
+        url_matches = re.findall(url_pattern, code)
+        discord_webhook_matches = re.findall(discord_webhook_pattern, code)
+
+        # Logging the findings
+        if ip_matches:
+            logging.info(f"IP addresses detected: {ip_matches}")
+        if domain_matches:
+            logging.info(f"Domains detected: {domain_matches}")
+        if url_matches:
+            logging.info(f"URLs detected: {url_matches}")
+        if discord_webhook_matches:
+            logging.warning(f"Discord webhook URLs detected: {discord_webhook_matches}")
+
+    except Exception as ex:
+        logging.error(f"Error scanning code for links: {ex}")
+
 def scan_rsrc_directory(extracted_files):
     """
-    Look for files whose paths contain .rsrc\\RCDATA and process them.
-    Extract the last 11 lines of these files, clean them, and save them for further processing.
+    Scans all files in the extracted_files list for .rsrc\\RCDATA, extracts
+    the full content, cleans it, and performs scans for domains, URLs, 
+    IP addresses, and Discord webhooks.
 
     :param extracted_files: List of files extracted by 7z.
-    :param nuitka_source_code_dir: Directory to save the cleaned last lines.
     """
     try:
         for extracted_file in extracted_files:
@@ -130,34 +161,35 @@ def scan_rsrc_directory(extracted_files):
                 # Ensure the path refers to an actual file
                 if os.path.isfile(extracted_file):
                     try:
-                        # Read the last 11 lines of the file, handling invalid UTF-8 gracefully
+                        # Read the full content of the file, handling invalid UTF-8 gracefully
                         with open(extracted_file, "r", encoding="utf-8", errors="ignore") as f:
                             lines = f.readlines()
                             if lines:
-                                # Get the last 11 lines and ensure they are kept intact
-                                last_lines = lines[-11:]
-
                                 # Clean each line by removing non-printable characters
-                                last_lines_cleaned = [clean_text(line.strip()) for line in last_lines]
+                                cleaned_lines = [clean_text(line.strip()) for line in lines]
 
-                                # Do not log the actual content of the last lines, just a message
-                                logging.info(f"Extracted and cleaned last 11 lines from {extracted_file}.")
-
-                                # Save the last lines to a uniquely named file
+                                # Save the full cleaned content to a uniquely named file
                                 base_name = os.path.splitext(os.path.basename(extracted_file))[0]
-                                save_path = os.path.join(nuitka_source_code_dir, f"{base_name}_last_lines.txt")
+                                save_path = os.path.join(nuitka_source_code_dir, f"{base_name}_full_content.txt")
                                 counter = 1
                                 while os.path.exists(save_path):
                                     save_path = os.path.join(
-                                        nuitka_source_code_dir, f"{base_name}_last_lines_{counter}.txt"
+                                        nuitka_source_code_dir, f"{base_name}_full_content_{counter}.txt"
                                     )
                                     counter += 1
 
-                                # Write each cleaned line to the file separately
+                                # Write all cleaned lines to the file
                                 with open(save_path, "w", encoding="utf-8") as save_file:
-                                    for line in last_lines_cleaned:
+                                    for line in cleaned_lines:
                                         save_file.write(line + '\n')
-                                logging.info(f"Saved last 11 lines from {extracted_file} to {save_path}")
+                                logging.info(f"Saved full content from {extracted_file} to {save_path}")
+
+                                # Join the full content for scanning purposes
+                                rsrc_content = ''.join(lines)
+
+                                # Perform the scans
+                                scan_code_for_links(rsrc_content)
+
                             else:
                                 logging.info(f"File {extracted_file} is empty.")
                     except Exception as ex:
