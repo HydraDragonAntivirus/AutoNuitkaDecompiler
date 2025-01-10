@@ -171,19 +171,23 @@ def scan_rsrc_directory(extracted_files):
         logging.error(f"Error during RCDATA file scanning: {ex}")
 
 def extract_nuitka_file(file_path, nuitka_type):
-    """Detect Nuitka type, extract Nuitka executable content, and scan for additional Nuitka executables"""
+    """
+    Detect Nuitka type, extract Nuitka executable content, and scan for additional Nuitka executables.
+
+    :param file_path: Path to the Nuitka executable file.
+    :param nuitka_type: Type of Nuitka executable ("Nuitka OneFile" or "Nuitka").
+    """
     try:  
         if nuitka_type == "Nuitka OneFile":
             logging.info(f"Nuitka OneFile executable detected in {file_path}")
             
             # Find the next available directory number for OneFile extraction
             folder_number = 1
-            while os.path.exists(f"{nuitka_dir}_OneFile_{folder_number}"):
+            while os.path.exists(os.path.join(nuitka_dir, f"OneFile_{folder_number}")):
                 folder_number += 1
-            nuitka_output_dir = f"{nuitka_dir}_OneFile_{folder_number}"
+            nuitka_output_dir = os.path.join(nuitka_dir, f"OneFile_{folder_number}")
             
-            if not os.path.exists(nuitka_output_dir):
-                os.makedirs(nuitka_output_dir)
+            os.makedirs(nuitka_output_dir, exist_ok=True)
 
             logging.info(f"Extracting Nuitka OneFile {file_path} to {nuitka_output_dir}")
             
