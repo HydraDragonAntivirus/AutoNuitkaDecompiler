@@ -152,7 +152,8 @@ def is_local_ip(ip):
 # Function to scan code for links (domains, IPs, URLs, and Discord links)
 def scan_code_for_links(code):
     """
-    Scan a given string of code for domains, IP addresses, URLs, and Discord webhook/Discord invite URLs.
+    Scan a given string of code for domains, IP addresses, URLs, and Discord webhook/Discord invite URLs,
+    removing duplicates.
     """
     try:
         # Regular expressions for different patterns
@@ -163,16 +164,16 @@ def scan_code_for_links(code):
         discord_canary_webhook_pattern = r'https://canary\.discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
         discord_invite_pattern = r'https://discord\.gg/[A-Za-z0-9]+'
 
-        # Perform scans
-        ip_matches = re.findall(ip_pattern, code)
-        domain_matches = re.findall(domain_pattern, code)
-        url_matches = re.findall(url_pattern, code)
-        discord_webhook_matches = re.findall(discord_webhook_pattern, code)
-        discord_canary_webhook_matches = re.findall(discord_canary_webhook_pattern, code)
-        discord_invite_matches = re.findall(discord_invite_pattern, code)
+        # Perform scans and store results in sets to automatically remove duplicates
+        ip_matches = set(re.findall(ip_pattern, code))
+        domain_matches = set(re.findall(domain_pattern, code))
+        url_matches = set(re.findall(url_pattern, code))
+        discord_webhook_matches = set(re.findall(discord_webhook_pattern, code))
+        discord_canary_webhook_matches = set(re.findall(discord_canary_webhook_pattern, code))
+        discord_invite_matches = set(re.findall(discord_invite_pattern, code))
 
         # Filter out local IP addresses
-        ip_matches = [ip for ip in ip_matches if not is_local_ip(ip)]
+        ip_matches = {ip for ip in ip_matches if not is_local_ip(ip)}
 
         # Logging the findings
         if ip_matches:
