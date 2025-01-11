@@ -5,6 +5,7 @@ import shutil
 import inspect
 import string
 import re
+import ipaddress
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -141,6 +142,13 @@ def clean_text(input_text):
     cleaned_text = re.sub(r'[\x00-\x1F\x7F]+', '', input_text)
     return cleaned_text
 
+def is_local_ip(ip):
+    try:
+        ip_obj = ipaddress.ip_address(ip)
+        return ip_obj.is_private
+    except ValueError:
+        return False
+
 # Function to scan code for links (domains, IPs, URLs, and Discord links)
 def scan_code_for_links(code):
     """
@@ -163,9 +171,12 @@ def scan_code_for_links(code):
         discord_canary_webhook_matches = re.findall(discord_canary_webhook_pattern, code)
         discord_invite_matches = re.findall(discord_invite_pattern, code)
 
+        # Filter out local IP addresses
+        ip_matches = [ip for ip in ip_matches if not is_local_ip(ip)]
+
         # Logging the findings
         if ip_matches:
-            logging.info(f"IP addresses detected: {ip_matches}")
+            logging.info(f"IP addresses detected (excluding local IPs): {ip_matches}")
         if domain_matches:
             logging.info(f"Domains detected: {domain_matches}")
         if url_matches:
