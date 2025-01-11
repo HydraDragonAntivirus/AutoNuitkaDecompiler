@@ -51,8 +51,19 @@ def is_nuitka_file(file_path):
     return None
 
 def scan_directory_for_executables(directory):
-    """Recursively scan a directory for .exe files and check if they are Nuitka executables."""
+    """Recursively scan a directory for .dll and .exe files and check if they are Nuitka executables, then check other files."""
     found_executables = []
+    
+    # First, look for .dll files
+    for root, _, files in os.walk(directory):
+        for file in files:
+            if file.lower().endswith('.dll'):
+                file_path = os.path.join(root, file)
+                nuitka_type = is_nuitka_file(file_path)
+                if nuitka_type:
+                    found_executables.append((file_path, nuitka_type))
+
+    # Then, look for .exe files
     for root, _, files in os.walk(directory):
         for file in files:
             if file.lower().endswith('.exe'):
@@ -60,6 +71,19 @@ def scan_directory_for_executables(directory):
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
+    
+    # Finally, check other files (non .exe and non .dll) for Nuitka executability
+    for root, _, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            if not file.lower().endswith(('.exe', '.dll')):  # Skip .exe and .dll files
+                nuitka_type = is_nuitka_file(file_path)
+                if nuitka_type:
+                    found_executables.append((file_path, nuitka_type))
+                else:
+                    # Optionally log files that are not Nuitka executables
+                    logging.info(f"Found file that is not a Nuitka executable: {file_path}")
+
     return found_executables
 
 def extract_all_files_with_7z(file_path):
@@ -214,12 +238,17 @@ def extract_nuitka_file(file_path, nuitka_type):
         if nuitka_type == "Nuitka OneFile":
             logging.info(f"Nuitka OneFile executable detected in {file_path}")
             
+            # Extract the file name (without extension) to include in the folder name
+            file_name_without_extension = os.path.splitext(os.path.basename(file_path))[0]
+            
             # Find the next available directory number for OneFile extraction
             folder_number = 1
-            while os.path.exists(os.path.join(nuitka_dir, f"OneFile_{folder_number}")):
+            while os.path.exists(os.path.join(nuitka_dir, f"OneFile_{file_name_without_extension}_{folder_number}")):
                 folder_number += 1
-            nuitka_output_dir = os.path.join(nuitka_dir, f"OneFile_{folder_number}")
-            
+                
+            # Create the new directory with the executable file name and folder number
+            nuitka_output_dir = os.path.join(nuitka_dir, f"OneFile_{file_name_without_extension}_{folder_number}")
+
             os.makedirs(nuitka_output_dir, exist_ok=True)
 
             logging.info(f"Extracting Nuitka OneFile {file_path} to {nuitka_output_dir}")
@@ -236,9 +265,9 @@ def extract_nuitka_file(file_path, nuitka_type):
                 found_executables = scan_directory_for_executables(nuitka_output_dir)
                 
                 # Process any found normal Nuitka executables
-                for exe_path, exe_type in found_executables:
-                    if exe_type == "Nuitka":
+                for exe_path in found_executables:
                         logging.info(f"Found normal Nuitka executable in extracted files: {exe_path}")
+                        exe_type = "Nuitka"
                         extract_nuitka_file(exe_path, exe_type)
             else:
                 logging.error(f"Failed to extract Nuitka OneFile: {file_path}. Error: {result.stderr}")
