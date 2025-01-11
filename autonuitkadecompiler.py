@@ -138,7 +138,7 @@ def clean_text(input_text):
     cleaned_text = re.sub(r'[\x00-\x1F\x7F]+', '', input_text)
     return cleaned_text
 
-# Function to scan code for links (domains, IPs, URLs)
+# Function to scan code for links (domains, IPs, URLs, and Discord links)
 def scan_code_for_links(code):
     """
     Scan a given string of code for domains, IP addresses, URLs, and Discord webhook/Discord invite URLs.
@@ -149,6 +149,7 @@ def scan_code_for_links(code):
         domain_pattern = r'\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b'
         url_pattern = r'https?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
         discord_webhook_pattern = r'https://discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
+        discord_canary_webhook_pattern = r'https://canary\.discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
         discord_invite_pattern = r'https://discord\.gg/[A-Za-z0-9]+'
 
         # Perform scans
@@ -156,6 +157,7 @@ def scan_code_for_links(code):
         domain_matches = re.findall(domain_pattern, code)
         url_matches = re.findall(url_pattern, code)
         discord_webhook_matches = re.findall(discord_webhook_pattern, code)
+        discord_canary_webhook_matches = re.findall(discord_canary_webhook_pattern, code)
         discord_invite_matches = re.findall(discord_invite_pattern, code)
 
         # Logging the findings
@@ -167,6 +169,8 @@ def scan_code_for_links(code):
             logging.info(f"URLs detected: {url_matches}")
         if discord_webhook_matches:
             logging.warning(f"Discord webhook URLs detected: {discord_webhook_matches}")
+        if discord_canary_webhook_matches:
+            logging.warning(f"Discord Canary webhook URLs detected: {discord_canary_webhook_matches}")
         if discord_invite_matches:
             logging.info(f"Discord invite links detected: {discord_invite_matches}")
 
