@@ -276,9 +276,8 @@ def extract_nuitka_file(file_path, nuitka_type):
                 found_executables = scan_directory_for_executables(nuitka_output_dir)
                 
                 # Process any found normal Nuitka executables
-                for exe_path in found_executables:
+                for exe_path, exe_type in found_executables:
                         logging.info(f"Found normal Nuitka executable in extracted files: {exe_path}")
-                        exe_type = "Nuitka"
                         extract_nuitka_file(exe_path, exe_type)
             else:
                 logging.error(f"Failed to extract Nuitka OneFile: {file_path}. Error: {result.stderr}")
