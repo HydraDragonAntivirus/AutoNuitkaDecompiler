@@ -6,12 +6,54 @@ import inspect
 import string
 import re
 import ipaddress
+import sys
+from datetime import datetime
+import time
 
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-
-# Define required paths (adjust accordingly)
+# Set script directory
 script_dir = os.getcwd()
+
+# Define log directories and files
+log_directory = os.path.join(script_dir, "log")
+if not os.path.exists(log_directory):
+    os.makedirs(log_directory)
+
+# Separate log files for different purposes
+console_log_file = os.path.join(log_directory, "antivirusconsole.log")
+application_log_file = os.path.join(log_directory, "antivirus.log")
+
+# Configure logging for application log
+logging.basicConfig(
+    filename=application_log_file,
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+)
+
+class DualStream:
+    """Custom stream that writes to both the console and a file."""
+    def __init__(self, file_path):
+        self.console = sys.__stdout__  # Original stdout (console)
+        self.file = open(file_path, "w", encoding="utf-8", errors="ignore")
+
+    def write(self, message):
+        # Write to the console and file
+        self.console.write(message)
+        self.file.write(message)
+        self.console.flush()
+        self.file.flush()
+
+    def flush(self):
+        # Ensure that both streams are flushed
+        self.console.flush()
+        self.file.flush()
+
+# Redirect stdout and stderr to our DualStream class
+sys.stdout = DualStream(console_log_file)
+sys.stderr = DualStream(console_log_file)
+
+# Logging for application initialization
+logging.info("Application started at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
 nuitka_extractor_path = os.path.join(script_dir, "nuitka-extractor", "nuitka-extractor.exe")
 seven_zip_path = "C:\\Program Files\\7-Zip\\7z.exe"  # Path to 7z.exe
 detectiteasy_dir = os.path.join(script_dir, "detectiteasy")
@@ -257,7 +299,15 @@ def extract_nuitka_file(file_path, nuitka_type):
     :param file_path: Path to the Nuitka executable file.
     :param nuitka_type: Type of Nuitka executable ("Nuitka OneFile" or "Nuitka").
     """
-    try:  
+    try:
+        # Ensure file_path is a string and not a tuple
+        if isinstance(file_path, tuple):
+            file_path = file_path[0]  # Get the actual file path from the tuple
+
+        if not isinstance(file_path, str):
+            logging.error(f"Invalid file_path: expected str, got {type(file_path).__name__}.")
+            return
+
         if nuitka_type == "Nuitka OneFile":
             logging.info(f"Nuitka OneFile executable detected in {file_path}")
             
