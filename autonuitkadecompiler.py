@@ -10,6 +10,7 @@ import sys
 from datetime import datetime
 import time
 import io
+import pefile
 import zstandard
 from elftools.elf.elffile import ELFFile
 import macholib.MachO
