@@ -16,6 +16,7 @@ from elftools.elf.elffile import ELFFile
 import macholib.MachO
 import macholib.mach_o
 from typing import Optional, Tuple, BinaryIO, Dict, Any
+import struct
 
 # Set script directory
 script_dir = os.getcwd()
