@@ -128,29 +128,28 @@ def get_resource_name(entry):
     else:
         return str(entry.id)
 
-def extract_rcdata_resources(pe_path):
+def extract_rcdata_resource(pe_path):
     try:
         pe = pefile.PE(pe_path)
     except Exception as e:
         logging.info(f"Error loading PE file: {e}")
-        return {}
+        return None
 
     # Check if the PE file has resources
     if not hasattr(pe, 'DIRECTORY_ENTRY_RESOURCE'):
         logging.info("No resources found in this file.")
-        return {}
+        return None
 
-    extracted_data = {}
-    resource_count = 0
+    first_rcdata_file = None  # Will hold the first RCData resource file path
+    all_extracted_files = []  # Store all extracted file paths for scanning
+
+    # Ensure output directory exists
+    output_dir = os.path.join(general_extracted_dir, os.path.splitext(os.path.basename(pe_path))[0])
+    os.makedirs(output_dir, exist_ok=True)
 
     # Traverse the resource directory
     for resource_type in pe.DIRECTORY_ENTRY_RESOURCE.entries:
         type_name = get_resource_name(resource_type)
-
-        # Only process RCData resources; they may be labeled as "RCData" or with the numeric value "10"
-        if type_name.lower() not in ("rcdata", "10"):
-            continue
-
         if not hasattr(resource_type, 'directory'):
             continue
 
@@ -165,17 +164,25 @@ def extract_rcdata_resources(pe_path):
                 size = resource_lang.data.struct.Size
                 data = pe.get_memory_mapped_image()[data_rva:data_rva + size]
 
-                # Store the extracted data in a dictionary
-                key = f"{type_name}_{res_id}_{lang_id}"
-                extracted_data[key] = data
-                resource_count += 1
+                # Save extracted resource to a file
+                file_name = f"{type_name}_{res_id}_{lang_id}.bin"
+                output_path = os.path.join(output_dir, file_name)
+                with open(output_path, "wb") as f:
+                    f.write(data)
 
-    if resource_count == 0:
-        logging.info("No RCData resources were extracted.")
+                logging.info(f"Extracted resource saved: {output_path}")
+                all_extracted_files.append(output_path)
+
+                # If it's an RCData resource and we haven't already set one, record its file path
+                if type_name.lower() in ("rcdata", "10") and first_rcdata_file is None:
+                    first_rcdata_file = output_path
+
+    if first_rcdata_file is None:
+        logging.info("No RCData resource found.")
     else:
-        logging.info(f"Extracted a total of {resource_count} RCData resources.")
+        logging.info(f"Using RCData resource file: {first_rcdata_file}")
 
-    return extracted_data
+    return first_rcdata_file
 
 def clean_text(input_text):
     """
@@ -238,63 +245,66 @@ def scan_code_for_links(code):
     except Exception as ex:
         logging.error(f"Error scanning code for links: {ex}")
 
-def scan_rsrc_directory(extracted_files):
+def scan_rsrc_file(file_path):
     """
-    Scans all files in the extracted_files list for .rsrc\\RCDATA, extracts
-    the full content, cleans it, and performs scans for domains, URLs, 
-    IP addresses, and Discord webhooks.
-
-    :param extracted_files: List of files extracted by pefile.
+    Scans the provided file by searching for the first line that starts with 'python.exe'
+    and extracts the source code portion from that line onward. The extracted code is cleaned,
+    saved to a uniquely named file, and scanned for domains, URLs, IP addresses, and Discord webhooks.
+    
+    :param file_path: Path to the file to be scanned.
     """
     try:
-        for extracted_file in extracted_files:
-            # Check if the file path contains .rsrc\RCDATA
-            if ".rsrc\\RCDATA" in extracted_file or ".rsrc/RCDATA" in extracted_file:
-                logging.info(f"Processing RCDATA file: {extracted_file}")
+        if os.path.isfile(file_path):
+            logging.info(f"Processing file: {file_path}")
+            try:
+                # Read the full content of the file, handling invalid UTF-8 gracefully
+                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                    lines = f.readlines()
 
-                # Ensure the path refers to an actual file
-                if os.path.isfile(extracted_file):
-                    try:
-                        # Read the full content of the file, handling invalid UTF-8 gracefully
-                        with open(extracted_file, "r", encoding="utf-8", errors="ignore") as f:
-                            lines = f.readlines()
-                            if lines:
-                                # Clean each line by removing non-printable characters
-                                cleaned_lines = [clean_text(line.strip()) for line in lines]
+                if lines:
+                    # Look for the first line starting with "python.exe"
+                    source_index = None
+                    for i, line in enumerate(lines):
+                        if line.strip().startswith("python.exe"):
+                            source_index = i
+                            break
 
-                                # Save the full cleaned content to a uniquely named file
-                                base_name = os.path.splitext(os.path.basename(extracted_file))[0]
-                                save_path = os.path.join(nuitka_source_code_dir, f"{base_name}_full_content.txt")
-                                counter = 1
-                                while os.path.exists(save_path):
-                                    save_path = os.path.join(
-                                        nuitka_source_code_dir, f"{base_name}_full_content_{counter}.txt"
-                                    )
-                                    counter += 1
+                    if source_index is not None:
+                        # Extract source code starting from the found index
+                        source_code_lines = lines[source_index:]
+                        # Clean each line by removing non-printable characters
+                        cleaned_source_code = [clean_text(line.rstrip()) for line in source_code_lines]
 
-                                # Write all cleaned lines to the file
-                                with open(save_path, "w", encoding="utf-8") as save_file:
-                                    for line in cleaned_lines:
-                                        save_file.write(line + '\n')
-                                logging.info(f"Saved full content from {extracted_file} to {save_path}")
+                        # Save the extracted, cleaned source code to a uniquely named file
+                        base_name = os.path.splitext(os.path.basename(file_path))[0]
+                        save_path = os.path.join(nuitka_source_code_dir, f"{base_name}_source_code.txt")
+                        counter = 1
+                        while os.path.exists(save_path):
+                            save_path = os.path.join(
+                                nuitka_source_code_dir, f"{base_name}_source_code_{counter}.txt"
+                            )
+                            counter += 1
 
-                                # Join the full content for scanning purposes
-                                rsrc_content = ''.join(lines)
+                        with open(save_path, "w", encoding="utf-8") as save_file:
+                            for line in cleaned_source_code:
+                                save_file.write(line + '\n')
+                        logging.info(f"Saved extracted source code from {file_path} to {save_path}")
 
-                                # Perform the scans
-                                scan_code_for_links(rsrc_content)
+                        # Join the extracted source code for scanning purposes
+                        extracted_source_code = ''.join(source_code_lines)
 
-                            else:
-                                logging.info(f"File {extracted_file} is empty.")
-                    except Exception as ex:
-                        logging.error(f"Error reading file {extracted_file}: {ex}")
+                        # Perform the scans on the extracted source code
+                        scan_code_for_links(extracted_source_code)
+                    else:
+                        logging.info(f"No line starting with 'python.exe' found in {file_path}.")
                 else:
-                    logging.warning(f"Path {extracted_file} is not a valid file.")
-            else:
-                logging.debug(f"Skipping non-RCDATA file: {extracted_file}")
-
+                    logging.info(f"File {file_path} is empty.")
+            except Exception as ex:
+                logging.error(f"Error reading file {file_path}: {ex}")
+        else:
+            logging.warning(f"Path {file_path} is not a valid file.")
     except Exception as ex:
-        logging.error(f"Error during RCDATA file scanning: {ex}")
+        logging.error(f"Error during file scanning: {ex}")
 
 class FileType:
     UNKNOWN = -1
@@ -610,12 +620,12 @@ def extract_nuitka_file(file_path, nuitka_type):
             logging.info(f"Extracting Nuitka executable {file_path} to {nuitka_output_dir}")
 
             # Use enhanced pefile for RCData Nuitka bytecode extraction
-            extracted_files = extract_rcdata_resources(file_path)
+            extracted_file = extract_rcdata_resource(file_path)
 
-            if extracted_files:
+            if extracted_file:
                 logging.info(f"Successfully extracted files from Nuitka executable: {file_path}")
                 # Scan for RSRC/RCDATA resources
-                scan_rsrc_directory(extracted_files)
+                scan_rsrc_file(extracted_file)
             else:
                 logging.error(f"Failed to extract normal Nuitka executable: {file_path}")
 
