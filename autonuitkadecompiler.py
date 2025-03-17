@@ -128,24 +128,25 @@ def get_resource_name(entry):
     else:
         return str(entry.id)
 
-def extract_rcdata_resources(pe_path, output_dir):
+def extract_rcdata_resources(pe_path):
     try:
         pe = pefile.PE(pe_path)
     except Exception as e:
         logging.info(f"Error loading PE file: {e}")
-        return
+        return {}
 
     # Check if the PE file has resources
     if not hasattr(pe, 'DIRECTORY_ENTRY_RESOURCE'):
         logging.info("No resources found in this file.")
-        return
+        return {}
 
-    os.makedirs(output_dir, exist_ok=True)
+    extracted_data = {}
     resource_count = 0
 
     # Traverse the resource directory
     for resource_type in pe.DIRECTORY_ENTRY_RESOURCE.entries:
         type_name = get_resource_name(resource_type)
+
         # Only process RCData resources; they may be labeled as "RCData" or with the numeric value "10"
         if type_name.lower() not in ("rcdata", "10"):
             continue
@@ -164,21 +165,17 @@ def extract_rcdata_resources(pe_path, output_dir):
                 size = resource_lang.data.struct.Size
                 data = pe.get_memory_mapped_image()[data_rva:data_rva + size]
 
-                # Create a filename: RCData_resourceID_langID.bin
-                file_name = f"{type_name}_{res_id}_{lang_id}.bin"
-                output_path = os.path.join(output_dir, file_name)
-                with open(output_path, "wb") as f:
-                    f.write(data)
-                print(f"RCData resource saved: {output_path}")
+                # Store the extracted data in a dictionary
+                key = f"{type_name}_{res_id}_{lang_id}"
+                extracted_data[key] = data
                 resource_count += 1
-
-                # Call scan_and_warn on the extracted file if needed
-                scan_and_warn(output_path)
 
     if resource_count == 0:
         logging.info("No RCData resources were extracted.")
     else:
         logging.info(f"Extracted a total of {resource_count} RCData resources.")
+
+    return extracted_data
 
 def clean_text(input_text):
     """
