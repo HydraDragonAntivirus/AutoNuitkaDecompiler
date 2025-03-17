@@ -247,7 +247,7 @@ def scan_code_for_links(code):
 
 def scan_rsrc_file(file_path):
     """
-    Scans the provided file by searching for the first line that contains 'python.exe'
+    Scans the provided file by searching for the first line that contains 'upython.exe'
     and extracts the source code portion from that line onward. The extracted code is cleaned,
     saved to a uniquely named file, and scanned for domains, URLs, IP addresses, and Discord webhooks.
     
