@@ -247,7 +247,7 @@ def scan_code_for_links(code):
 
 def scan_rsrc_file(file_path):
     """
-    Scans the provided file by searching for the first line that starts with 'python.exe'
+    Scans the provided file by searching for the first line that contains 'python.exe'
     and extracts the source code portion from that line onward. The extracted code is cleaned,
     saved to a uniquely named file, and scanned for domains, URLs, IP addresses, and Discord webhooks.
     
@@ -262,10 +262,10 @@ def scan_rsrc_file(file_path):
                     lines = f.readlines()
 
                 if lines:
-                    # Look for the first line starting with "python.exe"
+                    # Look for the first line that contains "upython.exe"
                     source_index = None
                     for i, line in enumerate(lines):
-                        if line.strip().startswith("python.exe"):
+                        if "upython.exe" in line:
                             source_index = i
                             break
 
@@ -296,7 +296,7 @@ def scan_rsrc_file(file_path):
                         # Perform the scans on the extracted source code
                         scan_code_for_links(extracted_source_code)
                     else:
-                        logging.info(f"No line starting with 'python.exe' found in {file_path}.")
+                        logging.info(f"No line containing 'python.exe' found in {file_path}.")
                 else:
                     logging.info(f"File {file_path} is empty.")
             except Exception as ex:
