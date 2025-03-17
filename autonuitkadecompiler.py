@@ -45,7 +45,6 @@ sys.stdin = io.TextIOWrapper(sys.stdin.detach(), encoding='utf-8', errors='ignor
 # Logging for application initialization
 logging.info("Application started at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-seven_zip_path = "C:\\Program Files\\7-Zip\\7z.exe"  # Path to 7z.exe
 detectiteasy_dir = os.path.join(script_dir, "detectiteasy")
 detectiteasy_console_path = os.path.join(detectiteasy_dir, "diec.exe")
 nuitka_source_code_dir = os.path.join(script_dir, "nuitkasourcecode")
@@ -122,46 +121,64 @@ def scan_directory_for_executables(directory):
 
     return found_executables
 
-def extract_all_files_with_7z(file_path):
+def get_resource_name(entry):
+    # Get the resource name, which might be a string or an ID
+    if hasattr(entry, 'name') and entry.name is not None:
+        return str(entry.name)
+    else:
+        return str(entry.id)
+
+def extract_rcdata_resources(pe_path, output_dir):
     try:
-        counter = 1
-        base_output_dir = os.path.join(general_extracted_dir, os.path.splitext(os.path.basename(file_path))[0])
+        pe = pefile.PE(pe_path)
+    except Exception as e:
+        logging.info(f"Error loading PE file: {e}")
+        return
 
-        # Ensure output directory is unique
-        while os.path.exists(f"{base_output_dir}_{counter}"):
-            counter += 1
+    # Check if the PE file has resources
+    if not hasattr(pe, 'DIRECTORY_ENTRY_RESOURCE'):
+        logging.info("No resources found in this file.")
+        return
 
-        output_dir = f"{base_output_dir}_{counter}"
-        os.makedirs(output_dir, exist_ok=True)
+    os.makedirs(output_dir, exist_ok=True)
+    resource_count = 0
 
-        logging.info(f"Attempting to extract file {file_path} into {output_dir}...")
+    # Traverse the resource directory
+    for resource_type in pe.DIRECTORY_ENTRY_RESOURCE.entries:
+        type_name = get_resource_name(resource_type)
+        # Only process RCData resources; they may be labeled as "RCData" or with the numeric value "10"
+        if type_name.lower() not in ("rcdata", "10"):
+            continue
 
-        # Run the 7z extraction
-        command = [seven_zip_path, "x", file_path, f"-o{output_dir}", "-y", "-snl", "-spe"]
-        result = subprocess.run(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        if not hasattr(resource_type, 'directory'):
+            continue
 
-        if result.returncode != 0:
-            logging.error(f"7z extraction failed with return code {result.returncode}: {result.stderr}")
-            return []
+        for resource_id in resource_type.directory.entries:
+            res_id = get_resource_name(resource_id)
+            if not hasattr(resource_id, 'directory'):
+                continue
 
-        logging.info(f"7z extraction successful for {file_path}.")
+            for resource_lang in resource_id.directory.entries:
+                lang_id = resource_lang.id
+                data_rva = resource_lang.data.struct.OffsetToData
+                size = resource_lang.data.struct.Size
+                data = pe.get_memory_mapped_image()[data_rva:data_rva + size]
 
-        # Gather all files in the output directory after extraction
-        extracted_files = []
-        for root, _, files in os.walk(output_dir):
-            for name in files:
-                extracted_files.append(os.path.join(root, name))
+                # Create a filename: RCData_resourceID_langID.bin
+                file_name = f"{type_name}_{res_id}_{lang_id}.bin"
+                output_path = os.path.join(output_dir, file_name)
+                with open(output_path, "wb") as f:
+                    f.write(data)
+                print(f"RCData resource saved: {output_path}")
+                resource_count += 1
 
-        if not extracted_files:
-            logging.warning(f"No files were extracted from {file_path}.")
-        else:
-            logging.info(f"Extracted {len(extracted_files)} files from {file_path}.")
+                # Call scan_and_warn on the extracted file if needed
+                scan_and_warn(output_path)
 
-        return extracted_files
-
-    except Exception as ex:
-        logging.error(f"Error during 7z extraction: {ex}")
-        return []
+    if resource_count == 0:
+        logging.info("No RCData resources were extracted.")
+    else:
+        logging.info(f"Extracted a total of {resource_count} RCData resources.")
 
 def clean_text(input_text):
     """
@@ -230,7 +247,7 @@ def scan_rsrc_directory(extracted_files):
     the full content, cleans it, and performs scans for domains, URLs, 
     IP addresses, and Discord webhooks.
 
-    :param extracted_files: List of files extracted by 7z.
+    :param extracted_files: List of files extracted by pefile.
     """
     try:
         for extracted_file in extracted_files:
@@ -595,8 +612,8 @@ def extract_nuitka_file(file_path, nuitka_type):
 
             logging.info(f"Extracting Nuitka executable {file_path} to {nuitka_output_dir}")
 
-            # Use enhanced 7z extraction
-            extracted_files = extract_all_files_with_7z(file_path)
+            # Use enhanced pefile for RCData Nuitka bytecode extraction
+            extracted_files = extract_rcdata_resources(file_path)
 
             if extracted_files:
                 logging.info(f"Successfully extracted files from Nuitka executable: {file_path}")

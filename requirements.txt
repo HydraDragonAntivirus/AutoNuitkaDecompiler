@@ -1,0 +1,4 @@
+pefile
+zstandard
+pyelftools
+macholib
