@@ -161,3 +161,4 @@ cython_debug/
 /nuitka
 /general_extracted
 /nuitkasourcecode
+/detectiteasy_json
