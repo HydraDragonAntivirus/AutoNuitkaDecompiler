@@ -52,6 +52,9 @@ nuitka_dir = os.path.join(script_dir, "nuitka")
 general_extracted_dir = os.path.join(script_dir, "general_extracted")
 train_dir = os.path.join(script_dir, "train")  # Directory to hold signatures
 
+# Unified signature file path (all signatures will be stored in one file)
+UNIFIED_SIGNATURE_FILE = os.path.join(train_dir, "unified_signatures.txt")
+
 for d in (nuitka_source_code_dir, nuitka_dir, general_extracted_dir, train_dir):
     os.makedirs(d, exist_ok=True)
 
@@ -86,13 +89,15 @@ def is_nuitka_file(file_path):
         return None
     return None
 
-def scan_directory_for_executables(directory, collect_all=False):
+def scan_directory_for_executables(directory):
     """
-    Recursively scan a directory for .exe, .dll, and other files.
-    In normal mode, stops when the first Nuitka executable is found.
-    In training mode (collect_all=True) all matching files are returned.
+    Recursively scan a directory for .exe, .dll, .msi, and .kext files,
+    prioritizing Nuitka executables.
+    If a file is found and confirmed as Nuitka, stop further scanning.
     """
     found_executables = []
+
+    # Look for .exe files first
     for root, _, files in os.walk(directory):
         for file in files:
             if file.lower().endswith('.exe'):
@@ -100,8 +105,9 @@ def scan_directory_for_executables(directory, collect_all=False):
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    if not collect_all:
-                        return found_executables
+                    return found_executables  # Stop scanning further as .exe is found
+
+    # If no .exe found, look for .dll files
     for root, _, files in os.walk(directory):
         for file in files:
             if file.lower().endswith('.dll'):
@@ -109,17 +115,38 @@ def scan_directory_for_executables(directory, collect_all=False):
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    if not collect_all:
-                        return found_executables
+                    return found_executables  # Stop scanning further as .dll is found
+
+    # If no .exe or .dll found, look for .msi files
     for root, _, files in os.walk(directory):
         for file in files:
-            file_path = os.path.join(root, file)
-            if not file.lower().endswith(('.exe', '.dll')):
+            if file.lower().endswith('.msi'):
+                file_path = os.path.join(root, file)
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    if not collect_all:
-                        return found_executables
+                    return found_executables  # Stop scanning further as .msi is found
+
+    # Check for macOS kernel extensions (.kext files)
+    for root, _, files in os.walk(directory):
+        for file in files:
+            if file.lower().endswith('.kext'):
+                file_path = os.path.join(root, file)
+                nuitka_type = is_nuitka_file(file_path)
+                if nuitka_type:
+                    found_executables.append((file_path, nuitka_type))
+                    return found_executables  # Stop scanning further as .kext is found
+
+    # If none of the above, check other files
+    for root, _, files in os.walk(directory):
+        for file in files:
+            if not file.lower().endswith(('.exe', '.dll', '.msi', '.kext')):
+                file_path = os.path.join(root, file)
+                nuitka_type = is_nuitka_file(file_path)
+                if nuitka_type:
+                    found_executables.append((file_path, nuitka_type))
+                    return found_executables  # Stop scanning further as a Nuitka file is found
+
     return found_executables
 
 def get_resource_name(entry):
@@ -571,9 +598,7 @@ def extract_nuitka_file(file_path, nuitka_type, mode=None):
             extractor = NuitkaExtractor(file_path, nuitka_output_dir)
             extractor.extract()
             logging.info("Scanning extracted directory for additional Nuitka executables...")
-            # In normal mode, use default (stop at first), but in training mode collect all
-            collect_all = True if mode == "train" else False
-            found_executables = scan_directory_for_executables(nuitka_output_dir, collect_all=collect_all)
+            found_executables = scan_directory_for_executables(nuitka_output_dir)
             for exe_path, exe_type in found_executables:
                 if exe_type == "Nuitka":
                     logging.info(f"Found normal Nuitka executable in extracted files: {exe_path}")
@@ -594,7 +619,7 @@ def extract_nuitka_file(file_path, nuitka_type, mode=None):
     except Exception as ex:
         logging.error(f"Unexpected error while extracting Nuitka file: {ex}")
 
-# --- New Functions for Content-Based Signature Calculation and Training ---
+# --- Unified Signature Functions ---
 
 def calculate_signature(source_code: str) -> str:
     """
@@ -611,58 +636,58 @@ def calculate_signature(source_code: str) -> str:
     signature = ";".join(f"{k}:{v}" for k, v in sorted_items)
     return signature
 
-def load_train_signatures(train_directory: str) -> Dict[str, str]:
+def load_unified_signatures(unified_file: str) -> Dict[str, str]:
     """
-    Load all signatures from the train directory.
-    Returns a dictionary mapping signature strings to file paths.
+    Load all signatures from the unified signature file.
+    Returns a dictionary mapping signature strings to source file paths.
+    The file format is one line per signature in the format:
+      <source_filename>::<signature>
     """
     signatures = {}
-    for root, _, files in os.walk(train_directory):
-        for file in files:
-            if file.endswith(".sig"):
-                file_path = os.path.join(root, file)
-                try:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        sig = f.read().strip()
-                    signatures[sig] = file_path
-                except Exception as ex:
-                    logging.error(f"Error loading signature from {file_path}: {ex}")
+    if os.path.exists(unified_file):
+        with open(unified_file, "r", encoding="utf-8") as f:
+            for line in f:
+                line = line.strip()
+                if not line:
+                    continue
+                parts = line.split("::", 1)
+                if len(parts) == 2:
+                    source, sig = parts
+                    signatures[sig] = source
     return signatures
 
-def save_signature(train_directory: str, source_filename: str, signature: str):
+def save_unified_signature(unified_file: str, source_filename: str, signature: str):
     """
-    Save the signature to a file in the train directory.
-    The signature file has the same base name as the source file with a .sig extension.
+    Append the signature to the unified signature file.
+    The entry format is:
+      <source_filename>::<signature>
     """
-    base = os.path.splitext(os.path.basename(source_filename))[0]
-    sig_filename = base + ".sig"
-    sig_path = os.path.join(train_directory, sig_filename)
-    with open(sig_path, "w", encoding="utf-8") as f:
-        f.write(signature)
-    logging.info(f"Saved signature for {source_filename} to {sig_path}")
+    with open(unified_file, "a", encoding="utf-8") as f:
+        f.write(f"{source_filename}::{signature}\n")
+    logging.info(f"Saved signature for {source_filename} to {unified_file}")
 
 def process_source_file(file_path: str, mode: str):
     """
     Process an extracted source file by calculating its signature and then
     either training (saving the signature) or performing a normal scan
-    (filtering out duplicates based on existing signatures).
+    (filtering out duplicates based on existing unified signatures).
     """
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
         sig = calculate_signature(content)
         logging.info(f"Calculated signature for {file_path}: {sig}")
-        train_signatures = load_train_signatures(train_dir)
+        unified_signatures = load_unified_signatures(UNIFIED_SIGNATURE_FILE)
         if mode == "train":
-            if sig in train_signatures:
+            if sig in unified_signatures:
                 logging.info(f"Duplicate signature found for {file_path}. Skipping training.")
             else:
-                save_signature(train_dir, file_path, sig)
+                save_unified_signature(UNIFIED_SIGNATURE_FILE, file_path, sig)
         elif mode == "normal":
-            if sig in train_signatures:
+            if sig in unified_signatures:
                 logging.info(f"Duplicate signature detected for {file_path}. Skipping processing.")
             else:
-                save_signature(train_dir, file_path, sig)
+                save_unified_signature(UNIFIED_SIGNATURE_FILE, file_path, sig)
                 logging.info(f"Unique signature for {file_path}. Processing normally.")
         else:
             logging.error(f"Unknown mode '{mode}' specified for processing source file.")
