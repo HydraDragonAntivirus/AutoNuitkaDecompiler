@@ -18,13 +18,11 @@ import macholib.mach_o
 from typing import Optional, Tuple, BinaryIO, Dict, Any
 import struct
 from pathlib import Path
-import argparse
 
-# ---------------------------
-# Setup Logging and Directories
-# ---------------------------
+# Set script directory
 script_dir = os.getcwd()
 
+# Define log directories and files
 log_directory = os.path.join(script_dir, "log")
 if not os.path.exists(log_directory):
     os.makedirs(log_directory)
@@ -38,29 +36,25 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
 )
 
+# Set UTF-8 encoding for I/O with error handling
 sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8', errors='ignore')
 sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8', errors='ignore')
 sys.stdin = io.TextIOWrapper(sys.stdin.detach(), encoding='utf-8', errors='ignore')
 
 logging.info("Application started at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-# ---------------------------
-# Define Directories for Extraction
-# ---------------------------
+# Define directories for resources and outputs
 detectiteasy_dir = os.path.join(script_dir, "detectiteasy")
 detectiteasy_json_dir = os.path.join(script_dir, "detectiteasy_json")
 detectiteasy_console_path = os.path.join(detectiteasy_dir, "diec.exe")
 nuitka_source_code_dir = os.path.join(script_dir, "nuitkasourcecode")
 nuitka_dir = os.path.join(script_dir, "nuitka")
 general_extracted_dir = os.path.join(script_dir, "general_extracted")
+train_dir = os.path.join(script_dir, "train")  # Directory to hold signatures
 
-os.makedirs(nuitka_source_code_dir, exist_ok=True)
-os.makedirs(nuitka_dir, exist_ok=True)
-os.makedirs(general_extracted_dir, exist_ok=True)
+for d in (nuitka_source_code_dir, nuitka_dir, general_extracted_dir, train_dir):
+    os.makedirs(d, exist_ok=True)
 
-# ---------------------------
-# Original Helper Functions
-# ---------------------------
 def get_unique_output_path(output_dir: Path, base_name: str, suffix: int = 1) -> Path:
     new_path = output_dir / f"{base_name.stem}_{suffix}{base_name.suffix}"
     while new_path.exists():
@@ -72,7 +66,10 @@ def is_nuitka_file(file_path):
     """Check if the file is a Nuitka executable using Detect It Easy."""
     try:
         logging.info(f"Analyzing file: {file_path} using Detect It Easy...")
-        result = subprocess.run([detectiteasy_console_path, file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        result = subprocess.run([detectiteasy_console_path, file_path],
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                text=True)
         if "Packer: Nuitka[OneFile]" in result.stdout:
             logging.info(f"File {file_path} is a Nuitka OneFile executable.")
             return "Nuitka OneFile"
@@ -85,13 +82,15 @@ def is_nuitka_file(file_path):
         logging.error(f"Error in {inspect.currentframe().f_code.co_name} while running Detect It Easy for {file_path}: {ex}")
         return None
     except Exception as ex:
-        logging.error(f"General error in {inspect.currentframe().f_code.co_name} while running Detect It Easy for {file_path}: {ex}")
+        logging.error(f"General error in {inspect.currentframe().f_code.co_name} for {file_path}: {ex}")
         return None
     return None
 
-def scan_directory_for_executables(directory):
+def scan_directory_for_executables(directory, collect_all=False):
     """
-    Recursively scan a directory for .exe, .dll, and other files, prioritizing Nuitka executables.
+    Recursively scan a directory for .exe, .dll, and other files.
+    In normal mode, stops when the first Nuitka executable is found.
+    In training mode (collect_all=True) all matching files are returned.
     """
     found_executables = []
     for root, _, files in os.walk(directory):
@@ -101,7 +100,8 @@ def scan_directory_for_executables(directory):
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    return found_executables
+                    if not collect_all:
+                        return found_executables
     for root, _, files in os.walk(directory):
         for file in files:
             if file.lower().endswith('.dll'):
@@ -109,7 +109,8 @@ def scan_directory_for_executables(directory):
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    return found_executables
+                    if not collect_all:
+                        return found_executables
     for root, _, files in os.walk(directory):
         for file in files:
             file_path = os.path.join(root, file)
@@ -117,7 +118,8 @@ def scan_directory_for_executables(directory):
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    return found_executables
+                    if not collect_all:
+                        return found_executables
     return found_executables
 
 def get_resource_name(entry):
@@ -207,10 +209,10 @@ def scan_code_for_links(code):
     except Exception as ex:
         logging.error(f"Error scanning code for links: {ex}")
 
-def scan_rsrc_file(file_path):
+def scan_rsrc_file(file_path, mode=None):
     """
-    Original function that scans the provided file for 'upython.exe' marker and extracts source code.
-    It writes the extracted source to a uniquely named file in nuitka_source_code_dir.
+    Scans the provided file for a line containing 'upython.exe', extracts the source code that follows,
+    saves the cleaned code, scans it for links, and (if mode is provided) processes its signature.
     """
     try:
         if os.path.isfile(file_path):
@@ -237,9 +239,7 @@ def scan_rsrc_file(file_path):
                         save_path = os.path.join(nuitka_source_code_dir, f"{base_name}_source_code.txt")
                         counter = 1
                         while os.path.exists(save_path):
-                            save_path = os.path.join(
-                                nuitka_source_code_dir, f"{base_name}_source_code_{counter}.txt"
-                            )
+                            save_path = os.path.join(nuitka_source_code_dir, f"{base_name}_source_code_{counter}.txt")
                             counter += 1
                         with open(save_path, "w", encoding="utf-8") as save_file:
                             for line in cleaned_source_code:
@@ -247,6 +247,9 @@ def scan_rsrc_file(file_path):
                         logging.info(f"Saved extracted source code from {file_path} to {save_path}")
                         extracted_source_code = ''.join(source_code_lines)
                         scan_code_for_links(extracted_source_code)
+                        # Process signature if a mode is specified (train or normal)
+                        if mode is not None:
+                            process_source_file(save_path, mode)
                     else:
                         logging.info(f"No line containing 'upython.exe' found in {file_path}.")
                 else:
@@ -258,9 +261,6 @@ def scan_rsrc_file(file_path):
     except Exception as ex:
         logging.error(f"Error during file scanning: {ex}")
 
-# ---------------------------
-# Classes and Extraction Logic for Nuitka Payloads
-# ---------------------------
 class FileType:
     UNKNOWN = -1
     ELF = 0
@@ -273,6 +273,7 @@ class CompressionFlag:
     COMPRESSED = 1
 
 class PayloadError(Exception):
+    """Custom exception for payload processing errors"""
     pass
 
 class NuitkaPayload:
@@ -310,6 +311,7 @@ class NuitkaPayload:
         return stream
 
 def is_pe_file(file_path):
+    """Check if the file at the specified path is a PE file using Detect It Easy."""
     try:
         logging.info(f"Analyzing file: {file_path} using Detect It Easy...")
         output_dir = Path(detectiteasy_json_dir)
@@ -318,7 +320,9 @@ def is_pe_file(file_path):
         base_name = Path(file_path).with_suffix(".json")
         json_output_path = get_unique_output_path(output_dir, base_name)
         result = subprocess.run([detectiteasy_console_path, "-j", file_path],
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                text=True)
         if "PE32" in result.stdout or "PE64" in result.stdout:
             with open(json_output_path, "w") as json_file:
                 json_file.write(result.stdout)
@@ -335,6 +339,7 @@ def is_pe_file(file_path):
         return False
 
 def is_elf_file(file_path):
+    """Check if the file at the specified path is an ELF file using Detect It Easy."""
     try:
         logging.info(f"Analyzing file: {file_path} using Detect It Easy...")
         output_dir = Path(detectiteasy_json_dir)
@@ -343,7 +348,9 @@ def is_elf_file(file_path):
         base_name = Path(file_path).with_suffix(".json")
         json_output_path = get_unique_output_path(output_dir, base_name)
         result = subprocess.run([detectiteasy_console_path, "-j", file_path],
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                text=True)
         if "ELF32" in result.stdout or "ELF64" in result.stdout:
             with open(json_output_path, "w") as json_file:
                 json_file.write(result.stdout)
@@ -360,6 +367,7 @@ def is_elf_file(file_path):
         return False
 
 def is_macho_file(file_path):
+    """Check if the file at the specified path is a Mach-O file using Detect It Easy."""
     try:
         logging.info(f"Analyzing file: {file_path} using Detect It Easy...")
         output_dir = Path(detectiteasy_json_dir)
@@ -368,7 +376,9 @@ def is_macho_file(file_path):
         base_name = Path(file_path).with_suffix(".json")
         json_output_path = get_unique_output_path(output_dir, base_name)
         result = subprocess.run([detectiteasy_console_path, "-j", file_path],
-                                stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                                stdout=subprocess.PIPE,
+                                stderr=subprocess.PIPE,
+                                text=True)
         if "Mach-O" in result.stdout:
             with open(json_output_path, "w") as json_file:
                 json_file.write(result.stdout)
@@ -435,7 +445,8 @@ class NuitkaExtractor:
         try:
             with open(self.filepath, 'rb') as f:
                 elf = ELFFile(f)
-                last_section = max(elf.iter_sections(), key=lambda s: s.header.sh_offset + s.header.sh_size)
+                last_section = max(elf.iter_sections(),
+                                   key=lambda s: s.header.sh_offset + s.header.sh_size)
                 f.seek(-8, io.SEEK_END)
                 payload_size = struct.unpack('<Q', f.read(8))[0]
                 payload_offset = last_section.header.sh_offset + last_section.header.sh_size
@@ -486,7 +497,7 @@ class NuitkaExtractor:
                 if not filename:
                     break
                 if self.file_type == FileType.ELF:
-                    stream.read(1)
+                    stream.read(1)  # Skip ELF file flags
                 size_data = stream.read(8)
                 if not size_data or len(size_data) != 8:
                     break
@@ -539,9 +550,13 @@ class NuitkaExtractor:
         except Exception as ex:
             logging.error(f"[!] Unexpected error: {str(ex)}")
 
-def extract_nuitka_file(file_path, nuitka_type):
+def extract_nuitka_file(file_path, nuitka_type, mode=None):
     """
-    Detect Nuitka type, extract Nuitka executable content, and scan for additional Nuitka executables.
+    Detect and extract Nuitka executable content.
+    For Nuitka OneFile executables, extract the payload and then scan the extracted directory
+    for additional executables.
+    For normal Nuitka executables, extract RCData and scan the extracted source code.
+    The optional mode (train/normal) is passed for signature processing.
     """
     try:
         if nuitka_type == "Nuitka OneFile":
@@ -555,19 +570,21 @@ def extract_nuitka_file(file_path, nuitka_type):
             logging.info(f"Extracting Nuitka OneFile {file_path} to {nuitka_output_dir}")
             extractor = NuitkaExtractor(file_path, nuitka_output_dir)
             extractor.extract()
-            logging.info(f"Scanning extracted directory for additional Nuitka executables...")
-            found_executables = scan_directory_for_executables(nuitka_output_dir)
+            logging.info("Scanning extracted directory for additional Nuitka executables...")
+            # In normal mode, use default (stop at first), but in training mode collect all
+            collect_all = True if mode == "train" else False
+            found_executables = scan_directory_for_executables(nuitka_output_dir, collect_all=collect_all)
             for exe_path, exe_type in found_executables:
                 if exe_type == "Nuitka":
                     logging.info(f"Found normal Nuitka executable in extracted files: {exe_path}")
-                    extract_nuitka_file(exe_path, exe_type)
+                    extract_nuitka_file(exe_path, exe_type, mode)
         elif nuitka_type == "Nuitka":
             logging.info(f"Nuitka executable detected in {file_path}")
             file_name_without_extension = os.path.splitext(os.path.basename(file_path))[0]
             extracted_file = extract_rcdata_resource(file_path)
             if extracted_file:
                 logging.info(f"Successfully extracted files from Nuitka executable: {file_path}")
-                scan_rsrc_file(extracted_file)
+                scan_rsrc_file(extracted_file, mode)
             else:
                 logging.error(f"Failed to extract normal Nuitka executable: {file_path}")
         else:
@@ -577,145 +594,103 @@ def extract_nuitka_file(file_path, nuitka_type):
     except Exception as ex:
         logging.error(f"Unexpected error while extracting Nuitka file: {ex}")
 
-# ---------------------------
-# New Functions for Training/Folder Mode
-# ---------------------------
-def scan_rsrc_file_return(file_path):
-    """
-    Modified version of scan_rsrc_file that returns the extracted source code as a string.
-    """
-    try:
-        if os.path.isfile(file_path):
-            logging.info(f"Processing file: {file_path}")
-            try:
-                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-                    lines = f.readlines()
-                if lines:
-                    source_index = None
-                    for i, line in enumerate(lines):
-                        if "upython.exe" in line:
-                            source_index = i
-                            break
-                    if source_index is not None:
-                        line_with_marker = lines[source_index]
-                        marker_index = line_with_marker.find("upython.exe")
-                        remainder = line_with_marker[marker_index + len("upython.exe"):].lstrip()
-                        source_code_lines = []
-                        if remainder:
-                            source_code_lines.append(remainder)
-                        source_code_lines.extend(lines[source_index + 1:])
-                        cleaned_source_code = [clean_text(line.rstrip()) for line in source_code_lines]
-                        extracted_source_code = "\n".join(cleaned_source_code)
-                        scan_code_for_links(extracted_source_code)
-                        return extracted_source_code
-                    else:
-                        logging.info(f"No line containing 'upython.exe' found in {file_path}.")
-                        return ""
-                else:
-                    logging.info(f"File {file_path} is empty.")
-                    return ""
-            except Exception as ex:
-                logging.error(f"Error reading file {file_path}: {ex}")
-                return ""
-        else:
-            logging.warning(f"Path {file_path} is not a valid file.")
-            return ""
-    except Exception as ex:
-        logging.error(f"Error during file scanning: {ex}")
-        return ""
+# --- New Functions for Content-Based Signature Calculation and Training ---
 
-def extract_normal_source(file_path):
+def calculate_signature(source_code: str) -> str:
     """
-    Read the file content as normal source code (for non-Nuitka files).
+    Calculate a signature from the source code by tokenizing the content
+    and computing frequency counts for each token.
+    Returns a semicolon-separated list of token:count pairs.
+    """
+    tokens = re.findall(r'\b\w+\b', source_code)
+    token_freq = {}
+    for token in tokens:
+        token = token.lower()
+        token_freq[token] = token_freq.get(token, 0) + 1
+    sorted_items = sorted(token_freq.items())
+    signature = ";".join(f"{k}:{v}" for k, v in sorted_items)
+    return signature
+
+def load_train_signatures(train_directory: str) -> Dict[str, str]:
+    """
+    Load all signatures from the train directory.
+    Returns a dictionary mapping signature strings to file paths.
+    """
+    signatures = {}
+    for root, _, files in os.walk(train_directory):
+        for file in files:
+            if file.endswith(".sig"):
+                file_path = os.path.join(root, file)
+                try:
+                    with open(file_path, "r", encoding="utf-8") as f:
+                        sig = f.read().strip()
+                    signatures[sig] = file_path
+                except Exception as ex:
+                    logging.error(f"Error loading signature from {file_path}: {ex}")
+    return signatures
+
+def save_signature(train_directory: str, source_filename: str, signature: str):
+    """
+    Save the signature to a file in the train directory.
+    The signature file has the same base name as the source file with a .sig extension.
+    """
+    base = os.path.splitext(os.path.basename(source_filename))[0]
+    sig_filename = base + ".sig"
+    sig_path = os.path.join(train_directory, sig_filename)
+    with open(sig_path, "w", encoding="utf-8") as f:
+        f.write(signature)
+    logging.info(f"Saved signature for {source_filename} to {sig_path}")
+
+def process_source_file(file_path: str, mode: str):
+    """
+    Process an extracted source file by calculating its signature and then
+    either training (saving the signature) or performing a normal scan
+    (filtering out duplicates based on existing signatures).
     """
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-            return f.read()
-    except Exception as ex:
-        logging.error(f"Error reading normal source from {file_path}: {ex}")
-        return ""
-
-def ml_filter(source_codes):
-    """
-    Placeholder ML filtering that deduplicates lines across all source code strings.
-    """
-    unique_lines = set()
-    filtered = []
-    for code in source_codes:
-        for line in code.splitlines():
-            stripped = line.strip()
-            if stripped and stripped not in unique_lines:
-                unique_lines.add(stripped)
-                filtered.append(stripped)
-    return "\n".join(filtered)
-
-def train_mode(directory):
-    """
-    Traverse the given directory recursively, extract source code from each file (using Nuitka extraction
-    for Nuitka executables or normal text reading for others), and merge all unique signatures into signatures.txt.
-    """
-    all_signatures = []
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            file_path = os.path.join(root, file)
-            nuitka_type = is_nuitka_file(file_path)
-            if nuitka_type:
-                logging.info(f"Detected Nuitka file: {file_path}")
-                # Use the modified scan_rsrc_file_return to get extracted code
-                source_code = scan_rsrc_file_return(file_path)
-                if source_code:
-                    all_signatures.append(source_code)
+            content = f.read()
+        sig = calculate_signature(content)
+        logging.info(f"Calculated signature for {file_path}: {sig}")
+        train_signatures = load_train_signatures(train_dir)
+        if mode == "train":
+            if sig in train_signatures:
+                logging.info(f"Duplicate signature found for {file_path}. Skipping training.")
             else:
-                # Try to read normal source code
-                content = extract_normal_source(file_path)
-                if content.strip():
-                    all_signatures.append(content)
-    if not all_signatures:
-        logging.info("No source code extracted from the provided directory.")
-        return
-    signatures = ml_filter(all_signatures)
-    output_file = os.path.join(directory, "signatures.txt")
-    try:
-        with open(output_file, "w", encoding="utf-8") as f:
-            f.write(signatures)
-        print(f"Signatures extracted and saved to {output_file}")
-    except Exception as e:
-        logging.error(f"Error writing to {output_file}: {e}")
-
-# ---------------------------
-# Main Entry Point
-# ---------------------------
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Extract source code from Nuitka executables or normal files. "
-                    "Provide a file path for single file extraction or a directory for training mode to merge signatures."
-    )
-    parser.add_argument("path", help="Path to a file or directory")
-    args = parser.parse_args()
-    target_path = args.path
-
-    if os.path.isdir(target_path):
-        print(f"Scanning directory: {target_path}")
-        train_mode(target_path)
-    elif os.path.isfile(target_path):
-        if os.path.exists(target_path):
-            nuitka_type = is_nuitka_file(target_path)
-            if nuitka_type:
-                extract_nuitka_file(target_path, nuitka_type)
+                save_signature(train_dir, file_path, sig)
+        elif mode == "normal":
+            if sig in train_signatures:
+                logging.info(f"Duplicate signature detected for {file_path}. Skipping processing.")
             else:
-                print("The file is not a Nuitka executable. Attempting normal source extraction.")
-                content = extract_normal_source(target_path)
-                if content.strip():
-                    output_file = os.path.join(os.path.dirname(target_path), "signatures.txt")
-                    try:
-                        with open(output_file, "w", encoding="utf-8") as f:
-                            f.write(content)
-                        print(f"Extracted source saved to {output_file}")
-                    except Exception as e:
-                        logging.error(f"Error writing to {output_file}: {e}")
-                else:
-                    print("No source code could be extracted.")
+                save_signature(train_dir, file_path, sig)
+                logging.info(f"Unique signature for {file_path}. Processing normally.")
         else:
-            logging.error(f"The file {target_path} does not exist.")
+            logging.error(f"Unknown mode '{mode}' specified for processing source file.")
+    except Exception as ex:
+        logging.error(f"Error processing source file {file_path}: {ex}")
+
+# --- Main Script Logic ---
+
+if __name__ == "__main__":
+    input_path = input("Enter the path to the Nuitka executable file or directory: ").strip()
+    if not os.path.exists(input_path):
+        logging.error(f"The path {input_path} does not exist.")
+        sys.exit(1)
+    mode = input("Enter mode (train/normal): ").strip().lower()
+    # If a directory is provided, iterate through all files recursively
+    if os.path.isdir(input_path):
+        logging.info(f"Processing directory: {input_path} in {mode} mode.")
+        for root, _, files in os.walk(input_path):
+            for file in files:
+                file_full_path = os.path.join(root, file)
+                nuitka_type = is_nuitka_file(file_full_path)
+                if nuitka_type:
+                    logging.info(f"Processing file: {file_full_path}")
+                    extract_nuitka_file(file_full_path, nuitka_type, mode)
+        logging.info("Directory processing completed.")
     else:
-        logging.error(f"The path {target_path} does not exist.")
+        nuitka_type = is_nuitka_file(input_path)
+        if nuitka_type:
+            extract_nuitka_file(input_path, nuitka_type, mode)
+        else:
+            logging.info("The file is not a Nuitka executable.")
