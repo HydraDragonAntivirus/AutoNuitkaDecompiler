@@ -17,6 +17,7 @@ import macholib.MachO
 import macholib.mach_o
 from typing import Optional, Tuple, BinaryIO, Dict, Any
 import struct
+from pathlib import Path
 
 # Set script directory
 script_dir = os.getcwd()
@@ -46,6 +47,7 @@ sys.stdin = io.TextIOWrapper(sys.stdin.detach(), encoding='utf-8', errors='ignor
 logging.info("Application started at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 detectiteasy_dir = os.path.join(script_dir, "detectiteasy")
+detectiteasy_json_dir = os.path.join(script_dir, "detectiteasy_json")
 detectiteasy_console_path = os.path.join(detectiteasy_dir, "diec.exe")
 nuitka_source_code_dir = os.path.join(script_dir, "nuitkasourcecode")
 nuitka_dir = os.path.join(script_dir, "nuitka")
@@ -55,6 +57,18 @@ general_extracted_dir = os.path.join(script_dir, "general_extracted")
 os.makedirs(nuitka_source_code_dir, exist_ok=True)
 os.makedirs(nuitka_dir, exist_ok=True)
 os.makedirs(general_extracted_dir, exist_ok=True)
+
+def get_unique_output_path(output_dir: Path, base_name: str, suffix: int = 1) -> Path:
+    """
+    Generate a unique file path by appending a suffix (e.g., _1, _2) if the file already exists.
+    """
+    new_path = output_dir / f"{base_name.stem}_{suffix}{base_name.suffix}"
+
+    while new_path.exists():  # If the file exists, increment the suffix
+        suffix += 1
+        new_path = output_dir / f"{base_name.stem}_{suffix}{base_name.suffix}"
+
+    return new_path
 
 def is_nuitka_file(file_path):
     """Check if the file is a Nuitka executable using Detect It Easy."""
