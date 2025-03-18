@@ -372,6 +372,117 @@ class NuitkaPayload:
                 raise PayloadError(f"Failed to initialize decompression: {str(ex)}")
         return stream
 
+def is_pe_file(file_path):
+    """Check if the file at the specified path is a PE (Portable Executable) file using Detect It Easy."""
+    try:
+        logging.info(f"Analyzing file: {file_path} using Detect It Easy...")
+
+        # Ensure the JSON output directory exists
+        output_dir = Path(detectiteasy_json_dir)
+        if not output_dir.exists():
+            output_dir.mkdir(parents=True)
+
+        # Define the base name for the output JSON file (output will be PE check result)
+        base_name = Path(file_path).with_suffix(".json")
+
+        # Get a unique file path for the JSON output
+        json_output_path = get_unique_output_path(output_dir, base_name)
+
+        # Run the DIE console command with the -j flag to generate a JSON output
+        result = subprocess.run([detectiteasy_console_path, "-j", file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # Check for PE32 or PE64 in the result
+        if "PE32" in result.stdout or "PE64" in result.stdout:
+            # Save the JSON output to the specified unique file
+            with open(json_output_path, "w") as json_file:
+                json_file.write(result.stdout)
+            logging.info(f"PE file analysis result saved to {json_output_path}")
+            return True
+        else:
+            logging.info(f"File {file_path} is not a PE file. Result: {result.stdout}")
+            return False
+
+    except subprocess.SubprocessError as ex:
+        logging.error(f"Error in {inspect.currentframe().f_code.co_name} while running Detect It Easy for {file_path}: {ex}")
+        return False
+    except Exception as ex:
+        logging.error(f"General error in {inspect.currentframe().f_code.co_name} while running Detect It Easy for {file_path}: {ex}")
+        return False
+
+def is_elf_file(file_path):
+    """Check if the file at the specified path is an ELF file using Detect It Easy."""
+    try:
+        logging.info(f"Analyzing file: {file_path} using Detect It Easy...")
+
+        # Ensure the JSON output directory exists
+        output_dir = Path(detectiteasy_json_dir)
+        if not output_dir.exists():
+            output_dir.mkdir(parents=True)
+
+        # Define the base name for the output JSON file (output will be ELF check result)
+        base_name = Path(file_path).with_suffix(".json")
+
+        # Get a unique file path for the JSON output
+        json_output_path = get_unique_output_path(output_dir, base_name)
+
+        # Run the DIE console command with the -j flag to generate a JSON output
+        result = subprocess.run([detectiteasy_console_path, "-j", file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # Check for ELF format in the result
+        if "ELF" in result.stdout:
+            # Save the JSON output to the specified unique file
+            with open(json_output_path, "w") as json_file:
+                json_file.write(result.stdout)
+            logging.info(f"ELF file analysis result saved to {json_output_path}")
+            return True
+        else:
+            logging.info(f"File {file_path} is not an ELF file. Result: {result.stdout}")
+            return False
+
+    except subprocess.SubprocessError as ex:
+        logging.error(f"Error in {inspect.currentframe().f_code.co_name} while running Detect It Easy for {file_path}: {ex}")
+        return False
+    except Exception as ex:
+        logging.error(f"General error in {inspect.currentframe().f_code.co_name} while running Detect It Easy for {file_path}: {ex}")
+        return False
+
+def is_macho_file(file_path):
+    """Check if the file at the specified path is a Mach-O file using Detect It Easy."""
+    try:
+        logging.info(f"Analyzing file: {file_path} using Detect It Easy...")
+
+        # Ensure the JSON output directory exists
+        output_dir = Path(detectiteasy_json_dir)
+        if not output_dir.exists():
+            output_dir.mkdir(parents=True)
+
+        # Define the base name for the output JSON file (output will be Mach-O check result)
+        base_name = Path(file_path).with_suffix(".json")
+
+        # Get a unique file path for the JSON output
+        json_output_path = get_unique_output_path(output_dir, base_name)
+
+        # Run the DIE console command with the -j flag to generate a JSON output
+        result = subprocess.run([detectiteasy_console_path, "-j", file_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+
+        # Check for Mach-O in the result
+        if "Mach-O" in result.stdout:
+            # Save the JSON output to the specified unique file
+            with open(json_output_path, "w") as json_file:
+                json_file.write(result.stdout)
+            logging.info(f"Mach-O file analysis result saved to {json_output_path}")
+            return True
+        else:
+            logging.info(f"File {file_path} is not a Mach-O file. Result: {result.stdout}")
+            return False
+
+    except subprocess.SubprocessError as ex:
+        logging.error(f"Error in {inspect.currentframe().f_code.co_name} while running Detect It Easy for {file_path}: {ex}")
+        return False
+    except Exception as ex:
+        logging.error(f"General error in {inspect.currentframe().f_code.co_name} while running Detect It Easy for {file_path}: {ex}")
+        return False
+
 class NuitkaExtractor:
     def __init__(self, filepath: str, output_dir: str):
         self.filepath = filepath
