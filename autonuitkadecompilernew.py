@@ -3,7 +3,6 @@ import logging
 import subprocess
 import shutil
 import inspect
-import string
 import re
 import ipaddress
 import sys
@@ -18,6 +17,11 @@ import macholib.mach_o
 from typing import Optional, Tuple, BinaryIO, Dict, Any
 import struct
 from pathlib import Path
+import math
+
+# Import ML libraries
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 
 # Set script directory
 script_dir = os.getcwd()
@@ -50,9 +54,9 @@ detectiteasy_console_path = os.path.join(detectiteasy_dir, "diec.exe")
 nuitka_source_code_dir = os.path.join(script_dir, "nuitkasourcecode")
 nuitka_dir = os.path.join(script_dir, "nuitka")
 general_extracted_dir = os.path.join(script_dir, "general_extracted")
-train_dir = os.path.join(script_dir, "train")  # Directory to hold signatures
+train_dir = os.path.join(script_dir, "train")  # Directory to hold ML entries
 
-# Unified signature file path (all signatures will be stored in one file)
+# Unified file path (default) for storing file contents used in ML-based duplicate detection
 UNIFIED_SIGNATURE_FILE = os.path.join(train_dir, "unified_signatures.txt")
 
 for d in (nuitka_source_code_dir, nuitka_dir, general_extracted_dir, train_dir):
@@ -91,8 +95,8 @@ def is_nuitka_file(file_path):
 
 def scan_directory_for_executables(directory):
     """
-    Recursively scan a directory for .exe, .dll, .msi, and .kext files,
-    prioritizing Nuitka executables.
+    Recursively scan a directory for .exe, .dll, and .kext files,
+    prioritizing Nuitka executables. (The .msi check has been removed.)
     If a file is found and confirmed as Nuitka, stop further scanning.
     """
     found_executables = []
@@ -105,9 +109,9 @@ def scan_directory_for_executables(directory):
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    return found_executables  # Stop scanning further as .exe is found
+                    return found_executables
 
-    # If no .exe found, look for .dll files
+    # Next, look for .dll files
     for root, _, files in os.walk(directory):
         for file in files:
             if file.lower().endswith('.dll'):
@@ -115,17 +119,7 @@ def scan_directory_for_executables(directory):
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    return found_executables  # Stop scanning further as .dll is found
-
-    # If no .exe or .dll found, look for .msi files
-    for root, _, files in os.walk(directory):
-        for file in files:
-            if file.lower().endswith('.msi'):
-                file_path = os.path.join(root, file)
-                nuitka_type = is_nuitka_file(file_path)
-                if nuitka_type:
-                    found_executables.append((file_path, nuitka_type))
-                    return found_executables  # Stop scanning further as .msi is found
+                    return found_executables
 
     # Check for macOS kernel extensions (.kext files)
     for root, _, files in os.walk(directory):
@@ -135,17 +129,17 @@ def scan_directory_for_executables(directory):
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    return found_executables  # Stop scanning further as .kext is found
+                    return found_executables
 
-    # If none of the above, check other files
+    # Finally, check other files
     for root, _, files in os.walk(directory):
         for file in files:
-            if not file.lower().endswith(('.exe', '.dll', '.msi', '.kext')):
+            if not file.lower().endswith(('.exe', '.dll', '.kext')):
                 file_path = os.path.join(root, file)
                 nuitka_type = is_nuitka_file(file_path)
                 if nuitka_type:
                     found_executables.append((file_path, nuitka_type))
-                    return found_executables  # Stop scanning further as a Nuitka file is found
+                    return found_executables
 
     return found_executables
 
@@ -165,7 +159,6 @@ def extract_rcdata_resource(pe_path):
         logging.info("No resources found in this file.")
         return None
     first_rcdata_file = None
-    all_extracted_files = []
     output_dir = os.path.join(general_extracted_dir, os.path.splitext(os.path.basename(pe_path))[0])
     os.makedirs(output_dir, exist_ok=True)
     for resource_type in pe.DIRECTORY_ENTRY_RESOURCE.entries:
@@ -186,7 +179,6 @@ def extract_rcdata_resource(pe_path):
                 with open(output_path, "wb") as f:
                     f.write(data)
                 logging.info(f"Extracted resource saved: {output_path}")
-                all_extracted_files.append(output_path)
                 if type_name.lower() in ("rcdata", "10") and first_rcdata_file is None:
                     first_rcdata_file = output_path
     if first_rcdata_file is None:
@@ -210,7 +202,7 @@ def scan_code_for_links(code):
     try:
         ip_pattern = r'\b(?:\d{1,3}\.){3}\d{1,3}\b'
         domain_pattern = r'\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b'
-        url_pattern = r'https?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+        url_pattern = r'https?://(?:[a-zA-Z0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
         discord_webhook_pattern = r'https://discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
         discord_canary_webhook_pattern = r'https://canary\.discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
         discord_invite_pattern = r'https://discord\.gg/[A-Za-z0-9]+'
@@ -236,10 +228,10 @@ def scan_code_for_links(code):
     except Exception as ex:
         logging.error(f"Error scanning code for links: {ex}")
 
-def scan_rsrc_file(file_path, mode=None):
+def scan_rsrc_file(file_path, mode=None, similarity_threshold=0.9):
     """
     Scans the provided file for a line containing 'upython.exe', extracts the source code that follows,
-    saves the cleaned code, scans it for links, and (if mode is provided) processes its signature.
+    saves the cleaned code, scans it for links, and (if mode is provided) processes its content using ML-based filtering.
     """
     try:
         if os.path.isfile(file_path):
@@ -274,9 +266,9 @@ def scan_rsrc_file(file_path, mode=None):
                         logging.info(f"Saved extracted source code from {file_path} to {save_path}")
                         extracted_source_code = ''.join(source_code_lines)
                         scan_code_for_links(extracted_source_code)
-                        # Process signature if a mode is specified (train or normal)
+                        # Process using ML-based filtering if mode is specified
                         if mode is not None:
-                            process_source_file(save_path, mode)
+                            process_source_file(save_path, mode, similarity_threshold)
                     else:
                         logging.info(f"No line containing 'upython.exe' found in {file_path}.")
                 else:
@@ -577,13 +569,13 @@ class NuitkaExtractor:
         except Exception as ex:
             logging.error(f"[!] Unexpected error: {str(ex)}")
 
-def extract_nuitka_file(file_path, nuitka_type, mode=None):
+def extract_nuitka_file(file_path, nuitka_type, mode=None, similarity_threshold=0.9):
     """
     Detect and extract Nuitka executable content.
     For Nuitka OneFile executables, extract the payload and then scan the extracted directory
     for additional executables.
     For normal Nuitka executables, extract RCData and scan the extracted source code.
-    The optional mode (train/normal) is passed for signature processing.
+    The optional mode (train/normal) is passed for ML-based filtering.
     """
     try:
         if nuitka_type == "Nuitka OneFile":
@@ -602,14 +594,14 @@ def extract_nuitka_file(file_path, nuitka_type, mode=None):
             for exe_path, exe_type in found_executables:
                 if exe_type == "Nuitka":
                     logging.info(f"Found normal Nuitka executable in extracted files: {exe_path}")
-                    extract_nuitka_file(exe_path, exe_type, mode)
+                    extract_nuitka_file(exe_path, exe_type, mode, similarity_threshold)
         elif nuitka_type == "Nuitka":
             logging.info(f"Nuitka executable detected in {file_path}")
             file_name_without_extension = os.path.splitext(os.path.basename(file_path))[0]
             extracted_file = extract_rcdata_resource(file_path)
             if extracted_file:
                 logging.info(f"Successfully extracted files from Nuitka executable: {file_path}")
-                scan_rsrc_file(extracted_file, mode)
+                scan_rsrc_file(extracted_file, mode, similarity_threshold)
             else:
                 logging.error(f"Failed to extract normal Nuitka executable: {file_path}")
         else:
@@ -619,31 +611,15 @@ def extract_nuitka_file(file_path, nuitka_type, mode=None):
     except Exception as ex:
         logging.error(f"Unexpected error while extracting Nuitka file: {ex}")
 
-# --- Unified Signature Functions ---
+# --- ML-Based Unified Entry Functions ---
 
-def calculate_signature(source_code: str) -> str:
+def load_unified_texts(unified_file: str):
     """
-    Calculate a signature from the source code by tokenizing the content
-    and computing frequency counts for each token.
-    Returns a semicolon-separated list of token:count pairs.
+    Load all entries from the unified signature file.
+    Each line is expected in the format: <source_filename>::<document>
+    Returns a list of (source_filename, document) tuples.
     """
-    tokens = re.findall(r'\b\w+\b', source_code)
-    token_freq = {}
-    for token in tokens:
-        token = token.lower()
-        token_freq[token] = token_freq.get(token, 0) + 1
-    sorted_items = sorted(token_freq.items())
-    signature = ";".join(f"{k}:{v}" for k, v in sorted_items)
-    return signature
-
-def load_unified_signatures(unified_file: str) -> Dict[str, str]:
-    """
-    Load all signatures from the unified signature file.
-    Returns a dictionary mapping signature strings to source file paths.
-    The file format is one line per signature in the format:
-      <source_filename>::<signature>
-    """
-    signatures = {}
+    entries = []
     if os.path.exists(unified_file):
         with open(unified_file, "r", encoding="utf-8") as f:
             for line in f:
@@ -652,45 +628,46 @@ def load_unified_signatures(unified_file: str) -> Dict[str, str]:
                     continue
                 parts = line.split("::", 1)
                 if len(parts) == 2:
-                    source, sig = parts
-                    signatures[sig] = source
-    return signatures
+                    source, doc = parts
+                    entries.append((source, doc))
+    return entries
 
-def save_unified_signature(unified_file: str, source_filename: str, signature: str):
+def save_unified_text(unified_file: str, source_filename: str, doc: str):
     """
-    Append the signature to the unified signature file.
-    The entry format is:
-      <source_filename>::<signature>
+    Append an entry to the unified signature file.
+    The document is cleaned to remove newlines.
     """
+    doc_clean = doc.replace("\n", " ")
     with open(unified_file, "a", encoding="utf-8") as f:
-        f.write(f"{source_filename}::{signature}\n")
-    logging.info(f"Saved signature for {source_filename} to {unified_file}")
+        f.write(f"{source_filename}::{doc_clean}\n")
+    logging.info(f"Saved entry for {source_filename} to {unified_file}")
 
-def process_source_file(file_path: str, mode: str):
+def process_source_file(file_path: str, mode: str, similarity_threshold: float):
     """
-    Process an extracted source file by calculating its signature and then
-    either training (saving the signature) or performing a normal scan
-    (filtering out duplicates based on existing unified signatures).
+    Process an extracted source file by reading its content and using ML-based filtering.
+    The TF-IDF vectorizer computes the cosine similarity between the new document and all stored entries.
+    If the maximum similarity exceeds the provided threshold, the file is considered duplicate.
     """
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
-        sig = calculate_signature(content)
-        logging.info(f"Calculated signature for {file_path}: {sig}")
-        unified_signatures = load_unified_signatures(UNIFIED_SIGNATURE_FILE)
-        if mode == "train":
-            if sig in unified_signatures:
-                logging.info(f"Duplicate signature found for {file_path}. Skipping training.")
-            else:
-                save_unified_signature(UNIFIED_SIGNATURE_FILE, file_path, sig)
-        elif mode == "normal":
-            if sig in unified_signatures:
-                logging.info(f"Duplicate signature detected for {file_path}. Skipping processing.")
-            else:
-                save_unified_signature(UNIFIED_SIGNATURE_FILE, file_path, sig)
-                logging.info(f"Unique signature for {file_path}. Processing normally.")
-        else:
-            logging.error(f"Unknown mode '{mode}' specified for processing source file.")
+        content_clean = content.replace("\n", " ")
+        logging.info(f"Processing file: {file_path} using ML-based filtering")
+        unified_entries = load_unified_texts(UNIFIED_SIGNATURE_FILE)
+        docs = [doc for (_, doc) in unified_entries]
+        if docs:
+            docs.append(content_clean)
+            vectorizer = TfidfVectorizer()
+            tfidf_matrix = vectorizer.fit_transform(docs)
+            # The new document is the last one; compute cosine similarity with previous ones.
+            similarities = cosine_similarity(tfidf_matrix[-1], tfidf_matrix[:-1])
+            max_similarity = similarities.max() if similarities.size > 0 else 0.0
+            logging.info(f"Maximum similarity with existing entries: {max_similarity:.2f}")
+            if max_similarity >= similarity_threshold:
+                logging.info(f"Duplicate detected for {file_path} with similarity {max_similarity:.2f}. Skipping processing.")
+                return
+        save_unified_text(UNIFIED_SIGNATURE_FILE, file_path, content_clean)
+        logging.info(f"Unique entry for {file_path}. Processing normally.")
     except Exception as ex:
         logging.error(f"Error processing source file {file_path}: {ex}")
 
@@ -702,6 +679,18 @@ if __name__ == "__main__":
         logging.error(f"The path {input_path} does not exist.")
         sys.exit(1)
     mode = input("Enter mode (train/normal): ").strip().lower()
+    # In normal mode, ask for a unified signature file path
+    if mode == "normal":
+        user_sig_path = input("Enter unified signature file path (or leave blank to use default): ").strip()
+        if user_sig_path:
+            UNIFIED_SIGNATURE_FILE = user_sig_path
+        else:
+            logging.info(f"No signature path provided. Using default: {UNIFIED_SIGNATURE_FILE}")
+    try:
+        threshold_input = input("Enter duplicate similarity threshold (0.0 to 1.0, e.g., 0.9): ").strip()
+        similarity_threshold = float(threshold_input) if threshold_input else 0.9
+    except ValueError:
+        similarity_threshold = 0.9
     # If a directory is provided, iterate through all files recursively
     if os.path.isdir(input_path):
         logging.info(f"Processing directory: {input_path} in {mode} mode.")
@@ -711,11 +700,11 @@ if __name__ == "__main__":
                 nuitka_type = is_nuitka_file(file_full_path)
                 if nuitka_type:
                     logging.info(f"Processing file: {file_full_path}")
-                    extract_nuitka_file(file_full_path, nuitka_type, mode)
+                    extract_nuitka_file(file_full_path, nuitka_type, mode, similarity_threshold)
         logging.info("Directory processing completed.")
     else:
         nuitka_type = is_nuitka_file(input_path)
         if nuitka_type:
-            extract_nuitka_file(input_path, nuitka_type, mode)
+            extract_nuitka_file(input_path, nuitka_type, mode, similarity_threshold)
         else:
             logging.info("The file is not a Nuitka executable.")
