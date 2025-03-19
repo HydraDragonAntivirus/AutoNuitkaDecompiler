@@ -18,6 +18,7 @@ from typing import Optional, Tuple, BinaryIO
 import struct
 from pathlib import Path
 import math
+import numpy as np
 
 # Import ML libraries
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -231,23 +232,22 @@ def scan_code_for_links(code):
 def deduplicate_text(text: str, similarity_threshold: float = 0.9) -> str:
     """
     Remove duplicate or very similar lines from the provided text.
-    Each non-empty line is compared against previously accepted lines
-    using TF-IDF cosine similarity. Lines with similarity above the threshold
-    are removed.
+    This version computes the TF-IDF matrix for all non-empty lines once,
+    then calculates the full cosine similarity matrix to determine duplicates.
     """
     lines = [line.strip() for line in text.splitlines() if line.strip()]
     if not lines:
         return text
     vectorizer = TfidfVectorizer()
     tfidf_matrix = vectorizer.fit_transform(lines)
-    keep = [True] * len(lines)
-    for i in range(len(lines)):
-        if not keep[i]:
-            continue
-        for j in range(i + 1, len(lines)):
-            if keep[j]:
-                sim = cosine_similarity(tfidf_matrix[i], tfidf_matrix[j])[0][0]
-                if sim >= similarity_threshold:
+    sim_matrix = cosine_similarity(tfidf_matrix)
+    n = sim_matrix.shape[0]
+    keep = [True] * n
+    for i in range(n):
+        if keep[i]:
+            # Only check lines j > i in the upper triangle
+            for j in range(i + 1, n):
+                if keep[j] and sim_matrix[i, j] >= similarity_threshold:
                     keep[j] = False
     dedup_lines = [line for flag, line in zip(keep, lines) if flag]
     return "\n".join(dedup_lines)
