@@ -668,7 +668,8 @@ def save_unified_text(unified_file: str, source_filename: str, doc: str):
 def process_source_file(file_path: str, mode: str, similarity_threshold: float):
     """
     Process an extracted source file by reading its content,
-    deduplicating similar lines, and then using ML-based filtering.
+    deduplicating similar lines, writing the deduplicated text to a new filtered file,
+    and then using ML-based filtering.
     The TF-IDF vectorizer computes the cosine similarity between the deduplicated
     document and all stored entries. If the maximum similarity exceeds the threshold,
     the file is considered duplicate.
@@ -676,8 +677,15 @@ def process_source_file(file_path: str, mode: str, similarity_threshold: float):
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
-        # Remove duplicate or highly similar lines from the document
+        # Deduplicate similar lines
         dedup_content = deduplicate_text(content, similarity_threshold)
+        # Write the filtered content to a new file
+        base, _ = os.path.splitext(file_path)
+        filtered_file_path = base + "_filtered.txt"
+        with open(filtered_file_path, "w", encoding="utf-8") as f:
+            f.write(dedup_content)
+        logging.info(f"Filtered file saved to {filtered_file_path}")
+        
         logging.info(f"Processing file: {file_path} using ML-based filtering")
         unified_entries = load_unified_texts(UNIFIED_SIGNATURE_FILE)
         docs = [doc for (_, doc) in unified_entries]
