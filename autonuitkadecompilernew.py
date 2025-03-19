@@ -14,7 +14,7 @@ import zstandard
 from elftools.elf.elffile import ELFFile
 import macholib.MachO
 import macholib.mach_o
-from typing import Optional, Tuple, BinaryIO, Dict, Any
+from typing import Optional, Tuple, BinaryIO
 import struct
 from pathlib import Path
 import math
@@ -56,7 +56,7 @@ nuitka_dir = os.path.join(script_dir, "nuitka")
 general_extracted_dir = os.path.join(script_dir, "general_extracted")
 train_dir = os.path.join(script_dir, "train")  # Directory to hold ML entries
 
-# Unified file path (default) for storing file contents used in ML-based duplicate detection
+# Unified file path (default) for storing file content used in ML-based duplicate detection
 UNIFIED_SIGNATURE_FILE = os.path.join(train_dir, "unified_signatures.txt")
 
 for d in (nuitka_source_code_dir, nuitka_dir, general_extracted_dir, train_dir):
@@ -86,10 +86,10 @@ def is_nuitka_file(file_path):
         else:
             logging.info(f"File {file_path} is not a Nuitka executable. Result: {result.stdout}")
     except subprocess.SubprocessError as ex:
-        logging.error(f"Error in {inspect.currentframe().f_code.co_name} while running Detect It Easy for {file_path}: {ex}")
+        logging.error(f"Error running Detect It Easy for {file_path}: {ex}")
         return None
     except Exception as ex:
-        logging.error(f"General error in {inspect.currentframe().f_code.co_name} for {file_path}: {ex}")
+        logging.error(f"General error for {file_path}: {ex}")
         return None
     return None
 
@@ -228,6 +228,30 @@ def scan_code_for_links(code):
     except Exception as ex:
         logging.error(f"Error scanning code for links: {ex}")
 
+def deduplicate_text(text: str, similarity_threshold: float = 0.9) -> str:
+    """
+    Remove duplicate or very similar lines from the provided text.
+    Each non-empty line is compared against previously accepted lines
+    using TF-IDF cosine similarity. Lines with similarity above the threshold
+    are removed.
+    """
+    lines = [line.strip() for line in text.splitlines() if line.strip()]
+    if not lines:
+        return text
+    vectorizer = TfidfVectorizer()
+    tfidf_matrix = vectorizer.fit_transform(lines)
+    keep = [True] * len(lines)
+    for i in range(len(lines)):
+        if not keep[i]:
+            continue
+        for j in range(i + 1, len(lines)):
+            if keep[j]:
+                sim = cosine_similarity(tfidf_matrix[i], tfidf_matrix[j])[0][0]
+                if sim >= similarity_threshold:
+                    keep[j] = False
+    dedup_lines = [line for flag, line in zip(keep, lines) if flag]
+    return "\n".join(dedup_lines)
+
 def scan_rsrc_file(file_path, mode=None, similarity_threshold=0.9):
     """
     Scans the provided file for a line containing 'upython.exe', extracts the source code that follows,
@@ -264,7 +288,7 @@ def scan_rsrc_file(file_path, mode=None, similarity_threshold=0.9):
                             for line in cleaned_source_code:
                                 save_file.write(line + "\n")
                         logging.info(f"Saved extracted source code from {file_path} to {save_path}")
-                        extracted_source_code = ''.join(source_code_lines)
+                        extracted_source_code = "\n".join(source_code_lines)
                         scan_code_for_links(extracted_source_code)
                         # Process using ML-based filtering if mode is specified
                         if mode is not None:
@@ -351,10 +375,10 @@ def is_pe_file(file_path):
             logging.info(f"File {file_path} is not a PE file. Result: {result.stdout}")
             return False
     except subprocess.SubprocessError as ex:
-        logging.error(f"Error in {inspect.currentframe().f_code.co_name} for {file_path}: {ex}")
+        logging.error(f"Error in PE check for {file_path}: {ex}")
         return False
     except Exception as ex:
-        logging.error(f"General error in {inspect.currentframe().f_code.co_name} for {file_path}: {ex}")
+        logging.error(f"General error in PE check for {file_path}: {ex}")
         return False
 
 def is_elf_file(file_path):
@@ -379,10 +403,10 @@ def is_elf_file(file_path):
             logging.info(f"File {file_path} is not an ELF file. Result: {result.stdout}")
             return False
     except subprocess.SubprocessError as ex:
-        logging.error(f"Error in {inspect.currentframe().f_code.co_name} for {file_path}: {ex}")
+        logging.error(f"Error in ELF check for {file_path}: {ex}")
         return False
     except Exception as ex:
-        logging.error(f"General error in {inspect.currentframe().f_code.co_name} for {file_path}: {ex}")
+        logging.error(f"General error in ELF check for {file_path}: {ex}")
         return False
 
 def is_macho_file(file_path):
@@ -407,10 +431,10 @@ def is_macho_file(file_path):
             logging.info(f"File {file_path} is not a Mach-O file. Result: {result.stdout}")
             return False
     except subprocess.SubprocessError as ex:
-        logging.error(f"Error in {inspect.currentframe().f_code.co_name} for {file_path}: {ex}")
+        logging.error(f"Error in Mach-O check for {file_path}: {ex}")
         return False
     except Exception as ex:
-        logging.error(f"General error in {inspect.currentframe().f_code.co_name} for {file_path}: {ex}")
+        logging.error(f"General error in Mach-O check for {file_path}: {ex}")
         return False
 
 class NuitkaExtractor:
@@ -464,8 +488,7 @@ class NuitkaExtractor:
         try:
             with open(self.filepath, 'rb') as f:
                 elf = ELFFile(f)
-                last_section = max(elf.iter_sections(),
-                                   key=lambda s: s.header.sh_offset + s.header.sh_size)
+                last_section = max(elf.iter_sections(), key=lambda s: s.header.sh_offset + s.header.sh_size)
                 f.seek(-8, io.SEEK_END)
                 payload_size = struct.unpack('<Q', f.read(8))[0]
                 payload_offset = last_section.header.sh_offset + last_section.header.sh_size
@@ -644,19 +667,22 @@ def save_unified_text(unified_file: str, source_filename: str, doc: str):
 
 def process_source_file(file_path: str, mode: str, similarity_threshold: float):
     """
-    Process an extracted source file by reading its content and using ML-based filtering.
-    The TF-IDF vectorizer computes the cosine similarity between the new document and all stored entries.
-    If the maximum similarity exceeds the provided threshold, the file is considered duplicate.
+    Process an extracted source file by reading its content,
+    deduplicating similar lines, and then using ML-based filtering.
+    The TF-IDF vectorizer computes the cosine similarity between the deduplicated
+    document and all stored entries. If the maximum similarity exceeds the threshold,
+    the file is considered duplicate.
     """
     try:
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
-        content_clean = content.replace("\n", " ")
+        # Remove duplicate or highly similar lines from the document
+        dedup_content = deduplicate_text(content, similarity_threshold)
         logging.info(f"Processing file: {file_path} using ML-based filtering")
         unified_entries = load_unified_texts(UNIFIED_SIGNATURE_FILE)
         docs = [doc for (_, doc) in unified_entries]
         if docs:
-            docs.append(content_clean)
+            docs.append(dedup_content)
             vectorizer = TfidfVectorizer()
             tfidf_matrix = vectorizer.fit_transform(docs)
             # The new document is the last one; compute cosine similarity with previous ones.
@@ -666,7 +692,7 @@ def process_source_file(file_path: str, mode: str, similarity_threshold: float):
             if max_similarity >= similarity_threshold:
                 logging.info(f"Duplicate detected for {file_path} with similarity {max_similarity:.2f}. Skipping processing.")
                 return
-        save_unified_text(UNIFIED_SIGNATURE_FILE, file_path, content_clean)
+        save_unified_text(UNIFIED_SIGNATURE_FILE, file_path, dedup_content)
         logging.info(f"Unique entry for {file_path}. Processing normally.")
     except Exception as ex:
         logging.error(f"Error processing source file {file_path}: {ex}")
