@@ -252,57 +252,78 @@ def deduplicate_text(text: str, similarity_threshold: float = 0.9) -> str:
     dedup_lines = [line for flag, line in zip(keep, lines) if flag]
     return "\n".join(dedup_lines)
 
-def scan_rsrc_file(file_path, mode=None, similarity_threshold=0.9):
+def scan_rsrc_files(file_paths, mode=None, similarity_threshold=0.9):
     """
-    Scans the provided file for a line containing 'upython.exe', extracts the source code that follows,
-    saves the cleaned code, scans it for links, and (if mode is provided) processes its content using ML-based filtering.
+    Scans a list of files for a line containing 'upython.exe', extracts the source code that follows,
+    saves the cleaned code, scans it for links, and (if mode is provided) processes its content using 
+    ML-based filtering.
+    
+    :param file_paths: List of file paths to be scanned.
+    :param mode: Optional mode for ML-based filtering.
+    :param similarity_threshold: Similarity threshold for ML processing.
     """
-    try:
-        if os.path.isfile(file_path):
-            logging.info(f"Processing file: {file_path}")
-            try:
-                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-                    lines = f.readlines()
-                if lines:
-                    source_index = None
-                    for i, line in enumerate(lines):
-                        if "upython.exe" in line:
-                            source_index = i
-                            break
-                    if source_index is not None:
-                        line_with_marker = lines[source_index]
-                        marker_index = line_with_marker.find("upython.exe")
-                        remainder = line_with_marker[marker_index + len("upython.exe"):].lstrip()
-                        source_code_lines = []
-                        if remainder:
-                            source_code_lines.append(remainder)
-                        source_code_lines.extend(lines[source_index + 1:])
-                        cleaned_source_code = [clean_text(line.rstrip()) for line in source_code_lines]
-                        base_name = os.path.splitext(os.path.basename(file_path))[0]
-                        save_path = os.path.join(nuitka_source_code_dir, f"{base_name}_source_code.txt")
-                        counter = 1
-                        while os.path.exists(save_path):
-                            save_path = os.path.join(nuitka_source_code_dir, f"{base_name}_source_code_{counter}.txt")
-                            counter += 1
-                        with open(save_path, "w", encoding="utf-8") as save_file:
-                            for line in cleaned_source_code:
-                                save_file.write(line + "\n")
-                        logging.info(f"Saved extracted source code from {file_path} to {save_path}")
-                        extracted_source_code = "\n".join(source_code_lines)
-                        scan_code_for_links(extracted_source_code)
-                        # Process using ML-based filtering if mode is specified
-                        if mode is not None:
-                            process_source_file(save_path, mode, similarity_threshold)
+    for file_path in file_paths:
+        try:
+            if os.path.isfile(file_path):
+                logging.info(f"Processing file: {file_path}")
+                try:
+                    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                        lines = f.readlines()
+                        
+                    if lines:
+                        source_index = None
+                        for i, line in enumerate(lines):
+                            if "upython.exe" in line:
+                                source_index = i
+                                break
+
+                        if source_index is not None:
+                            # Process the line containing 'upython.exe' by taking the text after the marker
+                            line_with_marker = lines[source_index]
+                            marker_index = line_with_marker.find("upython.exe")
+                            remainder = line_with_marker[marker_index + len("upython.exe"):].lstrip()
+                            
+                            source_code_lines = []
+                            if remainder:
+                                source_code_lines.append(remainder)
+                            source_code_lines.extend(lines[source_index + 1:])
+                            
+                            # Clean each line
+                            cleaned_source_code = [clean_text(line.rstrip()) for line in source_code_lines]
+                            
+                            # Determine a unique save path
+                            base_name = os.path.splitext(os.path.basename(file_path))[0]
+                            save_path = os.path.join(nuitka_source_code_dir, f"{base_name}_source_code.txt")
+                            counter = 1
+                            while os.path.exists(save_path):
+                                save_path = os.path.join(
+                                    nuitka_source_code_dir, f"{base_name}_source_code_{counter}.txt"
+                                )
+                                counter += 1
+                            
+                            # Save the cleaned source code
+                            with open(save_path, "w", encoding="utf-8") as save_file:
+                                for line in cleaned_source_code:
+                                    save_file.write(line + "\n")
+                            logging.info(f"Saved extracted source code from {file_path} to {save_path}")
+                            
+                            # Join source code lines for link scanning
+                            extracted_source_code = "\n".join(source_code_lines)
+                            scan_code_for_links(extracted_source_code)
+                            
+                            # Process using ML-based filtering if mode is specified
+                            if mode is not None:
+                                process_source_file(save_path, mode, similarity_threshold)
+                        else:
+                            logging.info(f"No line containing 'upython.exe' found in {file_path}.")
                     else:
-                        logging.info(f"No line containing 'upython.exe' found in {file_path}.")
-                else:
-                    logging.info(f"File {file_path} is empty.")
-            except Exception as ex:
-                logging.error(f"Error reading file {file_path}: {ex}")
-        else:
-            logging.warning(f"Path {file_path} is not a valid file.")
-    except Exception as ex:
-        logging.error(f"Error during file scanning: {ex}")
+                        logging.info(f"File {file_path} is empty.")
+                except Exception as ex:
+                    logging.error(f"Error reading file {file_path}: {ex}")
+            else:
+                logging.warning(f"Path {file_path} is not a valid file.")
+        except Exception as ex:
+            logging.error(f"Error during file scanning: {ex}")
 
 class FileType:
     UNKNOWN = -1
@@ -622,9 +643,10 @@ def extract_nuitka_file(file_path, nuitka_type, mode=None, similarity_threshold=
             logging.info(f"Nuitka executable detected in {file_path}")
             file_name_without_extension = os.path.splitext(os.path.basename(file_path))[0]
             extracted_file = extract_rcdata_resource(file_path)
-            if extracted_file:
-                logging.info(f"Successfully extracted files from Nuitka executable: {file_path}")
-                scan_rsrc_file(extracted_file, mode, similarity_threshold)
+            if extracted_files:
+                logging.info(f"Successfully extracted bytecode or RCDATA file from Nuitka executable: {file_path}")
+                # Scan for RSRC/RCDATA bytecode resources
+                scan_rsrc_files(extracted_files)
             else:
                 logging.error(f"Failed to extract normal Nuitka executable: {file_path}")
         else:
