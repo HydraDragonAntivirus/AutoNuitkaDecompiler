@@ -756,7 +756,7 @@ def extract_nuitka_file(file_path, nuitka_type):
             file_name_without_extension = os.path.splitext(os.path.basename(file_path))[0]
 
             # Use enhanced pefile for RCData Nuitka bytecode extraction
-            extracted_file = extract_rcdata_resource(file_path)
+            extracted_files = extract_rcdata_resource(file_path)
 
             if extracted_files:
                 logging.info(f"Successfully extracted bytecode or RCDATA file from Nuitka executable: {file_path}")
