@@ -788,14 +788,27 @@ def extract_nuitka_file(file_path, nuitka_type):
 
 # Main script logic to ask for the user input (file path)
 if __name__ == "__main__":
-    file_path = input("Enter the path to the Nuitka executable file: ")
+    file_path = input("Enter the path to the Nuitka executable file or directory: ").strip()
 
-    # Check if the provided file exists
+    # Check if the provided path exists
     if os.path.exists(file_path):
-        nuitka_type = is_nuitka_file(file_path)
-        if nuitka_type:
-            extract_nuitka_file(file_path, nuitka_type)
-        else:
-            logging.info("The file is not a Nuitka executable.")
+        if os.path.isdir(file_path):
+            # Input is a directory; walk through every file in the directory recursively.
+            for root, _, files in os.walk(file_path):
+                for file in files:
+                    full_path = os.path.join(root, file)
+                    nuitka_type = is_nuitka_file(full_path)
+                    if nuitka_type:
+                        logging.info(f"Found Nuitka executable: {full_path} - Type: {nuitka_type}")
+                        extract_nuitka_file(full_path, nuitka_type)
+                    else:
+                        logging.info(f"File {full_path} is not a Nuitka executable.")
+        elif os.path.isfile(file_path):
+            # Input is a single file; process it directly.
+            nuitka_type = is_nuitka_file(file_path)
+            if nuitka_type:
+                extract_nuitka_file(file_path, nuitka_type)
+            else:
+                logging.info("The file is not a Nuitka executable.")
     else:
-        logging.error(f"The file {file_path} does not exist.")
+        logging.error(f"The path {file_path} does not exist.")
