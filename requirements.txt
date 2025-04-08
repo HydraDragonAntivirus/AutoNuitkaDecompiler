@@ -3,3 +3,4 @@ zstandard
 pyelftools
 macholib
 scikit-learn
+sentence-transformers
