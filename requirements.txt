@@ -2,4 +2,4 @@ pefile
 zstandard
 pyelftools
 macholib
-scikit‑learn
+scikit-learn
