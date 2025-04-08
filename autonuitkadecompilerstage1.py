@@ -230,7 +230,9 @@ def scan_code_for_links(code):
         discord_webhook_pattern = r'https://discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
         discord_canary_webhook_pattern = r'https://canary\.discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
         discord_invite_pattern = r'https://discord\.gg/[A-Za-z0-9]+'
-
+        telegram_token_pattern = r'\d+:[A-Za-z0-9_-]+'
+        telegram_keyword_pattern = r'\b(?:telegram|token)\b'
+ 
         # Perform scans and store results in sets to automatically remove duplicates
         ip_matches = set(re.findall(ip_pattern, code))
         domain_matches = set(re.findall(domain_pattern, code))
@@ -238,6 +240,12 @@ def scan_code_for_links(code):
         discord_webhook_matches = set(re.findall(discord_webhook_pattern, code))
         discord_canary_webhook_matches = set(re.findall(discord_canary_webhook_pattern, code))
         discord_invite_matches = set(re.findall(discord_invite_pattern, code))
+
+        # Telegram token (case-sensitive): run on original code
+        telegram_token_matches = re.findall(telegram_token_pattern, decompiled_code)
+
+        # Telegram keyword (case-insensitive): run with re.IGNORECASE
+        telegram_keyword_matches = re.findall(telegram_keyword_pattern, decompiled_code, flags=re.IGNORECASE)
 
         # Filter out local IP addresses
         ip_matches = {ip for ip in ip_matches if not is_local_ip(ip)}
@@ -255,6 +263,8 @@ def scan_code_for_links(code):
             logging.warning(f"Discord Canary webhook URLs detected: {discord_canary_webhook_matches}")
         if discord_invite_matches:
             logging.info(f"Discord invite links detected: {discord_invite_matches}")
+        if telegram_token_matches and telegram_keyword_matches:
+            logging.info(f"Telegram token links detected: {telegram_token_matches}")
 
     except Exception as ex:
         logging.error(f"Error scanning code for links: {ex}")
