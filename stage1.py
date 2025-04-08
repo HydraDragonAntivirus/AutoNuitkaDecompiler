@@ -242,10 +242,10 @@ def scan_code_for_links(code):
         discord_invite_matches = set(re.findall(discord_invite_pattern, code))
 
         # Telegram token (case-sensitive): run on original code
-        telegram_token_matches = re.findall(telegram_token_pattern, decompiled_code)
+        telegram_token_matches = re.findall(telegram_token_pattern, code)
 
         # Telegram keyword (case-insensitive): run with re.IGNORECASE
-        telegram_keyword_matches = re.findall(telegram_keyword_pattern, decompiled_code, flags=re.IGNORECASE)
+        telegram_keyword_matches = re.findall(telegram_keyword_pattern, code, flags=re.IGNORECASE)
 
         # Filter out local IP addresses
         ip_matches = {ip for ip in ip_matches if not is_local_ip(ip)}
