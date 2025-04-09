@@ -26,11 +26,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
 )
 
-# Set default encoding for I/O streams
-sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8', errors='ignore')
-sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8', errors='ignore')
-sys.stdin = io.TextIOWrapper(sys.stdin.detach(), encoding='utf-8', errors='ignore')
-
 logging.info("Stage2 (ML-based filtering) application started at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 # Define paths

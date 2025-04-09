@@ -38,11 +38,6 @@ logging.basicConfig(
     format='%(asctime)s - %(levelname)s - %(message)s',
 )
 
-# Set the default encoding to UTF-8 for standard output and input, with error handling set to 'ignore'
-sys.stdout = io.TextIOWrapper(sys.stdout.detach(), encoding='utf-8', errors='ignore')
-sys.stderr = io.TextIOWrapper(sys.stderr.detach(), encoding='utf-8', errors='ignore')
-sys.stdin = io.TextIOWrapper(sys.stdin.detach(), encoding='utf-8', errors='ignore')
-
 # Logging for application initialization
 logging.info("Application started at %s", datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
