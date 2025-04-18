@@ -2,6 +2,3 @@ pefile
 zstandard
 pyelftools
 macholib
-scikit-learn
-sentence-transformers
-hf_xet # For performance
