@@ -141,22 +141,20 @@ def extract_rcdata_resource(pe_path):
     try:
         pe = pefile.PE(pe_path)
     except Exception as e:
-        logging.info(f"Error loading PE file: {e}")
-        return None
+        logging.error(f"Error loading PE file: {e}")
+        return None, []
 
-    # Check if the PE file has resources
     if not hasattr(pe, 'DIRECTORY_ENTRY_RESOURCE'):
-        logging.info("No resources found in this file.")
-        return None
+        logging.error("No resources found in this file.")
+        return None, []
 
-    first_rcdata_file = None  # Will hold the first RCData resource file path
-    all_extracted_files = []  # Store all extracted file paths for scanning
+    first_rcdata_file = None
+    all_extracted_files = []
 
-    # Ensure output directory exists
     output_dir = os.path.join(general_extracted_dir, os.path.splitext(os.path.basename(pe_path))[0])
     os.makedirs(output_dir, exist_ok=True)
 
-    # Traverse the resource directory
+    # Bu örnekte özellikle 10_3_0.bin’i bulduğumuz anda döndürüyoruz:
     for resource_type in pe.DIRECTORY_ENTRY_RESOURCE.entries:
         type_name = get_resource_name(resource_type)
         if not hasattr(resource_type, 'directory'):
@@ -173,7 +171,6 @@ def extract_rcdata_resource(pe_path):
                 size = resource_lang.data.struct.Size
                 data = pe.get_memory_mapped_image()[data_rva:data_rva + size]
 
-                # Save extracted resource to a file
                 file_name = f"{type_name}_{res_id}_{lang_id}.bin"
                 output_path = os.path.join(output_dir, file_name)
                 with open(output_path, "wb") as f:
@@ -182,16 +179,21 @@ def extract_rcdata_resource(pe_path):
                 logging.info(f"Extracted resource saved: {output_path}")
                 all_extracted_files.append(output_path)
 
-                # If it's an RCData resource and we haven't already set one, record its file path
+                # Eğer bu tam istediğimiz isimse, hemen döndür
+                if file_name == "10_3_0.bin":
+                    logging.info(f"Found target RCData: {output_path}")
+                    return output_path, all_extracted_files
+
+                # İlk RCData’yı da istersen ayrı olarak yakalayabilirsin
                 if type_name.lower() in ("rcdata", "10") and first_rcdata_file is None:
                     first_rcdata_file = output_path
 
     if first_rcdata_file is None:
         logging.info("No RCData resource found.")
-    else:
-        logging.info(f"Using RCData resource file: {first_rcdata_file}")
+        return None, all_extracted_files
 
-    return first_rcdata_file
+    logging.info(f"Using first RCData: {first_rcdata_file}")
+    return first_rcdata_file, all_extracted_files
 
 def clean_text(input_text):
     """
