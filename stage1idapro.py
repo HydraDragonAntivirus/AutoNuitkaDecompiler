@@ -7,6 +7,9 @@
 # including custom import filtering.
 # It is designed to be run as an IDA Pro script.
 #
+# This version has been modified to use the NLTK library for more
+# intelligent filtering of extracted source code lines.
+#
 # To run this script in IDA Pro:
 # 1. Open your target file in IDA.
 # 2. Go to File -> Script file...
@@ -26,6 +29,37 @@ import struct
 import os
 import logging
 import pefile
+
+# --- NLTK Imports and Setup ---
+# We are adding NLTK to provide more intelligent filtering of junk lines.
+try:
+    import nltk
+    from nltk.corpus import words
+    from nltk.tokenize import word_tokenize
+
+    # Ensure that necessary NLTK resources are available, downloading if necessary.
+    # This checks if the data is present and downloads it only if missing.
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except Exception:
+        print("NLTK 'punkt' resource not found. Downloading...")
+        nltk.download('punkt', quiet=True)
+
+    try:
+        nltk.data.find('corpora/words')
+    except Exception:
+        print("NLTK 'words' resource not found. Downloading...")
+        nltk.download('words', quiet=True)
+        
+    # Create a set of English words for efficient lookup.
+    ENGLISH_WORDS = set(words.words())
+    NLTK_AVAILABLE = True
+    print("NLTK loaded successfully. Using enhanced junk filtering.")
+
+except ImportError:
+    print("NLTK is not installed. Falling back to basic junk filtering.")
+    NLTK_AVAILABLE = False
+
 
 # --- IDA Pro Imports ---
 import idc
@@ -168,39 +202,50 @@ def clean_text(text):
 
 def is_likely_junk(line):
     """
-    REVISED: Heuristic to determine if a line is junk by checking for valid identifiers.
-    This is much more reliable for filtering garbled text.
+    MODIFIED: A line is considered junk if it does not contain the character 'u'.
+    
+    This has been enhanced with NLTK. A line is now considered junk only if:
+    1. It does NOT contain the character 'u', AND
+    2. If NLTK is available, it also does NOT contain any common English words.
+    
+    This helps preserve lines like 'import os' which would otherwise be filtered.
     """
-    line = line.strip()
-    if not line:
+    # The primary heuristic remains: if 'u' is in the line, it's almost never junk.
+    if 'u' in line:
         return False
 
-    # A valid line of code should contain at least one Python identifier (e.g., a variable name).
-    # An identifier must start with a letter or underscore.
-    # This regex finds valid identifiers.
-    identifiers = re.findall(r'[a-zA-Z_][a-zA-Z0-9_]*', line)
-    
-    # If there are no identifiers at all, it's almost certainly junk.
-    if not identifiers:
-        return True
+    # If NLTK is not available, we fall back to the original, simpler logic.
+    if not NLTK_AVAILABLE:
+        return True # It's junk because 'u' is not in it.
 
-    # Calculate the total length of all valid identifiers found.
-    total_identifier_length = sum(len(i) for i in identifiers)
-    
-    # If the valid identifiers make up less than 40% of the line's content,
-    # it's likely garbled (e.g., 'l;l;l;l...').
-    if len(line) > 10 and (total_identifier_length / len(line)) < 0.4:
-        return True
-        
-    return False
+    # --- NLTK Enhancement ---
+    # If the line has no 'u', we can use NLTK to see if it contains any
+    # recognizable English words. This prevents valid code like 'import re'
+    # or 'except Exception as e:' from being discarded.
+    try:
+        tokens = word_tokenize(line.lower())
+        for word in tokens:
+            # We check for alphabetic words to ignore punctuation and numbers.
+            if word.isalpha() and word in ENGLISH_WORDS:
+                # Found a real word, so the line is likely not junk.
+                return False
+    except Exception as e:
+        # If tokenization fails for any reason, fall back to the safe default.
+        log.warning(f"NLTK processing failed for line: {line[:50]}... Error: {e}")
+        return True # Assume junk on error
+
+    # If we get here, the line has no 'u' and no recognizable English words.
+    # It's very likely junk.
+    return True
+
 
 def split_source_by_u_delimiter(source_code, base_name):
     """
     Parses a raw source code block by splitting it using 'u' as the primary
-    delimiter. It identifies module starts (e.g., <module ...>) to correctly
+    delimiter. It identifies module starts (e.g., u<module ...>) to correctly
     group the resulting code lines into separate Python files.
     
-    MODIFIED: No longer prepends 'u' to reconstructed lines.
+    MODIFIED: Preserves the initial code block and uses the improved junk filter.
     """
     log.info("Reconstructing source code using 'u' delimiter logic (Stage 2)...")
     
@@ -231,22 +276,24 @@ def split_source_by_u_delimiter(source_code, base_name):
 
     module_start_pattern = re.compile(r"^\s*<module\s+['\"]?([^>'\"]+)['\"]?>")
 
-    # Handle the initial block (the "banner") separately.
+    # REVISED: Handle the initial block (the "banner") separately.
     # This part is never filtered for junk.
     if parts and parts[0].strip():
         current_module_code.append(parts[0])
 
     # Process the rest of the parts, which are expected to be prefixed with 'u'.
     for part in parts[1:]:
-        # The part itself is what's between the 'u' delimiters.
-        code_to_process = part.strip()
-        if not code_to_process:
+        stripped_part = part.strip()
+        if not stripped_part:
             continue
             
         # The improved junk filter is applied here.
-        if is_likely_junk(code_to_process):
-            log.warning(f"Filtered junk line: {code_to_process[:100]}")
+        if is_likely_junk(stripped_part):
+            # log.warning(f"Filtered junk line: {stripped_part[:100]}")
             continue
+            
+        # Re-add the 'u' delimiter that was used for splitting.
+        code_to_process = 'u' + part
 
         match = module_start_pattern.match(code_to_process)
         if match:
