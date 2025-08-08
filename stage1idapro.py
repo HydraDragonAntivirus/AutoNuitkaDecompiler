@@ -199,61 +199,53 @@ def clean_text(text):
 
 def is_likely_junk(line):
     """
-    MODIFIED: A line is considered junk if it does not contain the character 'u'.
-    
-    This has been enhanced with NLTK. A line is now considered junk only if:
-    1. It does NOT contain the character 'u', AND
-    2. If NLTK is available, it also does NOT contain any common English words.
-    
-    This helps preserve lines like 'import os' which would otherwise be filtered.
+    MODIFIED: A line is considered JUNK based on the user's specific (reversed) rules.
+    This function now returns True for lines that should be DELETED.
+    - Rule 1: Lines WITHOUT 'u' are JUNK (delete).
+    - Rule 2: Lines WITH 'u' that are part of a recognizable English word are JUNK (delete).
+    - Rule 3: Lines WITH 'u' that are part of a meaningless string are NOT JUNK (keep).
     """
-    # The primary heuristic remains: if 'u' is in the line, it's almost never junk.
-    if 'u' in line:
-        return False
+    # Rule 1: If a line does NOT contain 'u', it is JUNK.
+    if 'u' not in line:
+        return True # JUNK, delete.
 
-    # If NLTK is not available, we fall back to the original, simpler logic.
+    # If we are here, the line *does* contain 'u'.
+    # Now we check if it's a meaningful word (JUNK) or a meaningless string (NOT JUNK).
+
     if not NLTK_AVAILABLE:
-        return True # It's junk because 'u' is not in it.
+        # Fallback if NLTK is not available: assume it's a meaningless string to be safe.
+        return False # NOT JUNK, keep.
 
-    # --- NLTK Enhancement ---
-    # If the line has no 'u', we can use NLTK to see if it contains any
-    # recognizable English words. This prevents valid code like 'import re'
-    # or 'except Exception as e:' from being discarded.
     try:
         tokens = word_tokenize(line.lower())
         for word in tokens:
-            # We check for alphabetic words to ignore punctuation and numbers.
-            if word.isalpha() and word in ENGLISH_WORDS:
-                # Found a real word, so the line is likely not junk.
-                return False
+            # Rule 2: If a word has 'u' and is a real English word, the line is JUNK.
+            if 'u' in word and word.isalpha() and word in ENGLISH_WORDS:
+                return True # This is a meaningful word, so it's JUNK.
     except Exception as e:
-        # If tokenization fails for any reason, fall back to the safe default.
         log.warning(f"NLTK processing failed for line: {line[:50]}... Error: {e}")
-        return True # Assume junk on error
+        # On error, keep the line to be safe.
+        return False # NOT JUNK, keep.
 
-    # If we get here, the line has no 'u' and no recognizable English words.
-    # It's very likely junk.
-    return True
+    # Rule 3: If the line has 'u' but not in any recognizable English word,
+    # it means it's a meaningless string, which should be KEPT (NOT JUNK).
+    return False # NOT JUNK, keep.
 
 
 def split_source_by_u_delimiter(source_code, base_name):
     """
-    Parses a raw source code block by splitting it using 'u' as the primary
-    delimiter. It identifies module starts (e.g., u<module ...>) to correctly
-    group the resulting code lines into separate Python files.
-    
-    MODIFIED: Preserves the initial code block and uses the improved junk filter.
+    Parses a raw source code block by filtering lines based on the new logic
+    and then grouping them into module files.
     """
-    log.info("Reconstructing source code using 'u' delimiter logic (Stage 2)...")
+    log.info("Reconstructing source code using custom 'u' delimiter logic (Stage 2)...")
     
-    parts = source_code.split('u')
+    lines = source_code.splitlines()
     
     current_module_name = "initial_code"
     current_module_code = []
     
     def save_module_file(name, code_lines):
         """Helper function to save the collected code for a module to a file."""
-        # Filter out any remaining empty lines before saving
         filtered_lines = [line for line in code_lines if line.strip()]
         if not filtered_lines:
             return
@@ -271,41 +263,28 @@ def split_source_by_u_delimiter(source_code, base_name):
         except IOError as e:
             log.error(f"Failed to write module file {output_path}: {e}")
 
-    module_start_pattern = re.compile(r"^\s*<module\s+['\"]?([^>'\"]+)['\"]?>")
+    # This pattern is now used to find module declarations within the *filtered* lines.
+    module_start_pattern = re.compile(r"^\s*u<module\s+['\"]?([^>'\"]+)['\"]?>")
 
-    # REVISED: Handle the initial block (the "banner") separately.
-    # This part is never filtered for junk.
-    if parts and parts[0].strip():
-        current_module_code.append(parts[0])
-
-    # Process the rest of the parts, which are expected to be prefixed with 'u'.
-    for part in parts[1:]:
-        stripped_part = part.strip()
-        if not stripped_part:
+    for line in lines:
+        stripped_line = line.strip()
+        if not stripped_line:
             continue
             
-        # The improved junk filter is applied here.
-        if is_likely_junk(stripped_part):
-            # log.warning(f"Filtered junk line: {stripped_part[:100]}")
+        # The junk filter is applied here. If it returns True, the line is skipped.
+        if is_likely_junk(stripped_line):
             continue
             
-        # Re-add the 'u' delimiter that was used for splitting.
-        code_to_process = 'u' + part
-
-        match = module_start_pattern.match(code_to_process)
+        # Lines that pass the filter are processed.
+        match = module_start_pattern.match(stripped_line)
         if match:
-            # If a module marker is found, save the previous module.
             save_module_file(current_module_name, current_module_code)
-            
-            # And start a new one.
             current_module_name = match.group(1)
-            remaining_code = module_start_pattern.sub('', code_to_process).strip()
-            current_module_code = [remaining_code] if remaining_code else []
+            current_module_code = [] # Start a new module
         else:
-            # No module marker, so this is just a line of code for the current module.
-            current_module_code.append(code_to_process)
+            current_module_code.append(stripped_line)
             
-    # After the loop, save the very last module that was being built.
+    # Save the last module.
     save_module_file(current_module_name, current_module_code)
 
 
