@@ -2,8 +2,7 @@
 - Get malware payload without dynamic analysis with this auto decompiler
 
 - git clone https://github.com/HydraDragonAntivirus/HydraDragonAntivirus.git
-- pip install -r requirements.txt
-- python.py
-- If you want improve the project you can do by filtering process even better by detecting common text files with signatures. Currently there are a few signatures so it can detect basic Nuitka decompiled files but if it's complex you need this signatures.
-- After you get nuitkasourcecode paste to AI source code. It's filtered Nuitka bytecode code (not actual python bytecode it's special Nuitka bytecode, you can see from general extracted biggest .bin file (generally 10_3_0.bin))
-- python.exe (first upython.exe) is the actual part of starting source code.
+- pip install -r requirements.txt for stage1.py to extract nuitka executable later on wit python stage1.py or use https://github.com/extremecoders-re/nuitka-extractor
+- Install IDA Pro 9.1
+- the real script which is epic and decisive is the: stage1idapro.py
+- you can use him via IDA Pro script file option at gui after you analyze file
