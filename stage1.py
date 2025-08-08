@@ -227,9 +227,9 @@ def scan_code_for_links(code):
         ip_pattern = r'\b(?:\d{1,3}\.){3}\d{1,3}\b'
         domain_pattern = r'\b(?:[a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}\b'
         url_pattern = r'https?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
-        discord_webhook_pattern = r'https://discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
-        discord_canary_webhook_pattern = r'https://canary\.discord\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
-        discord_invite_pattern = r'https://discord\.gg/[A-Za-z0-9]+'
+        discord_webhook_pattern = r'https://discord\\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
+        discord_canary_webhook_pattern = r'https://canary\\.discord\\.com/api/webhooks/[0-9]+/[A-Za-z0-9_-]+'
+        discord_invite_pattern = r'https://discord\\.gg/[A-Za-z0-9]+'
         telegram_token_pattern = r'\d{9,10}:[A-Za-z0-9_-]{35}'
         telegram_keyword_pattern = r'\b(?:telegram|token)\b'
  
