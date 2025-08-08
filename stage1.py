@@ -1,14 +1,10 @@
 import os
 import logging
 import subprocess
-import shutil
 import inspect
-import string
 import re
 import ipaddress
-import sys
 from datetime import datetime
-import time
 import io
 import pefile
 import zstandard
