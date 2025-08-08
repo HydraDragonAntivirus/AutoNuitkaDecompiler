@@ -217,10 +217,13 @@ def is_likely_junk(line):
         return False # NOT JUNK, keep.
 
     try:
-        tokens = word_tokenize(line.lower())
+        # We only check the part after the 'u' for English words.
+        word_to_check = line.lstrip('u')
+        tokens = word_tokenize(word_to_check.lower())
         for word in tokens:
-            # Rule 2: If a word has 'u' and is a real English word, the line is JUNK.
-            if 'u' in word and word.isalpha() and word in ENGLISH_WORDS:
+            # Rule 2: If a word is a real English word, the line is JUNK.
+            # We no longer check for 'u' here since we are checking the fragment after it.
+            if word.isalpha() and word in ENGLISH_WORDS:
                 return True # This is a meaningful word, so it's JUNK.
     except Exception as e:
         log.warning(f"NLTK processing failed for line: {line[:50]}... Error: {e}")
@@ -236,11 +239,25 @@ def split_source_by_u_delimiter(source_code, base_name):
     """
     Parses a raw source code block by filtering lines based on the new logic
     and then grouping them into module files.
+    This version is improved to handle raw, concatenated u-prefixed strings.
     """
     log.info("Reconstructing source code using custom 'u' delimiter logic (Stage 2)...")
+
+    # --- IMPROVED SPLITTING LOGIC ---
+    # The previous regex-based approach was too restrictive for the raw data format,
+    # which often contains concatenated u-prefixed strings without proper quoting or spacing.
+    #
+    # This new, more robust logic splits the entire source block by the 'u' character,
+    # which acts as the primary delimiter in the raw RCDATA block. We then re-add the 'u'
+    # to the beginning of each fragment. This ensures that every potential construct
+    # is isolated on its own "line" before being passed to the junk filter.
+    fragments = source_code.split('u')
     
-    lines = source_code.splitlines()
-    
+    # The first fragment is whatever came before the first 'u'.
+    # Subsequent fragments are the content that followed a 'u'. We prepend 'u' back to them.
+    # We also filter out any empty strings that might result from the split.
+    lines = [fragments[0]] + ['u' + frag for frag in fragments[1:] if frag]
+
     current_module_name = "initial_code"
     current_module_code = []
     
@@ -278,13 +295,18 @@ def split_source_by_u_delimiter(source_code, base_name):
         # Lines that pass the filter are processed.
         match = module_start_pattern.match(stripped_line)
         if match:
-            save_module_file(current_module_name, current_module_code)
+            # Before starting a new module, save the code of the previous one.
+            if current_module_code:
+                save_module_file(current_module_name, current_module_code)
+            
+            # Start a new module.
             current_module_name = match.group(1)
-            current_module_code = [] # Start a new module
+            current_module_code = [] 
         else:
+            # Add the line to the current module's code.
             current_module_code.append(stripped_line)
             
-    # Save the last module.
+    # Save the last module after the loop finishes.
     save_module_file(current_module_name, current_module_code)
 
 
