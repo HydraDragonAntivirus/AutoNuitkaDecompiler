@@ -243,26 +243,28 @@ def split_source_by_u_delimiter(source_code, base_name):
     """
     log.info("Reconstructing source code using custom 'u' delimiter logic (Stage 2)...")
 
-    # --- CORRECTED SPLITTING LOGIC ---
-    # The previous logic split the entire block by 'u', which incorrectly
-    # handled text that contained 'u' but wasn't a Nuitka construct.
-    # The new logic processes the content line by line first, applying the
-    # junk filter to each line, and only then looks for module markers.
+    # --- IMPROVED SPLITTING LOGIC ---
+    # The previous regex-based approach was too restrictive for the raw data format,
+    # which often contains concatenated u-prefixed strings without proper quoting or spacing.
+    #
+    # This new, more robust logic splits the entire source block by the 'u' character,
+    # which acts as the primary delimiter in the raw RCDATA block. We then re-add the 'u'
+    # to the beginning of each fragment. This ensures that every potential construct
+    # is isolated on its own "line" before being passed to the junk filter.
+    fragments = source_code.split('u')
     
-    # First, split the raw source code into actual lines.
-    raw_lines = source_code.splitlines()
-    
-    # Filter out junk lines *before* any other processing.
-    # A line is kept if is_likely_junk returns False.
-    filtered_lines = [line for line in raw_lines if not is_likely_junk(line.strip())]
+    # The first fragment is whatever came before the first 'u'.
+    # Subsequent fragments are the content that followed a 'u'. We prepend 'u' back to them.
+    # We also filter out any empty strings that might result from the split.
+    lines = [fragments[0]] + ['u' + frag for frag in fragments[1:] if frag]
 
     current_module_name = "initial_code"
     current_module_code = []
     
     def save_module_file(name, code_lines):
         """Helper function to save the collected code for a module to a file."""
-        # The lines are already filtered, so we just check if there's anything to save.
-        if not any(line.strip() for line in code_lines):
+        filtered_lines = [line for line in code_lines if line.strip()]
+        if not filtered_lines:
             return
             
         safe_filename = name.replace('.', '_') + ".py"
@@ -273,7 +275,7 @@ def split_source_by_u_delimiter(source_code, base_name):
             with open(output_path, "w", encoding="utf-8") as f:
                 f.write(f"# Reconstructed from Nuitka analysis\n")
                 f.write(f"# Original module name: {name}\n\n")
-                f.write("\n".join(code_lines)) # Write the kept lines
+                f.write("\n".join(filtered_lines))
             log.info(f"Reconstructed module saved to: {output_path}")
         except IOError as e:
             log.error(f"Failed to write module file {output_path}: {e}")
@@ -281,12 +283,16 @@ def split_source_by_u_delimiter(source_code, base_name):
     # This pattern is now used to find module declarations within the *filtered* lines.
     module_start_pattern = re.compile(r"^\s*u<module\s+['\"]?([^>'\"]+)['\"]?>")
 
-    for line in filtered_lines:
-        # The line has already been filtered for junk. We just need to process it.
+    for line in lines:
         stripped_line = line.strip()
         if not stripped_line:
             continue
             
+        # The junk filter is applied here. If it returns True, the line is skipped.
+        if is_likely_junk(stripped_line):
+            continue
+            
+        # Lines that pass the filter are processed.
         match = module_start_pattern.match(stripped_line)
         if match:
             # Before starting a new module, save the code of the previous one.
@@ -295,7 +301,6 @@ def split_source_by_u_delimiter(source_code, base_name):
             
             # Start a new module.
             current_module_name = match.group(1)
-            # The module declaration line itself is not part of the code.
             current_module_code = [] 
         else:
             # Add the line to the current module's code.
