@@ -19,10 +19,7 @@
 
 # --- Imports ---
 import sys
-import inspect
-from pathlib import Path
 import re
-import textwrap
 import time
 import ctypes
 import struct
