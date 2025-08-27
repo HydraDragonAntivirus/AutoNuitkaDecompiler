@@ -199,116 +199,115 @@ def clean_text(text):
 
 def is_likely_junk(line):
     """
-    MODIFIED: A line is considered JUNK based on the user's specific (reversed) rules.
-    This function now returns True for lines that should be DELETED.
+    A line is considered JUNK based on specific rules for deletion.
+    Returns True for lines that should be DELETED.
+    
     - Rule 1: Lines WITHOUT 'u' are JUNK (delete).
-    - Rule 2: Lines WITH 'u' that are part of a recognizable English word are JUNK (delete).
-    - Rule 3: Lines WITH 'u' that are part of a meaningless string are NOT JUNK (keep).
+    - Rule 2: Lines WITH 'u' that form recognizable English words are JUNK (delete).
+    - Rule 3: Lines WITH 'u' that are meaningless strings are NOT JUNK (keep).
     """
+    line = line.strip()  # Clean whitespace
+    
     # Rule 1: If a line does NOT contain 'u', it is JUNK.
-    if 'u' not in line:
-        return True # JUNK, delete.
-
-    # If we are here, the line *does* contain 'u'.
-    # Now we check if it's a meaningful word (JUNK) or a meaningless string (NOT JUNK).
-
-    if not NLTK_AVAILABLE:
-        # Fallback if NLTK is not available: assume it's a meaningless string to be safe.
-        return False # NOT JUNK, keep.
-
+    if 'u' not in line.lower():
+        return True  # JUNK, delete.
+    
+    # If we are here, the line contains 'u'.
+    # Check if the line forms meaningful English words.
+    
     try:
-        # We only check the part after the 'u' for English words.
-        word_to_check = line.lstrip('u')
-        tokens = word_tokenize(word_to_check.lower())
-        for word in tokens:
-            # Rule 2: If a word is a real English word, the line is JUNK.
-            # We no longer check for 'u' here since we are checking the fragment after it.
-            if word.isalpha() and word in ENGLISH_WORDS:
-                return True # This is a meaningful word, so it's JUNK.
+        # Tokenize the entire line
+        tokens = word_tokenize(line.lower())
+        
+        # Check if ANY token with 'u' is NOT a meaningful English word
+        for token in tokens:
+            if 'u' in token and token.isalpha() and len(token) > 1:
+                if token not in ENGLISH_WORDS:
+                    return False  # NOT JUNK, found one meaningless string with 'u'
+        
+        # Rule 2: If all tokens with 'u' are meaningful English words, it's JUNK
+        return True  # JUNK, delete
+        
     except Exception as e:
         log.warning(f"NLTK processing failed for line: {line[:50]}... Error: {e}")
-        # On error, keep the line to be safe.
-        return False # NOT JUNK, keep.
-
-    # Rule 3: If the line has 'u' but not in any recognizable English word,
-    # it means it's a meaningless string, which should be KEPT (NOT JUNK).
-    return False # NOT JUNK, keep.
-
+        # On error, keep the line to be safe
+        return False  # NOT JUNK, keep
 
 def split_source_by_u_delimiter(source_code, base_name):
     """
-    Parses a raw source code block by filtering lines based on the new logic
+    Parses a raw source code block by filtering lines based on junk detection
     and then grouping them into module files.
-    This version is improved to handle raw, concatenated u-prefixed strings.
     """
     log.info("Reconstructing source code using custom 'u' delimiter logic (Stage 2)...")
-
-    # --- IMPROVED SPLITTING LOGIC ---
-    # The previous regex-based approach was too restrictive for the raw data format,
-    # which often contains concatenated u-prefixed strings without proper quoting or spacing.
-    #
-    # This new, more robust logic splits the entire source block by the 'u' character,
-    # which acts as the primary delimiter in the raw RCDATA block. We then re-add the 'u'
-    # to the beginning of each fragment. This ensures that every potential construct
-    # is isolated on its own "line" before being passed to the junk filter.
-    fragments = source_code.split('u')
     
-    # The first fragment is whatever came before the first 'u'.
-    # Subsequent fragments are the content that followed a 'u'. We prepend 'u' back to them.
-    # We also filter out any empty strings that might result from the split.
-    lines = [fragments[0]] + ['u' + frag for frag in fragments[1:] if frag]
-
+    # Check if entire source is junk once
+    if is_likely_junk(source_code.strip()):
+        return
+    else:
+        # Split by 'u' until no 'u' left
+        lines = [source_code]
+        
+        while True:
+            new_lines = []
+            has_u_to_split = False
+            
+            for line in lines:
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                
+                if 'u' in stripped:
+                    has_u_to_split = True
+                    parts = stripped.split('u')
+                    for part in parts:
+                        if part.strip():
+                            new_lines.append(part.strip())
+                else:
+                    new_lines.append(stripped)
+            
+            lines = new_lines
+            
+            if not has_u_to_split:
+                break
+        
+        # Keep all lines
+        filtered_lines = [line.strip() for line in lines if line.strip()]
+    
+    log.info(f"Kept {len(filtered_lines)} lines after splitting and junk filtering")
+    
     current_module_name = "initial_code"
     current_module_code = []
     
     def save_module_file(name, code_lines):
-        """Helper function to save the collected code for a module to a file."""
-        filtered_lines = [line for line in code_lines if line.strip()]
-        if not filtered_lines:
+        if not code_lines:
             return
-            
+        
         safe_filename = name.replace('.', '_') + ".py"
         output_filename = f"stage2_{safe_filename}"
         output_path = os.path.join(stage2_dir, output_filename)
         
         try:
             with open(output_path, "w", encoding="utf-8") as f:
-                f.write(f"# Reconstructed from Nuitka analysis\n")
-                f.write(f"# Original module name: {name}\n\n")
-                f.write("\n".join(filtered_lines))
+                f.write("\n".join(code_lines))
             log.info(f"Reconstructed module saved to: {output_path}")
         except IOError as e:
             log.error(f"Failed to write module file {output_path}: {e}")
-
-    # This pattern is now used to find module declarations within the *filtered* lines.
-    module_start_pattern = re.compile(r"^\s*u<module\s+['\"]?([^>'\"]+)['\"]?>")
-
-    for line in lines:
-        stripped_line = line.strip()
-        if not stripped_line:
-            continue
-            
-        # The junk filter is applied here. If it returns True, the line is skipped.
-        if is_likely_junk(stripped_line):
-            continue
-            
-        # Lines that pass the filter are processed.
-        match = module_start_pattern.match(stripped_line)
+    
+    module_start_pattern = re.compile(r"^\s*<module\s+['\"]?([^>'\"]+)['\"]?>")
+    
+    for line in filtered_lines:
+        match = module_start_pattern.match(line)
         if match:
-            # Before starting a new module, save the code of the previous one.
             if current_module_code:
                 save_module_file(current_module_name, current_module_code)
             
-            # Start a new module.
             current_module_name = match.group(1)
-            current_module_code = [] 
+            current_module_code = []
         else:
-            # Add the line to the current module's code.
-            current_module_code.append(stripped_line)
-            
-    # Save the last module after the loop finishes.
-    save_module_file(current_module_name, current_module_code)
-
+            current_module_code.append(line)
+    
+    if current_module_code:
+        save_module_file(current_module_name, current_module_code)
 
 def scan_rsrc_file(file_path):
     """
