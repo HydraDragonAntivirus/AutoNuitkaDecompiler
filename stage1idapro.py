@@ -311,9 +311,8 @@ def split_source_by_u_delimiter(source_code, base_name):
 
 def scan_rsrc_file(file_path):
     """
-    Given a file path for an rsrcdata resource, this function scans the file 
-    for 'upython.exe', extracts the subsequent source code, cleans it, 
-    and reconstructs it into separate module files.
+    Simple scanner for Nuitka resource files.
+    Looks for \python.exe or upython.exe markers and extracts everything after.
     """
     if not file_path or not os.path.isfile(file_path):
         logging.warning(f"Path {file_path} is not a valid file.")
@@ -321,30 +320,47 @@ def scan_rsrc_file(file_path):
 
     try:
         logging.info(f"Processing file: {file_path}")
+        
+        # Read file with error handling
         with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
             content = f.read()
 
-        if "upython.exe" in content:
-            marker_index = content.find("upython.exe")
-            source_code_raw = content[marker_index + len("upython.exe"):]
-            
-            cleaned_source_code = clean_text(source_code_raw)
-            base_name = os.path.splitext(os.path.basename(file_path))[0]
-
-            save_filename = f"{base_name}_source_code_original.txt"
-            save_path = os.path.join(nuitka_source_code_dir, save_filename)
-            with open(save_path, "w", encoding="utf-8") as save_file:
-                save_file.write(cleaned_source_code)
-            logging.info(f"Saved original extracted source code to {save_path}")
-
-            split_source_by_u_delimiter(cleaned_source_code, base_name)
-            scan_code_for_links(cleaned_source_code)
-        else:
-            logging.info(f"Marker 'upython.exe' not found in {file_path}.")
+        base_name = os.path.splitext(os.path.basename(file_path))[0]
+        extracted = False
+        
+        # Try different python exe markers
+        markers = ["upython.exe", "\\python.exe"]
+        
+        for marker in markers:
+            if marker in content:
+                logging.info(f"Found marker: {marker}")
+                marker_index = content.find(marker)
+                source_code_raw = content[marker_index + len(marker):]
+                
+                # Simple cleanup
+                cleaned_source_code = clean_text(source_code_raw)
+                
+                # Save it
+                save_filename = f"{base_name}_source_code_original.txt"
+                save_path = os.path.join(nuitka_source_code_dir, save_filename)
+                
+                with open(save_path, "w", encoding="utf-8") as save_file:
+                    save_file.write(cleaned_source_code)
+                
+                logging.info(f"Saved extracted source code to {save_path}")
+                
+                # Process further
+                split_source_by_u_delimiter(cleaned_source_code, base_name)
+                scan_code_for_links(cleaned_source_code)
+                
+                extracted = True
+                break
+        
+        if not extracted:
+            logging.info(f"No python.exe marker found in {file_path}")
 
     except Exception as ex:
         logging.error(f"Error during file scanning of {file_path}: {ex}")
-
 
 def scan_code_for_links(code):
     """Scans the provided code string for URLs, IPs, and Discord webhooks."""
