@@ -258,7 +258,7 @@ def split_source_by_u_delimiter(source_code, base_name):
                 
                 if 'u' in stripped:
                     has_u_to_split = True
-                    parts = re.split(r'(u)', stripped)
+                    parts = stripped.split('u')
                     for part in parts:
                         if part.strip():
                             new_lines.append(part.strip())
