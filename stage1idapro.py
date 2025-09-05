@@ -197,117 +197,174 @@ def clean_text(text):
     """Removes non-printable characters from a string."""
     return ''.join(char for char in text if char.isprintable() or char in '\n\r\t')
 
+# Precompute English words set and dynamic maximum length for words containing 'u'.
+# This runs once at import time for performance.
+try:
+    english_words_set = set(w.lower() for w in ENGLISH_WORDS)
+    u_word_lengths = [len(w) for w in english_words_set if 'u' in w]
+    if u_word_lengths:
+        max_u_len = max(u_word_lengths)
+    else:
+        # fallback to longest word length in the set, or 30 if set is empty
+        max_u_len = max((len(w) for w in english_words_set), default=30)
+except Exception as e:
+    log.warning(f"Failed to prepare english words set: {e}")
+    english_words_set = set(w.lower() for w in (ENGLISH_WORDS or []))
+    max_u_len = 30
+
 def is_likely_junk(line):
     """
-    A line is considered JUNK based on specific rules for deletion.
-    Returns True for lines that should be DELETED.
-    
-    - Rule 1: Lines WITHOUT 'u' are JUNK (delete).
-    - Rule 2: Lines WITH 'u' that form recognizable English words are JUNK (delete).
-    - Rule 3: Lines WITH 'u' that are meaningless strings are NOT JUNK (keep).
+    Return True if the line should be considered JUNK (and therefore deleted).
+
+    Rules:
+    - If the line does NOT contain 'u' -> JUNK (True).
+    - Only examine alphabetic tokens that CONTAIN 'u' (excluding the single token 'u').
+      * If any such token is longer than max_u_len -> treat as NOT JUNK (False).
+      * If any such token is NOT in english_words_set -> NOT JUNK (False).
+      * If at least one alphabetic 'u'-containing token exists AND all such tokens are
+        present in english_words_set and <= max_u_len -> JUNK (True).
+    - Single 'u' token is always NOT JUNK (False).
     """
-    line = line.strip()  # Clean whitespace
-    
-    # Rule 1: If a line does NOT contain 'u', it is JUNK.
+    line = (line or "").strip()
+    if not line:
+        return True
+
+    # Rule 1: lines without 'u' are junk
     if 'u' not in line.lower():
-        return True  # JUNK, delete.
-    
-    # If we are here, the line contains 'u'.
-    # Check if the line forms meaningful English words.
-    
+        return True
+
     try:
-        # Tokenize the entire line
-        tokens = word_tokenize(line.lower())
-        
-        # Check if ANY token with 'u' is NOT a meaningful English word
+        # Normalize so 'u' becomes its own token for tokenization (prevents 'udef' being hidden)
+        normalized = re.sub(r'u', ' u ', line.lower())
+        tokens = word_tokenize(normalized)
+
+        saw_u_alpha_token = False
+
         for token in tokens:
+            if token == 'u':
+                # single 'u' token: keep
+                continue
+
+            # Only consider alphabetic tokens that contain 'u' (and length > 1)
             if 'u' in token and token.isalpha() and len(token) > 1:
-                if token not in ENGLISH_WORDS:
-                    return False  # NOT JUNK, found one meaningless string with 'u'
-        
-        # Rule 2: If all tokens with 'u' are meaningful English words, it's JUNK
-        return True  # JUNK, delete
-        
+                saw_u_alpha_token = True
+
+                # If token is longer than known 'u' words -> treat as NOT JUNK
+                if len(token) > max_u_len:
+                    return False
+
+                # If token is not in the English words set -> NOT JUNK
+                if token not in english_words_set:
+                    return False
+
+                # otherwise token is a valid English word containing 'u' -> keep checking others
+
+        # If we saw at least one alphabetic 'u' token and all were valid English words, mark as JUNK
+        if saw_u_alpha_token:
+            return True
+
+        # No alphabetic 'u' tokens (only single 'u' tokens or non-alpha) -> NOT JUNK
+        return False
+
     except Exception as e:
         log.warning(f"NLTK processing failed for line: {line[:50]}... Error: {e}")
-        # On error, keep the line to be safe
-        return False  # NOT JUNK, keep
+        # On error be conservative: keep the line
+        return False
 
 def split_source_by_u_delimiter(source_code, base_name):
     """
-    Parses a raw source code block by filtering lines based on junk detection
-    and then grouping them into module files.
+    Parses raw source code and reconstructs modules with only 'u'-starting lines.
+
+    Behavior:
+    - Preserve module boundaries (<module ...> lines used as file names)
+    - Keep all module reconstruction intact during Stage 2
+    - AFTER Stage 2: remove all lines not starting with 'u' (case-insensitive)
     """
-    log.info("Reconstructing source code using custom 'u' delimiter logic (Stage 2)...")
-    
-    # Check if entire source is junk once
-    if is_likely_junk(source_code.strip()):
+    log.info("Reconstructing source code using 'u' delimiter logic (Stage 2)...")
+
+    if not source_code:
         return
-    else:
-        # Split by 'u' until no 'u' left
-        lines = [source_code]
-        
-        while True:
-            new_lines = []
-            has_u_to_split = False
-            
-            for line in lines:
-                stripped = line.strip()
-                if not stripped:
+
+    # --- STEP 1: split source lines and preserve 'u' tokens ---
+    tokens = []
+    for raw_line in source_code.splitlines():
+        stripped = (raw_line or "").strip()
+        if not stripped:
+            continue
+
+        if 'u' in stripped:
+            parts = re.split(r'(u)', stripped)
+            for p in parts:
+                if p is None:
                     continue
-                
-                if 'u' in stripped:
-                    has_u_to_split = True
-                    parts = stripped.split('u')
-                    for part in parts:
-                        if part.strip():
-                            new_lines.append(part.strip())
+                p = p.strip()
+                if p:
+                    tokens.append(p)
+        else:
+            tokens.append(stripped)
+
+    # --- STEP 2: merge 'u' into the next token ---
+    merged_tokens = []
+    i = 0
+    n = len(tokens)
+    while i < n:
+        t = tokens[i]
+        if t == 'u':
+            if i + 1 < n:
+                merged_tokens.append('u' + tokens[i + 1])
+                i += 2
+            else:
+                if merged_tokens:
+                    merged_tokens[-1] += 'u'
                 else:
-                    new_lines.append(stripped)
-            
-            lines = new_lines
-            
-            if not has_u_to_split:
-                break
-        
-        # Keep all lines
-        filtered_lines = [line.strip() for line in lines if line.strip()]
-    
-    log.info(f"Kept {len(filtered_lines)} lines after splitting and junk filtering")
-    
+                    merged_tokens.append('u')
+                i += 1
+        else:
+            merged_tokens.append(t)
+            i += 1
+
+    final_lines = merged_tokens
+
+    # --- STEP 3: group by module ---
+    module_start_pattern = re.compile(r"^\s*<module\s+['\"]?([^>'\"]+)['\"]?>")
+
     current_module_name = "initial_code"
     current_module_code = []
-    
+
     def save_module_file(name, code_lines):
         if not code_lines:
             return
-        
         safe_filename = name.replace('.', '_') + ".py"
         output_filename = f"stage2_{safe_filename}"
         output_path = os.path.join(stage2_dir, output_filename)
-        
         try:
             with open(output_path, "w", encoding="utf-8") as f:
                 f.write("\n".join(code_lines))
-            log.info(f"Reconstructed module saved to: {output_path}")
+            log.info(f"Module saved: {output_path}")
         except IOError as e:
-            log.error(f"Failed to write module file {output_path}: {e}")
-    
-    module_start_pattern = re.compile(r"^\s*<module\s+['\"]?([^>'\"]+)['\"]?>")
-    
-    for line in filtered_lines:
+            log.error(f"Failed to write module {output_path}: {e}")
+
+    # --- collect modules first ---
+    modules = []
+    for line in final_lines:
         match = module_start_pattern.match(line)
         if match:
             if current_module_code:
-                save_module_file(current_module_name, current_module_code)
-            
+                modules.append((current_module_name, current_module_code))
             current_module_name = match.group(1)
             current_module_code = []
-        else:
-            current_module_code.append(line)
-    
+            continue
+        current_module_code.append(line.strip())
+
     if current_module_code:
-        save_module_file(current_module_name, current_module_code)
+        modules.append((current_module_name, current_module_code))
+
+    # --- FORCE CLEANUP: after Stage 2, remove everything not starting with 'u' ---
+    for name, code_lines in modules:
+        forced_lines = [l for l in code_lines if l.lower().startswith('u')]
+        save_module_file(name, forced_lines)
+
+    log.info("Stage 2 complete: all modules reconstructed, non-'u' lines removed after stage.")
 
 def scan_rsrc_file(file_path):
     """
@@ -1117,15 +1174,11 @@ recover_library_code = sys.modules[__name__]
 # =======================================================================
 def run_stage3_analysis(module_data):
     """
-    MODIFIED: Analyzes Stage 2 files with a more robust method to consolidate
-    all unique imports at the top of a new script, followed by all the
-    user-defined code from each module. Also includes modules found via
-    IDA Pro analysis.
+    Stage 3: Consolidate imports and extract user-mode code
+    AFTER Stage 2: fully remove all lines not starting with 'u'
     """
     log.info("Starting Stage 3: Consolidating imports and user-mode code...")
 
-    # Regex to find all standard and 'from' imports, no longer anchored to the start of a line.
-    # This will find imports inside functions as well. Handles multi-line imports.
     import_pattern = re.compile(
         r"from[ \t]+[.\w]+[ \t]+import[ \t]+(?:[\w, ]+|\*|\([\w, \n\r]+\))|import[ \t]+[.\w, ]+"
     )
@@ -1137,14 +1190,12 @@ def run_stage3_analysis(module_data):
     if module_data:
         for module_name in module_data.keys():
             if module_name != "__main__":
-                # Sanitize the module name before adding
                 clean_module_name = module_name.replace('_', '.')
                 all_imports.add(f"import {clean_module_name}")
         log.info(f"Added {len(all_imports)} modules from IDA analysis.")
 
     if not os.path.exists(stage2_dir) or not os.listdir(stage2_dir):
         log.warning("Stage 2 directory is empty. Nothing to analyze for Stage 3.")
-        # Still proceed to write the file if we got imports from IDA analysis
     else:
         for filename in sorted(os.listdir(stage2_dir)):
             if not filename.endswith(".py"):
@@ -1155,12 +1206,17 @@ def run_stage3_analysis(module_data):
                 with open(file_path, "r", encoding="utf-8") as f:
                     content = f.read()
 
-                # Find all import statements in the file using the more flexible regex
-                imports_in_file = import_pattern.findall(content)
+                # --- FORCE CLEANUP: remove all lines not starting with 'u' ---
+                lines = content.splitlines()
+                forced_lines = [l for l in lines if l.startswith('u')]
+                cleaned_content = "\n".join(forced_lines)
+
+                # Extract imports from the cleaned content
+                imports_in_file = import_pattern.findall(cleaned_content)
                 all_imports.update(imp.strip() for imp in imports_in_file)
 
-                # Remove the found imports from the content to leave only user-mode code
-                usermode_code = import_pattern.sub('', content).strip()
+                # Remove imports from content to leave user-mode code
+                usermode_code = import_pattern.sub('', cleaned_content).strip()
 
                 if usermode_code:
                     module_name_from_file = filename.replace("stage2_", "").replace(".py", "")
@@ -1171,29 +1227,29 @@ def run_stage3_analysis(module_data):
 """
                     all_usermode_code.append(header + usermode_code)
                 else:
-                    log.info(f"No user-mode code found in {filename} after removing imports.")
+                    log.info(f"No user-mode code found in {filename} after forcing 'u'-lines.")
 
             except Exception as e:
                 log.error(f"Could not analyze file {filename}: {e}")
 
-    # Clean and sort the collected imports
+    # Clean and sort imports
     cleaned_imports = sorted([imp for imp in list(all_imports) if imp])
 
-    # Write the final consolidated file
+    # Write final consolidated file
     output_file = os.path.join(stage3_dir, "stage3_usermode_code.py")
     try:
         with open(output_file, "w", encoding="utf-8") as f:
             f.write("# Stage 3: Consolidated User-Mode Code\n")
-            f.write("# This file contains all unique imports followed by user code from all modules.\n\n")
+            f.write("# Only lines starting with 'u' are kept from Stage 2 modules\n\n")
             
-            f.write("# --- Consolidated & Filtered Imports (from text and IDA analysis) ---\n")
+            f.write("# --- Consolidated & Filtered Imports ---\n")
             if cleaned_imports:
                 f.write("\n".join(cleaned_imports))
             f.write("\n\n# --- End of Imports ---\n")
 
             f.write("\n\n".join(all_usermode_code))
             
-        log.info(f"Consolidated code with all imports moved to top saved to: {output_file}")
+        log.info(f"Consolidated code with only 'u'-starting lines saved to: {output_file}")
     except IOError as e:
         log.error(f"Failed to write consolidated code file: {e}")
 
