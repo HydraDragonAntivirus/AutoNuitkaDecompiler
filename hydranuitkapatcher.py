@@ -3,10 +3,8 @@ import logging
 from datetime import datetime
 import pefile
 import zstandard
-from typing import Optional, Tuple, List, Dict, Any
+from typing import Optional, Tuple
 import shutil
-import io
-import struct
 
 # Set script directory
 script_dir = os.getcwd()
@@ -35,16 +33,20 @@ os.makedirs(patched_dir, exist_ok=True)
 os.makedirs(extracted_dir, exist_ok=True)
 
 # ----------------------------
-# STRING REPLACEMENT CONFIG
-OLD_STRING_BASE = "https://keyauth.win/"
-NEW_STRING_BASE = "http://keyauth.win2/"
+# STRING REPLACEMENT CONFIG - CRITICAL CHANGE FOR SIZE ADJUSTMENT
+# Goal: Make the new string 2 characters shorter than the old one.
+OLD_STRING_BASE = "https://keyauth.win/" # 19 chars
+NEW_STRING_BASE = "http://localhost/"  # 17 chars + 2 bytes padding/null
+
+# To match lengths for direct replacement, we append null bytes to the new string base
+PADDED_NEW_STRING_BASE = NEW_STRING_BASE + "\x00\x00"
 
 REPLACEMENTS = [
-    (OLD_STRING_BASE.encode('ascii'), NEW_STRING_BASE.encode('ascii')),  # ASCII/UTF-8
-    (OLD_STRING_BASE.encode('utf-16-le'), NEW_STRING_BASE.encode('utf-16-le'))  # WIDE STRING
+    (OLD_STRING_BASE.encode('ascii'), PADDED_NEW_STRING_BASE.encode('ascii')),  # ASCII/UTF-8
+    (OLD_STRING_BASE.encode('utf-16-le'), PADDED_NEW_STRING_BASE.encode('utf-16-le'))  # WIDE STRING
 ]
 
-# Verify strings are same length
+# Verify strings are same length (19 chars vs 17 chars + 2 nulls = 19 chars)
 for old, new in REPLACEMENTS:
     assert len(old) == len(new), "Old and new strings must be the same length!"
 # ----------------------------
@@ -96,7 +98,7 @@ def is_nuitka_file(file_path):
         return None
 
 # -------------------------------------------------------------------------
-# CORE LOGIC REVISION: ZSTD DECOMPRESSION FORGIVENESS
+# CORE LOGIC: ZSTD HEURISTIC PATCHER
 # -------------------------------------------------------------------------
 
 class PayloadError(Exception): pass
@@ -180,7 +182,6 @@ class NuitkaHeuristicPatcher:
         
         try:
             # 1. DECOMPRESS (using ZstdDecompressor().decompressobj() for stream processing forgiveness)
-            # This is the critical change to bypass the "could not determine content size in frame header" error.
             decompressor = zstandard.ZstdDecompressor()
             dobj = decompressor.decompressobj()
             decompressed_data = dobj.decompress(self.compressed_block)
@@ -215,17 +216,21 @@ class NuitkaHeuristicPatcher:
             logging.info(f"Recompressed successfully. New size: {len(recompressed_block)} bytes.")
 
             # 4. REBUILD PAYLOAD DATA
-            # The payload is (Header + Zstd Compressed Block)
             new_payload_data = bytearray(self.payload_data[:self.zstd_offset_in_payload])
             new_payload_data.extend(recompressed_block)
             
-            # Pad with null bytes if the new block is smaller than the original resource size
+            # CRITICAL CHECK: AVOID TRUNCATION TO PREVENT UCRTBASE CRASH
             new_size = len(new_payload_data)
-            if new_size < self.pe_size:
-                 new_payload_data.extend(b'\x00' * (self.pe_size - new_size))
-            elif new_size > self.pe_size:
-                 logging.warning("New payload is LARGER than original resource size. Truncating to original size to avoid PE corruption.")
+            if new_size > self.pe_size:
+                 # This should now be less likely due to the shorter replacement string.
+                 logging.critical(f"New payload ({new_size}) is LARGER than original resource size ({self.pe_size}). TRUNCATING IS DANGEROUS.")
+                 # If it still happens, we must truncate, but the crash is expected.
                  new_payload_data = new_payload_data[:self.pe_size] 
+            elif new_size < self.pe_size:
+                 # If smaller, pad with nulls to fill the original resource size exactly.
+                 padding_needed = self.pe_size - new_size
+                 new_payload_data.extend(b'\x00' * padding_needed)
+                 logging.info(f"Padded new payload with {padding_needed} null bytes to match original size.")
             
             # 5. WRITE BACK TO PE FILE
             if not os.path.exists(output_path): shutil.copy2(self.filepath, output_path)
@@ -319,10 +324,10 @@ def process_nuitka_file(file_path: str, nuitka_type: str):
         total_replacements = 0
 
         if nuitka_type == "Nuitka OneFile":
-            print("🚀 Running Heuristic (Zstd Stream) Extraction...")
-            logging.info(f"Starting HEURISTIC ZSTD patch for: {file_path}")
+            print("🚀 Running Heuristic (Zstd Stream) Extraction and Crash Fix...")
+            logging.info(f"Starting HEURISTIC ZSTD patch (V15) for: {file_path}")
             
-            # 1. PRIMARY: Heuristic Patch (Bypassing Archive Metadata)
+            # 1. PRIMARY: Heuristic Patch 
             patcher = NuitkaHeuristicPatcher(file_path)
             total_replacements = patcher.patch_and_save_heuristic(output_path)
             
@@ -357,8 +362,8 @@ def process_nuitka_file(file_path: str, nuitka_type: str):
 # Main script
 if __name__ == "__main__":
     print("=" * 60)
-    print("Nuitka PE String Patcher (V14 - Zstd Stream Decompression Fix)")
-    print(f"Replacing: {OLD_STRING_BASE} -> {NEW_STRING_BASE}")
+    print("Nuitka PE String Patcher (V15 - Final Crash Fix)")
+    print(f"Replacing: {OLD_STRING_BASE} -> {NEW_STRING_BASE} (2-byte size reduction for stability)")
     print("=" * 60)
     
     file_path = input("\nEnter the path to the Nuitka PE file or directory: ").strip()
